@@ -43,7 +43,7 @@ export function LevelCard({ level, progress, onSelect, current = false }: LevelC
   const backgroundStyle = {
     background: isUnlocked 
       ? `linear-gradient(135deg, ${level.color}22, ${level.color}11)`
-      : 'linear-gradient(135deg, #f5f5f5, #e0e0e0)',
+      : 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--card)) 100%)',
     borderColor: current ? level.color : undefined,
   };
   
