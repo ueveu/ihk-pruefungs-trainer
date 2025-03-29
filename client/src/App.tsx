@@ -24,7 +24,7 @@ function Router() {
   const [activeTab, setActiveTab] = useState<ActiveTab>("home");
 
   return (
-    <div className="min-h-screen flex flex-col bg-neutral-100 font-sans text-neutral-800">
+    <div className="min-h-screen flex flex-col bg-background font-sans text-foreground">
       <Header />
       <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
       

@@ -15,17 +15,21 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
     setLocation(path);
   };
 
+  // Gemeinsame Tab-Button-Klassen für einheitliches Styling
+  const tabClasses = (isActive: boolean) => `
+    flex items-center px-4 py-4 border-b-2 font-medium whitespace-nowrap transition-colors
+    ${isActive 
+      ? 'border-primary text-primary' 
+      : 'border-transparent text-muted-foreground hover:text-foreground'}
+  `;
+
   return (
-    <nav className="bg-white border-b border-neutral-200 sticky top-0 z-10">
+    <nav className="bg-background border-b border-border sticky top-0 z-10">
       <div className="container mx-auto px-4">
         <div className="flex overflow-x-auto hide-scrollbar">
           <button 
             onClick={() => handleTabClick('home', '/')}
-            className={`flex items-center px-4 py-4 border-b-2 font-medium whitespace-nowrap transition-colors ${
-              activeTab === 'home' 
-                ? 'border-primary text-primary' 
-                : 'border-transparent text-neutral-600 hover:text-neutral-900'
-            }`}
+            className={tabClasses(activeTab === 'home')}
           >
             <HomeIcon className="h-5 w-5 mr-2" />
             Home
@@ -33,11 +37,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
         
           <button 
             onClick={() => handleTabClick('quiz', '/quiz')}
-            className={`flex items-center px-4 py-4 border-b-2 font-medium whitespace-nowrap transition-colors ${
-              activeTab === 'quiz' 
-                ? 'border-primary text-primary' 
-                : 'border-transparent text-neutral-600 hover:text-neutral-900'
-            }`}
+            className={tabClasses(activeTab === 'quiz')}
           >
             <BookOpen className="h-5 w-5 mr-2" />
             Quiz
@@ -45,11 +45,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
           
           <button 
             onClick={() => handleTabClick('flashcards', '/flashcards')}
-            className={`flex items-center px-4 py-4 border-b-2 font-medium whitespace-nowrap transition-colors ${
-              activeTab === 'flashcards' 
-                ? 'border-primary text-primary' 
-                : 'border-transparent text-neutral-600 hover:text-neutral-900'
-            }`}
+            className={tabClasses(activeTab === 'flashcards')}
           >
             <Layers className="h-5 w-5 mr-2" />
             Karteikarten
@@ -57,11 +53,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
 
           <button 
             onClick={() => handleTabClick('exam', '/exam-simulation')}
-            className={`flex items-center px-4 py-4 border-b-2 font-medium whitespace-nowrap transition-colors ${
-              activeTab === 'exam' 
-                ? 'border-primary text-primary' 
-                : 'border-transparent text-neutral-600 hover:text-neutral-900'
-            }`}
+            className={tabClasses(activeTab === 'exam')}
           >
             <ClipboardCheck className="h-5 w-5 mr-2" />
             Prüfungssimulation
@@ -69,11 +61,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
           
           <button 
             onClick={() => handleTabClick('stats', '/stats')}
-            className={`flex items-center px-4 py-4 border-b-2 font-medium whitespace-nowrap transition-colors ${
-              activeTab === 'stats' 
-                ? 'border-primary text-primary' 
-                : 'border-transparent text-neutral-600 hover:text-neutral-900'
-            }`}
+            className={tabClasses(activeTab === 'stats')}
           >
             <BarChart3 className="h-5 w-5 mr-2" />
             Statistik
@@ -81,11 +69,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
           
           <button 
             onClick={() => handleTabClick('achievements', '/achievements')}
-            className={`flex items-center px-4 py-4 border-b-2 font-medium whitespace-nowrap transition-colors ${
-              activeTab === 'achievements' 
-                ? 'border-primary text-primary' 
-                : 'border-transparent text-neutral-600 hover:text-neutral-900'
-            }`}
+            className={tabClasses(activeTab === 'achievements')}
           >
             <Award className="h-5 w-5 mr-2" />
             Erfolge
@@ -93,11 +77,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
           
           <button 
             onClick={() => handleTabClick('ai-chat', '/ai-chat')}
-            className={`flex items-center px-4 py-4 border-b-2 font-medium whitespace-nowrap transition-colors ${
-              activeTab === 'ai-chat' 
-                ? 'border-primary text-primary' 
-                : 'border-transparent text-neutral-600 hover:text-neutral-900'
-            }`}
+            className={tabClasses(activeTab === 'ai-chat')}
           >
             <BrainCircuit className="h-5 w-5 mr-2" />
             KI-Chat
@@ -105,11 +85,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
           
           <button 
             onClick={() => handleTabClick('study-companion', '/study-companion')}
-            className={`flex items-center px-4 py-4 border-b-2 font-medium whitespace-nowrap transition-colors ${
-              activeTab === 'study-companion' 
-                ? 'border-primary text-primary' 
-                : 'border-transparent text-neutral-600 hover:text-neutral-900'
-            }`}
+            className={tabClasses(activeTab === 'study-companion')}
           >
             <Sparkles className="h-5 w-5 mr-2" />
             Lernbegleiter
@@ -117,11 +93,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
           
           <button 
             onClick={() => handleTabClick('settings', '/settings')}
-            className={`flex items-center px-4 py-4 border-b-2 font-medium whitespace-nowrap transition-colors ${
-              activeTab === 'settings' 
-                ? 'border-primary text-primary' 
-                : 'border-transparent text-neutral-600 hover:text-neutral-900'
-            }`}
+            className={tabClasses(activeTab === 'settings')}
           >
             <SettingsIcon className="h-5 w-5 mr-2" />
             Einstellungen
