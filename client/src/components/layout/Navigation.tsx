@@ -1,16 +1,16 @@
 import React from 'react';
 import { useLocation, Link } from 'wouter';
-import { Home as HomeIcon, BookOpen, Layers, BarChart3, Award, Settings as SettingsIcon, BrainCircuit, Sparkles } from 'lucide-react';
+import { Home as HomeIcon, BookOpen, Layers, BarChart3, Award, Settings as SettingsIcon, BrainCircuit, Sparkles, ClipboardCheck } from 'lucide-react';
 
 interface NavigationProps {
-  activeTab: 'home' | 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings' | 'ai-chat' | 'study-companion';
-  onTabChange: (tab: 'home' | 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings' | 'ai-chat' | 'study-companion') => void;
+  activeTab: 'home' | 'quiz' | 'flashcards' | 'exam' | 'stats' | 'achievements' | 'settings' | 'ai-chat' | 'study-companion';
+  onTabChange: (tab: 'home' | 'quiz' | 'flashcards' | 'exam' | 'stats' | 'achievements' | 'settings' | 'ai-chat' | 'study-companion') => void;
 }
 
 const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
   const [location, setLocation] = useLocation();
 
-  const handleTabClick = (tab: 'home' | 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings' | 'ai-chat' | 'study-companion', path: string) => {
+  const handleTabClick = (tab: 'home' | 'quiz' | 'flashcards' | 'exam' | 'stats' | 'achievements' | 'settings' | 'ai-chat' | 'study-companion', path: string) => {
     onTabChange(tab);
     setLocation(path);
   };
@@ -53,6 +53,18 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
           >
             <Layers className="h-5 w-5 mr-2" />
             Karteikarten
+          </button>
+
+          <button 
+            onClick={() => handleTabClick('exam', '/exam-simulation')}
+            className={`flex items-center px-4 py-4 border-b-2 font-medium whitespace-nowrap transition-colors ${
+              activeTab === 'exam' 
+                ? 'border-primary text-primary' 
+                : 'border-transparent text-neutral-600 hover:text-neutral-900'
+            }`}
+          >
+            <ClipboardCheck className="h-5 w-5 mr-2" />
+            Prüfungssimulation
           </button>
           
           <button 

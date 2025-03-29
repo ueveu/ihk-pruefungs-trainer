@@ -12,12 +12,13 @@ import StatsView from "@/pages/StatsView";
 import Achievements from "@/pages/Achievements";
 import Settings from "@/pages/Settings";
 import ExamSimulation from "@/pages/ExamSimulation";
+import ExamSimulationHome from "@/pages/ExamSimulationHome";
 import AIChat from "@/pages/AIChat";
 import StudyCompanion from "@/pages/StudyCompanion";
 import QuickTip from "@/components/common/QuickTip";
 import { useState } from "react";
 
-type ActiveTab = "home" | "quiz" | "flashcards" | "stats" | "achievements" | "settings" | "ai-chat" | "study-companion";
+type ActiveTab = "home" | "quiz" | "flashcards" | "exam" | "stats" | "achievements" | "settings" | "ai-chat" | "study-companion";
 
 function Router() {
   const [activeTab, setActiveTab] = useState<ActiveTab>("home");
@@ -46,6 +47,9 @@ function Router() {
           </Route>
           <Route path="/settings">
             <Settings />
+          </Route>
+          <Route path="/exam-simulation">
+            <ExamSimulationHome />
           </Route>
           <Route path="/exam-simulation/:category">
             <ExamSimulation />
