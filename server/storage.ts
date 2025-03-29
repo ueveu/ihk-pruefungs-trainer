@@ -17,6 +17,7 @@ export interface IStorage {
   getQuestionById(id: number): Promise<Question | undefined>;
   getQuestionsByCategory(category: string): Promise<Question[]>;
   createQuestion(question: InsertQuestion): Promise<Question>;
+  createQuestions(questions: InsertQuestion[]): Promise<Question[]>;
   
   // User Progress methods
   getUserProgress(userId: number): Promise<UserProgress[]>;
@@ -104,6 +105,19 @@ export class MemStorage implements IStorage {
     const question: Question = { ...insertQuestion, id };
     this.questions.set(id, question);
     return question;
+  }
+  
+  async createQuestions(insertQuestions: InsertQuestion[]): Promise<Question[]> {
+    const createdQuestions: Question[] = [];
+    
+    for (const insertQuestion of insertQuestions) {
+      const id = this.currentQuestionId++;
+      const question: Question = { ...insertQuestion, id };
+      this.questions.set(id, question);
+      createdQuestions.push(question);
+    }
+    
+    return createdQuestions;
   }
   
   // User Progress methods

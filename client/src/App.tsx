@@ -9,10 +9,11 @@ import QuizMode from "@/pages/QuizMode";
 import FlashcardMode from "@/pages/FlashcardMode";
 import StatsView from "@/pages/StatsView";
 import Achievements from "@/pages/Achievements";
+import Settings from "@/pages/Settings";
 import QuickTip from "@/components/common/QuickTip";
 import { useState } from "react";
 
-type ActiveTab = "quiz" | "flashcards" | "stats" | "achievements";
+type ActiveTab = "quiz" | "flashcards" | "stats" | "achievements" | "settings";
 
 function Router() {
   const [activeTab, setActiveTab] = useState<ActiveTab>("quiz");
@@ -35,6 +36,9 @@ function Router() {
           </Route>
           <Route path="/achievements">
             <Achievements />
+          </Route>
+          <Route path="/settings">
+            <Settings />
           </Route>
           <Route component={NotFound} />
         </Switch>

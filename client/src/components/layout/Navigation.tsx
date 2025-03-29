@@ -1,16 +1,16 @@
 import React from 'react';
 import { useLocation, Link } from 'wouter';
-import { BookOpen, Layers, BarChart3, Award } from 'lucide-react';
+import { BookOpen, Layers, BarChart3, Award, Settings as SettingsIcon } from 'lucide-react';
 
 interface NavigationProps {
-  activeTab: 'quiz' | 'flashcards' | 'stats' | 'achievements';
-  onTabChange: (tab: 'quiz' | 'flashcards' | 'stats' | 'achievements') => void;
+  activeTab: 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings';
+  onTabChange: (tab: 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings') => void;
 }
 
 const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
   const [location, setLocation] = useLocation();
 
-  const handleTabClick = (tab: 'quiz' | 'flashcards' | 'stats' | 'achievements', path: string) => {
+  const handleTabClick = (tab: 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings', path: string) => {
     onTabChange(tab);
     setLocation(path);
   };
@@ -65,6 +65,18 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
           >
             <Award className="h-5 w-5 mr-2" />
             Erfolge
+          </button>
+          
+          <button 
+            onClick={() => handleTabClick('settings', '/settings')}
+            className={`flex items-center px-4 py-4 border-b-2 font-medium whitespace-nowrap transition-colors ${
+              activeTab === 'settings' 
+                ? 'border-primary text-primary' 
+                : 'border-transparent text-neutral-600 hover:text-neutral-900'
+            }`}
+          >
+            <SettingsIcon className="h-5 w-5 mr-2" />
+            Einstellungen
           </button>
         </div>
       </div>

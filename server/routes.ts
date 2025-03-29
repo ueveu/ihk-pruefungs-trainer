@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertUserSchema, insertQuestionSchema, insertUserProgressSchema } from "@shared/schema";
+import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
@@ -98,6 +99,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error(`Error updating stats for user ${req.params.userId}:`, error);
       res.status(500).json({ message: "Failed to update stats" });
+    }
+  });
+
+  // Import a batch of questions
+  app.post("/api/questions/batch", async (req, res) => {
+    try {
+      // Schema für ein Array von Fragen validieren
+      const batchSchema = z.object({
+        questions: z.array(insertQuestionSchema)
+      });
+      
+      const { questions } = batchSchema.parse(req.body);
+      
+      // Alle Fragen in einem Batch speichern
+      const createdQuestions = await storage.createQuestions(questions);
+      
+      res.status(201).json({
+        message: `Successfully imported ${createdQuestions.length} questions`,
+        questions: createdQuestions
+      });
+    } catch (error) {
+      console.error("Error importing batch questions:", error);
+      res.status(400).json({ 
+        message: "Failed to import questions", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
     }
   });
 
