@@ -42,14 +42,10 @@ const QuizMode: React.FC = () => {
   const { data: levelProgress } = useQuery({
     queryKey: ['/api/level-progress', DEFAULT_USER_ID, selectedLevelId],
     queryFn: getQueryFn<UserLevelProgress>({ on401: "returnNull" }),
-    onError: (error: any) => {
-      // Wenn kein Fortschrittsdatensatz gefunden wurde, ignorieren wir den Fehler
-      if (error?.status === 404) {
-        console.log("Kein Fortschritt gefunden, wird später erstellt.");
-      } else {
-        console.error("Fehler beim Laden des Fortschritts:", error);
-      }
-    },
+    // onError ist in @tanstack/query v5+ veraltet.
+    // Fehlerbehandlung erfolgt über den `error`-Zustand oder globale Konfiguration.
+    // Der 404-Fall (kein Fortschritt) wird bereits in `updateLevelProgressMutation` behandelt,
+    // indem geprüft wird, ob `levelProgress` existiert.
     enabled: !!selectedLevelId
   });
   
@@ -77,7 +73,7 @@ const QuizMode: React.FC = () => {
           isCompleted: false
         };
         
-        const response = await apiRequest('/api/level-progress', newProgress);
+        const response = await apiRequest('POST', '/api/level-progress', newProgress);
         return response;
       } else {
         // Aktualisiere bestehenden Fortschritt
@@ -297,21 +293,21 @@ const QuizMode: React.FC = () => {
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <div>
-            <h2 className="text-2xl font-heading font-bold flex items-center gap-2">
+            <h2 className="text-2xl font-heading font-bold flex items-center gap-2 dark:text-white">
               {selectedLevel?.name}
               <Sparkles className="h-5 w-5 text-primary" />
             </h2>
-            <p className="text-neutral-600">{selectedLevel?.description}</p>
+            <p className="text-neutral-600 dark:text-neutral-300">{selectedLevel?.description}</p>
           </div>
         </div>
         
         {/* Progress */}
-        <div className="flex items-center gap-3 bg-white rounded-lg p-3 shadow-sm">
+        <div className="flex items-center gap-3 bg-white rounded-lg p-3 shadow-sm dark:bg-neutral-800 dark:border dark:border-neutral-700">
           <ProgressRing progress={progressPercentage} />
           
           <div>
-            <div className="text-sm text-neutral-600">Fortschritt</div>
-            <div className="font-medium">Frage {currentQuestionIndex + 1} von {quizQuestions.length}</div>
+            <div className="text-sm text-neutral-600 dark:text-neutral-400">Fortschritt</div>
+            <div className="font-medium dark:text-white">Frage {currentQuestionIndex + 1} von {quizQuestions.length}</div>
           </div>
         </div>
       </div>
@@ -327,8 +323,8 @@ const QuizMode: React.FC = () => {
           onAnswered={handleAnswered}
         />
       ) : (
-        <div className="card bg-white rounded-xl shadow-md p-6 mb-6">
-          <p className="text-neutral-700">Keine Fragen für dieses Level verfügbar. Bitte wähle ein anderes Level.</p>
+        <div className="card bg-white rounded-xl shadow-md p-6 mb-6 dark:bg-neutral-800 dark:border dark:border-neutral-700">
+          <p className="text-neutral-700 dark:text-neutral-300">Keine Fragen für dieses Level verfügbar. Bitte wähle ein anderes Level.</p>
           <Button onClick={handleBackToLevels} className="mt-4">
             Zurück zur Level-Auswahl
           </Button>

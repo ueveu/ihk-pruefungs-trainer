@@ -23,8 +23,10 @@ export function LevelCard({ level, progress, onSelect, current = false }: LevelC
   const isCompleted = progress?.isCompleted || false;
   
   // Visueller Fortschritt (0-100%)
-  const progressPercentage = level.requiredQuestionsToUnlock > 0 
-    ? Math.min(100, (questionsCompleted / level.requiredQuestionsToUnlock) * 100) 
+  // Handle potential null value for requiredQuestionsToUnlock
+  const requiredQuestions = level.requiredQuestionsToUnlock ?? 0;
+  const progressPercentage = requiredQuestions > 0
+    ? Math.min(100, (questionsCompleted / requiredQuestions) * 100)
     : 0;
   
   // Verschiedene Zustände: gesperrt, entsperrt, aktuell, abgeschlossen
@@ -44,7 +46,8 @@ export function LevelCard({ level, progress, onSelect, current = false }: LevelC
     background: isUnlocked 
       ? `linear-gradient(135deg, ${level.color}22, ${level.color}11)`
       : 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--card)) 100%)',
-    borderColor: current ? level.color : undefined,
+    // Ensure borderColor is string or undefined, not null
+    borderColor: current ? (level.color ?? undefined) : undefined,
   };
   
   return (
@@ -83,11 +86,13 @@ export function LevelCard({ level, progress, onSelect, current = false }: LevelC
           </div>
           
           {/* Fortschrittsanzeige */}
-          {!isUnlocked && level.requiredQuestionsToUnlock > 0 && (
+          {/* Use the null-checked requiredQuestions variable */}
+          {!isUnlocked && requiredQuestions > 0 && (
             <div className="mt-2">
               <div className="flex justify-between mb-1 text-xs">
                 <span>Fortschritt</span>
-                <span>{questionsCompleted}/{level.requiredQuestionsToUnlock} Fragen</span>
+                {/* Use the null-checked requiredQuestions variable */}
+                <span>{questionsCompleted}/{requiredQuestions} Fragen</span>
               </div>
               <Progress value={progressPercentage} className="h-2" />
             </div>
@@ -128,7 +133,10 @@ export function LevelCard({ level, progress, onSelect, current = false }: LevelC
               </>
             ) : 'Starten'
           ) : (
-            `${level.requiredQuestionsToUnlock} Fragen benötigt`
+            // Use null-checked requiredQuestions and provide fallback text
+            requiredQuestions > 0
+              ? `${requiredQuestions} Fragen benötigt`
+              : 'Gesperrt'
           )}
         </Button>
       </CardFooter>

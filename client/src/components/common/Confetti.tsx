@@ -53,12 +53,14 @@ const Confetti: React.FC = () => {
           }}
         />
       ))}
-      <style jsx>{`
+      <style>
+        {`
         @keyframes confetti {
           0% { transform: translateY(0) rotate(0); opacity: 1; }
           100% { transform: translateY(100px) rotate(720deg); opacity: 0; }
         }
-      `}</style>
+        `}
+      </style>
     </div>
   );
 };

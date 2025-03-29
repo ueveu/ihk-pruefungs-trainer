@@ -25,14 +25,20 @@ export function LevelSelector({ userId, onLevelSelect, onBack }: LevelSelectorPr
   });
 
   // Level-Fortschritt für den Benutzer laden
-  const { data: levelProgress, isLoading: isLoadingProgress } = useQuery({
+  const { data: levelProgress, isLoading: isLoadingProgress, error: progressError } = useQuery({
     queryKey: ['/api/level-progress', userId],
     queryFn: getQueryFn<UserLevelProgress[]>({ on401: "throw" }),
-    onError: (error) => {
-      console.error("Fehler beim Laden des Fortschritts:", error);
-      // Fehler werden ignoriert, da wir auch ohne Fortschrittsdaten arbeiten können
-    }
+    // onError is deprecated in TanStack Query v5+. Errors are available in the 'error' state.
+    // The component is designed to work without progress data, so we can ignore the error here.
+    // If specific error handling is needed, check the 'progressError' variable.
   });
+
+  // Optional: Log error if it occurs (can be removed if not needed)
+  useEffect(() => {
+    if (progressError) {
+      console.error("Fehler beim Laden des Fortschritts:", progressError);
+    }
+  }, [progressError]);
 
   // Kategorien aus den Levels extrahieren
   const categories = levels 

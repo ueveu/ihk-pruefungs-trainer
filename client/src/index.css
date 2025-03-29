@@ -23,6 +23,10 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 280 70% 40%;
+    --success: 140 60% 45%;
+    --success-foreground: 0 0% 100%;
+    --error: 0 75% 50%;
+    --error-foreground: 0 0% 100%;
     --radius: 1rem;
   }
 
@@ -33,7 +37,7 @@
     --card-foreground: 210 40% 98%;
     --popover: 240 29% 19%;
     --popover-foreground: 210 40% 98%;
-    --primary: 280 70% 65%;
+    --primary: 280 70% 45%; /* Adjusted for contrast */
     --primary-foreground: 0 0% 100%;
     --secondary: 240 32% 25%;
     --secondary-foreground: 210 40% 98%;
@@ -41,20 +45,24 @@
     --muted-foreground: 217.9 32.6% 82%;
     --accent: 235 30% 22%;
     --accent-foreground: 210 40% 98%;
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84.2% 45%; /* Adjusted for contrast */
     --destructive-foreground: 210 40% 98%;
-    --border: 230 32% 28%;
-    --input: 230 32% 28%;
-    --ring: 280 70% 65%;
+    --border: 230 25% 40%; /* Adjusted for contrast */
+    --input: 230 25% 40%; /* Adjusted for contrast */
+    --ring: 280 70% 45%; /* Adjusted to match new primary */
+    --success: 140 60% 35%; /* Adjusted for contrast */
+    --success-foreground: 0 0% 100%;
+    --error: 0 75% 40%; /* Adjusted for contrast */
+    --error-foreground: 0 0% 100%;
   }
-
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply font-sans antialiased bg-background text-foreground transition-colors duration-300;
-    -webkit-font-smoothing: antialiased;
+ 
+   * {
+     @apply border-border;
+   }
+ 
+   body {
+     @apply font-sans antialiased bg-background text-foreground transition-colors duration-300;
+     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 }

@@ -31,7 +31,9 @@ const QuickTip: React.FC = () => {
             <Info className="h-5 w-5 text-accent" />
             <span className="font-medium text-neutral-800">Lern-Tipp</span>
           </div>
-          <button 
+          <button
+            type="button" // Add type attribute for accessibility and best practice
+            aria-label="Schließen" // Add aria-label for screen readers
             onClick={handleClose}
             className="text-neutral-500 hover:text-neutral-700"
           >

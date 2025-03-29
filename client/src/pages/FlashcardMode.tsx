@@ -103,8 +103,8 @@ const FlashcardMode: React.FC = () => {
   if (remainingCards.length === 0) {
     return (
       <div className="text-center py-10">
-        <h2 className="text-2xl font-bold mb-4">Keine Karteikarten verfügbar</h2>
-        <p className="text-neutral-600">Bitte versuche es später erneut.</p>
+        <h2 className="text-2xl font-bold mb-4 dark:text-white">Keine Karteikarten verfügbar</h2>
+        <p className="text-muted-foreground">Bitte versuche es später erneut.</p>
       </div>
     );
   }
@@ -114,12 +114,12 @@ const FlashcardMode: React.FC = () => {
   return (
     <div className="animate-fade-in">
       <div className="mb-6">
-        <h2 className="text-2xl font-heading font-bold text-neutral-900">Karteikarten-Modus</h2>
-        <p className="text-neutral-600">Lerne mit interaktiven Karteikarten</p>
+        <h2 className="text-2xl font-heading font-bold text-foreground">Karteikarten-Modus</h2>
+        <p className="text-muted-foreground">Lerne mit interaktiven Karteikarten</p>
       </div>
 
       <div className="mb-4 flex justify-between items-center">
-        <div className="text-sm text-neutral-600">
+        <div className="text-sm text-muted-foreground">
           Karte {currentCardIndex + 1} von {remainingCards.length}
         </div>
         <div className="flex gap-4 text-sm">
@@ -138,9 +138,10 @@ const FlashcardMode: React.FC = () => {
       <div className="relative">
         <button 
           onClick={handlePrevCard}
-          className="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 md:ml-0 bg-white rounded-full p-2 shadow-md z-10 dark:bg-neutral-800 dark:text-neutral-200"
+          className="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 md:ml-0 bg-card text-card-foreground rounded-full p-2 shadow-md z-10"
+          aria-label="Previous card"
         >
-          <ChevronLeft className="h-6 w-6 " />
+          <ChevronLeft className="h-6 w-6" />
         </button>
 
         <div className="mx-auto max-w-xl">
@@ -153,7 +154,8 @@ const FlashcardMode: React.FC = () => {
 
         <button 
           onClick={handleNextCard}
-          className="absolute right-0 top-1/2 -translate-y-1/2 -mr-4 md:mr-0 bg-white rounded-full p-2 shadow-md z-10 dark:bg-neutral-800 dark:text-neutral-200"
+          className="absolute right-0 top-1/2 -translate-y-1/2 -mr-4 md:mr-0 bg-card text-card-foreground rounded-full p-2 shadow-md z-10"
+          aria-label="Next card"
         >
           <ChevronRight className="h-6 w-6 " />
         </button>
@@ -163,14 +165,14 @@ const FlashcardMode: React.FC = () => {
       <div className="mt-6 flex justify-center gap-4">
         <button 
           onClick={handleMarkUnknown}
-          className="px-6 py-3 bg-error text-white rounded-lg hover:bg-error/90 transition-colors flex items-center gap-2 dark:bg-red-600 dark:text-white"
+          className="px-6 py-3 bg-error text-error-foreground rounded-lg hover:bg-error/90 transition-colors flex items-center gap-2"
         >
           <X className="h-5 w-5" />
           Nicht gewusst
         </button>
         <button 
           onClick={handleMarkKnown}
-          className="px-6 py-3 bg-success text-white rounded-lg hover:bg-success/90 transition-colors flex items-center gap-2 dark:bg-green-600 dark:text-white"
+          className="px-6 py-3 bg-success text-success-foreground rounded-lg hover:bg-success/90 transition-colors flex items-center gap-2"
         >
           <Check className="h-5 w-5" />
           Gewusst
@@ -178,7 +180,7 @@ const FlashcardMode: React.FC = () => {
       </div>
 
       <div className="mt-10 text-center">
-        <p className="text-neutral-600 text-sm">
+        <p className="text-neutral-600 text-sm dark:text-neutral-400">
           Tipp: Klicke auf die Karte, um sie umzudrehen und die Antwort zu sehen.
         </p>
       </div>
