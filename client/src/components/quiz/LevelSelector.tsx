@@ -17,13 +17,13 @@ interface LevelSelectorProps {
 
 export function LevelSelector({ userId, onLevelSelect, onBack }: LevelSelectorProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('alle');
-  
+
   // Alle Level laden
   const { data: levels, isLoading: isLoadingLevels } = useQuery({
     queryKey: ['/api/levels'],
     queryFn: getQueryFn<QuizLevel[]>({ on401: "throw" })
   });
-  
+
   // Level-Fortschritt für den Benutzer laden
   const { data: levelProgress, isLoading: isLoadingProgress } = useQuery({
     queryKey: ['/api/level-progress', userId],
@@ -33,25 +33,25 @@ export function LevelSelector({ userId, onLevelSelect, onBack }: LevelSelectorPr
       // Fehler werden ignoriert, da wir auch ohne Fortschrittsdaten arbeiten können
     }
   });
-  
+
   // Kategorien aus den Levels extrahieren
   const categories = levels 
     ? Array.from(new Set(['alle', ...levels.map(level => getCategoryFromLevel(level))]))
     : ['alle'];
-  
+
   // Gefilterte Levels basierend auf Kategorie
   const filteredLevels = levels
     ? selectedCategory === 'alle'
       ? levels
       : levels.filter(level => getCategoryFromLevel(level) === selectedCategory)
     : [];
-  
+
   // Funktion zum Extrahieren einer Kategorie aus dem Level-Namen
   function getCategoryFromLevel(level: QuizLevel): string {
     const namePrefix = level.name.split(':')[0]; // z.B. "Level 1" aus "Level 1: Grundlagen"
     return namePrefix;
   }
-  
+
   // Helper-Funktion zum Finden des Fortschritts für ein bestimmtes Level
   const getProgressForLevel = (levelId: number): UserLevelProgress | undefined => {
     if (!levelProgress) return undefined;
@@ -67,7 +67,7 @@ export function LevelSelector({ userId, onLevelSelect, onBack }: LevelSelectorPr
         </Button>
         <h1 className="text-2xl font-bold text-foreground">Wähle ein Level</h1>
       </div>
-      
+
       {/* Lernhilfe */}
       <Alert className="mb-6 bg-amber-50 dark:bg-amber-950 border-amber-200 dark:border-amber-800">
         <LightbulbIcon className="h-4 w-4 text-amber-500" />
@@ -78,7 +78,7 @@ export function LevelSelector({ userId, onLevelSelect, onBack }: LevelSelectorPr
           Um ein Level als abgeschlossen zu markieren, beantworte mindestens 80% der Fragen korrekt.
         </AlertDescription>
       </Alert>
-      
+
       {/* Kategorien-Tabs */}
       <Tabs 
         defaultValue="alle" 
@@ -94,20 +94,20 @@ export function LevelSelector({ userId, onLevelSelect, onBack }: LevelSelectorPr
           ))}
         </TabsList>
       </Tabs>
-      
+
       {/* Level-Karten */}
       {isLoadingLevels || isLoadingProgress ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(3)].map((_, i) => (
-            <Card key={i} className="h-64 animate-pulse bg-gray-100">
+            <Card key={i} className="h-64 animate-pulse bg-gray-100 dark:bg-gray-700"> {/* Added dark mode styling */}
               <CardHeader>
-                <div className="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                <div className="h-5 bg-gray-200 dark:bg-gray-600 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-1/2"></div>
               </CardHeader>
               <CardContent>
-                <div className="h-4 bg-gray-200 rounded mb-4"></div>
-                <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded mb-4"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-1/2"></div>
               </CardContent>
             </Card>
           ))}
@@ -122,7 +122,7 @@ export function LevelSelector({ userId, onLevelSelect, onBack }: LevelSelectorPr
               onSelect={onLevelSelect}
             />
           ))}
-          
+
           {filteredLevels.length === 0 && (
             <Card className="col-span-full p-8 text-center">
               <CardTitle className="mb-2">Keine Level gefunden</CardTitle>
