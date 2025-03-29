@@ -8,7 +8,7 @@ import ProgressRing from '@/components/common/ProgressRing';
 import { Button } from '@/components/ui/button';
 import { Sparkles, ChevronLeft, Medal, TrendingUp } from 'lucide-react';
 import { Question } from '@/lib/types';
-import { apiRequest, queryClient } from '@/lib/queryClient';
+import { apiRequest, queryClient, getQueryFn } from '@/lib/queryClient';
 import { QuizLevel, UserLevelProgress } from '@shared/schema';
 import { toast } from '@/hooks/use-toast';
 
@@ -34,28 +34,20 @@ const QuizMode: React.FC = () => {
   // Level-Daten laden
   const { data: selectedLevel } = useQuery({
     queryKey: ['/api/levels', selectedLevelId],
-    queryFn: async () => {
-      if (!selectedLevelId) return null;
-      const response = await apiRequest<QuizLevel>(`/api/levels/${selectedLevelId}`);
-      return response.data;
-    },
+    queryFn: getQueryFn<QuizLevel>({ on401: "throw" }),
     enabled: !!selectedLevelId
   });
 
   // Lade Fortschritt für das aktuelle Level
   const { data: levelProgress } = useQuery({
     queryKey: ['/api/level-progress', DEFAULT_USER_ID, selectedLevelId],
-    queryFn: async () => {
-      if (!selectedLevelId) return null;
-      try {
-        const response = await apiRequest<UserLevelProgress>(`/api/level-progress/${DEFAULT_USER_ID}/${selectedLevelId}`);
-        return response.data;
-      } catch (error) {
-        // Wenn kein Fortschrittsdatensatz gefunden wurde, erstellen wir einen neuen
-        if ((error as any)?.status === 404) {
-          return null;
-        }
-        throw error;
+    queryFn: getQueryFn<UserLevelProgress>({ on401: "returnNull" }),
+    onError: (error: any) => {
+      // Wenn kein Fortschrittsdatensatz gefunden wurde, ignorieren wir den Fehler
+      if (error?.status === 404) {
+        console.log("Kein Fortschritt gefunden, wird später erstellt.");
+      } else {
+        console.error("Fehler beim Laden des Fortschritts:", error);
       }
     },
     enabled: !!selectedLevelId
@@ -64,14 +56,8 @@ const QuizMode: React.FC = () => {
   // Fragen für das ausgewählte Level laden
   const { data: questions = [], isLoading } = useQuery<Question[]>({
     queryKey: ['/api/questions/difficulty-range', selectedLevel?.minDifficulty, selectedLevel?.maxDifficulty],
-    queryFn: async () => {
-      if (!selectedLevel) return [];
-      const response = await apiRequest<Question[]>(
-        `/api/questions/difficulty-range/${selectedLevel.minDifficulty}/${selectedLevel.maxDifficulty}`
-      );
-      return response.data;
-    },
-    enabled: !!selectedLevel,
+    queryFn: getQueryFn<Question[]>({ on401: "throw" }),
+    enabled: !!selectedLevel && selectedLevel.minDifficulty !== null && selectedLevel.maxDifficulty !== null,
     staleTime: 60000, // 1 minute
   });
 
@@ -91,16 +77,16 @@ const QuizMode: React.FC = () => {
           isCompleted: false
         };
         
-        const response = await apiRequest<UserLevelProgress>('/api/level-progress', newProgress);
-        return response.data;
+        const response = await apiRequest('/api/level-progress', newProgress);
+        return response;
       } else {
         // Aktualisiere bestehenden Fortschritt
-        const response = await apiRequest<UserLevelProgress>(
-          `PATCH`, 
+        const response = await apiRequest(
+          'PATCH', 
           `/api/level-progress/${DEFAULT_USER_ID}/${selectedLevelId}`, 
           data
         );
-        return response.data;
+        return response;
       }
     },
     onSuccess: () => {

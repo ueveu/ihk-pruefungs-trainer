@@ -7,7 +7,7 @@ import { ArrowLeftIcon, LightbulbIcon } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { LevelCard } from './LevelCard';
 import { QuizLevel, UserLevelProgress } from '@shared/schema';
-import { apiRequest } from '@/lib/queryClient';
+import { apiRequest, getQueryFn } from '@/lib/queryClient';
 
 interface LevelSelectorProps {
   userId: number;
@@ -21,18 +21,16 @@ export function LevelSelector({ userId, onLevelSelect, onBack }: LevelSelectorPr
   // Alle Level laden
   const { data: levels, isLoading: isLoadingLevels } = useQuery({
     queryKey: ['/api/levels'],
-    queryFn: async () => {
-      const response = await apiRequest<QuizLevel[]>('/api/levels');
-      return response.data;
-    }
+    queryFn: getQueryFn<QuizLevel[]>({ on401: "throw" })
   });
   
   // Level-Fortschritt für den Benutzer laden
   const { data: levelProgress, isLoading: isLoadingProgress } = useQuery({
     queryKey: ['/api/level-progress', userId],
-    queryFn: async () => {
-      const response = await apiRequest<UserLevelProgress[]>(`/api/level-progress/${userId}`);
-      return response.data;
+    queryFn: getQueryFn<UserLevelProgress[]>({ on401: "throw" }),
+    onError: (error) => {
+      console.error("Fehler beim Laden des Fortschritts:", error);
+      // Fehler werden ignoriert, da wir auch ohne Fortschrittsdaten arbeiten können
     }
   });
   
