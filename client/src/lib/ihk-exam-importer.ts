@@ -11,7 +11,9 @@ export function convertIHKExamToQuestions(examData: IHKExam): Question[] {
   
   // Durchlaufe alle Aufgaben
   examData.tasks.forEach(task => {
-    const taskCategory = `${examData.exam_metadata.profession} - ${task.title}`;
+    // Erstelle eine gut lesbare Kategorie mit Berufsbezeichnung und Prüfungsdaten
+    const examTitle = `${examData.exam_metadata.part} ${examData.exam_metadata.exam_title}`;
+    const taskCategory = `${examData.exam_metadata.profession} - ${examTitle}`;
     
     // Durchlaufe alle Teilaufgaben
     task.subtasks.forEach(subtask => {

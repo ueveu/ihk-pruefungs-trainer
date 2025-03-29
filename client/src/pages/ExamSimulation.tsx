@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { Question } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
-import { Clock, CheckCircle2, XCircle, ArrowRight, RotateCw, HelpCircle } from 'lucide-react';
+import { Clock, CheckCircle2, XCircle, ArrowRight, RotateCw, HelpCircle, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -29,7 +29,8 @@ interface ExamState {
   maxPossibleScore: number;
 }
 
-const EXAM_TIME_MINUTES = 60;
+// Standardzeit für IHK-Prüfungen (AP1), kann später aus den Metadaten gelesen werden
+const EXAM_TIME_MINUTES = 90;
 
 const ExamSimulation: React.FC = () => {
   const [, params] = useRoute<{ category: string }>('/exam-simulation/:category');
@@ -167,8 +168,8 @@ const ExamSimulation: React.FC = () => {
     }));
 
     toast({
-      title: "Prüfung wird ausgewertet",
-      description: "Die KI analysiert deine Antworten. Dies kann einen Moment dauern...",
+      title: "IHK-Prüfung wird ausgewertet",
+      description: "Die KI bewertet deine Antworten nach den offiziellen IHK-Kriterien. Dies kann einen Moment dauern...",
       variant: "default",
     });
 
@@ -221,10 +222,22 @@ const ExamSimulation: React.FC = () => {
         maxPossibleScore
       }));
 
+      const percentage = Math.round((totalScore / maxPossibleScore) * 100);
+      let note = "";
+      
+      if (percentage >= 92) note = "Sehr gut (1)";
+      else if (percentage >= 81) note = "Gut (2)";
+      else if (percentage >= 67) note = "Befriedigend (3)";
+      else if (percentage >= 50) note = "Ausreichend (4)";
+      else if (percentage >= 30) note = "Mangelhaft (5)";
+      else note = "Ungenügend (6)";
+      
+      const bestanden = percentage >= 50;
+      
       toast({
-        title: "Auswertung abgeschlossen",
-        description: `Du hast ${totalScore} von ${maxPossibleScore} möglichen Punkten erreicht.`,
-        variant: "success",
+        title: bestanden ? "IHK-Prüfung bestanden!" : "IHK-Prüfung nicht bestanden",
+        description: `Du hast ${totalScore} von ${maxPossibleScore} Punkten erreicht (${percentage}%). Note: ${note}`,
+        variant: bestanden ? "success" : "destructive",
       });
     } catch (error) {
       console.error("Fehler bei der Gesamtauswertung:", error);
@@ -359,11 +372,26 @@ const ExamSimulation: React.FC = () => {
           {examState.isSubmitted && (
             <Card>
               <CardHeader>
-                <CardTitle>Gesamtergebnis</CardTitle>
+                <CardTitle>IHK-Prüfungsergebnis</CardTitle>
                 <CardDescription>
                   {examState.isEvaluating 
-                    ? "Die Antworten werden gerade ausgewertet..." 
-                    : `Du hast ${examState.totalScore} von ${examState.maxPossibleScore} Punkten erreicht.`}
+                    ? "Die Antworten werden gerade nach IHK-Kriterien ausgewertet..." 
+                    : (() => {
+                        const percentage = Math.round((examState.totalScore / examState.maxPossibleScore) * 100);
+                        let note = "";
+                        
+                        if (percentage >= 92) note = "Sehr gut (1)";
+                        else if (percentage >= 81) note = "Gut (2)";
+                        else if (percentage >= 67) note = "Befriedigend (3)";
+                        else if (percentage >= 50) note = "Ausreichend (4)";
+                        else if (percentage >= 30) note = "Mangelhaft (5)";
+                        else note = "Ungenügend (6)";
+                        
+                        const bestanden = percentage >= 50;
+                        
+                        return `${bestanden ? "✅ Bestanden" : "❌ Nicht bestanden"} - Note: ${note} - ${examState.totalScore} von ${examState.maxPossibleScore} Punkten (${percentage}%)`;
+                      })()
+                  }
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -373,25 +401,62 @@ const ExamSimulation: React.FC = () => {
                   </div>
                 ) : (
                   <>
-                    <div className="mb-4">
+                    <div className="mb-6">
+                      {(() => {
+                        const percentage = Math.round((examState.totalScore / examState.maxPossibleScore) * 100);
+                        const bestanden = percentage >= 50;
+                        return (
+                          <div className={`p-3 rounded-lg ${bestanden ? 'bg-green-100 border border-green-300' : 'bg-red-100 border border-red-300'} mb-4`}>
+                            <div className="flex items-center gap-2 font-medium text-lg mb-2">
+                              {bestanden 
+                                ? <CheckCircle2 className="h-6 w-6 text-green-600" /> 
+                                : <XCircle className="h-6 w-6 text-red-600" />}
+                              <span className={bestanden ? 'text-green-800' : 'text-red-800'}>
+                                {bestanden ? 'IHK-Prüfung bestanden!' : 'IHK-Prüfung nicht bestanden'}
+                              </span>
+                            </div>
+                            <div className="text-sm">
+                              Punktestand: {examState.totalScore} von {examState.maxPossibleScore} Punkten
+                            </div>
+                          </div>
+                        );
+                      })()}
                       <Progress 
                         value={(examState.totalScore / examState.maxPossibleScore) * 100}
                         className="h-4"
                       />
-                      <p className="text-sm text-right mt-1">
-                        {Math.round((examState.totalScore / examState.maxPossibleScore) * 100)}%
+                      <div className="flex justify-between mt-1 text-sm">
+                        <span>Erreicht: {Math.round((examState.totalScore / examState.maxPossibleScore) * 100)}%</span>
+                        <span>Bestehensgrenze: 50%</span>
+                      </div>
+                    </div>
+                    
+                    <div className="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Info className="h-5 w-5 text-blue-600" />
+                        <h4 className="font-medium text-blue-800">Offizielle IHK-Prüfungsbewertung</h4>
+                      </div>
+                      <p className="text-sm text-blue-700 mb-1">
+                        Diese Bewertung folgt den offiziellen Richtlinien der Industrie- und Handelskammer (IHK) für Berufsabschlussprüfungen.
+                      </p>
+                      <p className="text-xs text-blue-600">
+                        Die Bewertungskriterien und Bestehensgrenze (50%) entsprechen den aktuellen IHK-Vorgaben für Fachinformatiker Anwendungsentwicklung.
                       </p>
                     </div>
                     
                     <div className="bg-neutral-50 p-4 rounded-lg border">
-                      <h4 className="font-medium mb-2">Bewertungsschlüssel:</h4>
+                      <h4 className="font-medium mb-2">IHK-Bewertungsschlüssel:</h4>
                       <ul className="text-sm space-y-1">
-                        <li>≥ 90%: Sehr gut</li>
-                        <li>≥ 80%: Gut</li>
-                        <li>≥ 65%: Befriedigend</li>
-                        <li>≥ 50%: Ausreichend</li>
-                        <li>&lt; 50%: Nicht bestanden</li>
+                        <li>≥ 92%: Sehr gut (Note 1)</li>
+                        <li>≥ 81%: Gut (Note 2)</li>
+                        <li>≥ 67%: Befriedigend (Note 3)</li>
+                        <li>≥ 50%: Ausreichend (Note 4)</li>
+                        <li>≥ 30%: Mangelhaft (Note 5)</li>
+                        <li>&lt; 30%: Ungenügend (Note 6)</li>
                       </ul>
+                      <p className="text-xs text-neutral-500 mt-2">
+                        Bestanden ab 50% der Gesamtpunktzahl (IHK-Standard)
+                      </p>
                     </div>
                   </>
                 )}
@@ -475,10 +540,10 @@ const ExamSimulation: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-6">
       <h1 className="text-3xl font-bold text-neutral-900 mb-2">
-        Prüfungssimulation: {category}
+        IHK-Prüfungssimulation: {category}
       </h1>
       <p className="text-lg text-neutral-600 mb-8">
-        Bearbeite die Prüfung unter realistischen Bedingungen mit Zeitbegrenzung.
+        Bearbeite die komplette IHK-Prüfung mit originalgetreuer Zeitbegrenzung von {EXAM_TIME_MINUTES} Minuten und offizieller Bewertung.
       </p>
 
       {renderExamContent()}
