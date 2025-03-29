@@ -18,16 +18,24 @@ const Settings: React.FC = () => {
     
     try {
       // API-Endpoint zum Hinzufügen von Fragen
-      await apiRequest('POST', '/api/questions/batch', { questions });
+      const response = await apiRequest('POST', '/api/questions/batch', { questions });
       
       // Cache aktualisieren
       queryClient.invalidateQueries({ queryKey: ['/api/questions'] });
       
-      toast({
-        title: "Fragen gespeichert",
-        description: `${questions.length} Fragen wurden erfolgreich in die Datenbank importiert.`,
-        variant: "success",
-      });
+      if (response.imported === 0) {
+        toast({
+          title: "Keine neuen Fragen",
+          description: `Alle ${response.skipped} Fragen wurden bereits importiert.`,
+          variant: "default",
+        });
+      } else {
+        toast({
+          title: "Fragen gespeichert",
+          description: `${response.imported} Fragen wurden erfolgreich importiert. ${response.skipped || 0} bereits vorhandene Fragen wurden übersprungen.`,
+          variant: "success",
+        });
+      }
     } catch (error) {
       console.error("Fehler beim Speichern der Fragen:", error);
       toast({

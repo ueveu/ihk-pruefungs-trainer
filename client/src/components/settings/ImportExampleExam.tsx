@@ -26,8 +26,8 @@ const ImportExampleExam: React.FC<ImportExampleExamProps> = ({ onImport }) => {
         onImport(questions);
         setSuccess(true);
         toast({
-          title: "Beispiel importiert",
-          description: `${questions.length} Fragen aus der Beispiel-Prüfungsdatei importiert.`,
+          title: "IHK-Beispielprüfung importiert",
+          description: `${questions.length} Fragen aus der AP1 Fachinformatiker Frühjahr 2025 importiert.`,
           variant: "success",
         });
       } else {

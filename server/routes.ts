@@ -113,11 +113,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const { questions } = batchSchema.parse(req.body);
       
-      // Alle Fragen in einem Batch speichern
-      const createdQuestions = await storage.createQuestions(questions);
+      // Existierende Fragen abrufen, um Duplikate zu vermeiden
+      const existingQuestions = await storage.getQuestions();
+      
+      // Überprüfen auf mögliche Duplikate basierend auf Fragetext
+      const uniqueQuestions = questions.filter(newQuestion => {
+        // Überprüfe, ob eine Frage mit identischem Text bereits existiert
+        return !existingQuestions.some(existingQuestion => 
+          existingQuestion.questionText === newQuestion.questionText
+        );
+      });
+      
+      // Keine neuen Fragen gefunden
+      if (uniqueQuestions.length === 0) {
+        return res.status(200).json({
+          message: "No new questions found to import",
+          imported: 0,
+          skipped: questions.length
+        });
+      }
+      
+      // Nur eindeutige Fragen in einem Batch speichern
+      const createdQuestions = await storage.createQuestions(uniqueQuestions);
       
       res.status(201).json({
         message: `Successfully imported ${createdQuestions.length} questions`,
+        imported: createdQuestions.length,
+        skipped: questions.length - uniqueQuestions.length,
         questions: createdQuestions
       });
     } catch (error) {
