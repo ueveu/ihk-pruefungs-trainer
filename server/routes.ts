@@ -1,5 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import * as fs from "fs";
+import * as path from "path";
 import { storage } from "./storage";
 import { 
   insertUserSchema, 
@@ -523,5 +525,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Beispielprüfung laden
+  app.get("/api/example-exam", async (req, res) => {
+    try {
+      const filePath = path.join(process.cwd(), "attached_assets", "ap1_frühjahr_2025.json");
+      
+      if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ message: "Beispielprüfung nicht gefunden" });
+      }
+      
+      const fileContent = fs.readFileSync(filePath, 'utf8');
+      const examData = JSON.parse(fileContent);
+      
+      res.json({ examData });
+    } catch (error) {
+      console.error("Error loading example exam:", error);
+      res.status(500).json({ 
+        message: "Failed to load example exam", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+  
   return httpServer;
 }

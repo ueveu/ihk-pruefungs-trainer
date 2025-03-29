@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { FileText, Download } from 'lucide-react';
-import { Question } from '@/lib/types';
-import { loadIHKExamFromURL } from '@/lib/ihk-exam-importer';
+import { Question, IHKExam } from '@/lib/types';
+import { convertIHKExamToQuestions } from '@/lib/ihk-exam-importer';
 import { useToast } from '@/hooks/use-toast';
-// Pfad zur lokalen JSON-Datei
-const examJsonPath = '/attached_assets/ap1_frühjahr_2025.json';
+import { apiRequest } from '@/lib/queryClient';
 
 interface ImportResponse {
   imported?: number;
@@ -26,7 +25,15 @@ const ImportExampleExam: React.FC<ImportExampleExamProps> = ({ onImport }) => {
     setSuccess(false);
     
     try {
-      const questions = await loadIHKExamFromURL(examJsonPath);
+      // Holen der Prüfungsdaten vom Server
+      const response = await apiRequest<{ examData: IHKExam }>('GET', '/api/example-exam');
+      
+      if (!response || !response.examData) {
+        throw new Error("Keine Prüfungsdaten erhalten");
+      }
+      
+      // Konvertieren der Prüfungsdaten in Fragen
+      const questions = convertIHKExamToQuestions(response.examData);
       
       if (questions.length > 0) {
         // Diese Funktion gibt ein Promise zurück, das zum Erfassen des Ergebnisses await benötigt
@@ -35,6 +42,17 @@ const ImportExampleExam: React.FC<ImportExampleExamProps> = ({ onImport }) => {
         // Überprüfen, ob neue Fragen importiert wurden (aus der server-seitigen Antwort)
         if (result && result.imported && result.imported > 0) {
           setSuccess(true);
+          toast({
+            title: "Import erfolgreich",
+            description: `Es wurden ${result.imported} neue Fragen erfolgreich importiert.`,
+            variant: "success",
+          });
+        } else {
+          toast({
+            title: "Keine neuen Fragen",
+            description: "Alle Fragen wurden bereits importiert.",
+            variant: "default",
+          });
         }
       } else {
         toast({
