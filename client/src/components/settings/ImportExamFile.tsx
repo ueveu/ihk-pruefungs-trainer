@@ -4,8 +4,14 @@ import { Question } from '@/lib/types';
 import { loadIHKExamFromFile } from '@/lib/ihk-exam-importer';
 import { useToast } from '@/hooks/use-toast';
 
+interface ImportResponse {
+  imported?: number;
+  skipped?: number;
+  message?: string;
+}
+
 interface ImportExamFileProps {
-  onImport: (questions: Question[]) => void;
+  onImport: (questions: Question[]) => Promise<ImportResponse>;
 }
 
 const ImportExamFile: React.FC<ImportExamFileProps> = ({ onImport }) => {
@@ -26,13 +32,24 @@ const ImportExamFile: React.FC<ImportExamFileProps> = ({ onImport }) => {
       const questions = await loadIHKExamFromFile(file);
       
       if (questions.length > 0) {
-        onImport(questions);
-        setSuccess(true);
-        toast({
-          title: "Import erfolgreich",
-          description: `${questions.length} Fragen aus der IHK-Prüfungsdatei importiert.`,
-          variant: "success",
-        });
+        // Diese Funktion gibt ein Promise zurück, das zum Erfassen des Ergebnisses await benötigt
+        const result = await onImport(questions);
+        
+        // Überprüfen, ob neue Fragen importiert wurden (aus der server-seitigen Antwort)
+        if (result && result.imported && result.imported > 0) {
+          setSuccess(true);
+          toast({
+            title: "Import erfolgreich",
+            description: `${result.imported} Fragen wurden erfolgreich importiert. ${result.skipped || 0} bereits vorhandene Fragen wurden übersprungen.`,
+            variant: "success",
+          });
+        } else if (result.skipped && result.skipped > 0) {
+          toast({
+            title: "Keine neuen Fragen",
+            description: `Alle ${result.skipped} Fragen wurden bereits importiert.`,
+            variant: "default",
+          });
+        }
       } else {
         toast({
           title: "Import fehlgeschlagen",

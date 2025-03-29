@@ -6,8 +6,14 @@ import { useToast } from '@/hooks/use-toast';
 // Path to the example exam JSON file in attached assets
 const examJsonPath = '/attached_assets/ap1_frühjahr_2025.json';
 
+interface ImportResponse {
+  imported?: number;
+  skipped?: number;
+  message?: string;
+}
+
 interface ImportExampleExamProps {
-  onImport: (questions: Question[]) => void;
+  onImport: (questions: Question[]) => Promise<ImportResponse>;
 }
 
 const ImportExampleExam: React.FC<ImportExampleExamProps> = ({ onImport }) => {
@@ -23,13 +29,13 @@ const ImportExampleExam: React.FC<ImportExampleExamProps> = ({ onImport }) => {
       const questions = await loadIHKExamFromURL(examJsonPath);
       
       if (questions.length > 0) {
-        onImport(questions);
-        setSuccess(true);
-        toast({
-          title: "IHK-Beispielprüfung importiert",
-          description: `${questions.length} Fragen aus der AP1 Fachinformatiker Frühjahr 2025 importiert.`,
-          variant: "success",
-        });
+        // Diese Funktion gibt ein Promise zurück, das zum Erfassen des Ergebnisses await benötigt
+        const result = await onImport(questions);
+        
+        // Überprüfen, ob neue Fragen importiert wurden (aus der server-seitigen Antwort)
+        if (result && result.imported && result.imported > 0) {
+          setSuccess(true);
+        }
       } else {
         toast({
           title: "Import fehlgeschlagen",

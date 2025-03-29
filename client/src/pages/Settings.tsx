@@ -8,34 +8,50 @@ import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { useQueryClient } from '@tanstack/react-query';
 
+// Gemeinsamer Schnittstellentyp für Importe
+interface ImportResponse {
+  imported?: number;
+  skipped?: number;
+  message?: string;
+}
+
 const Settings: React.FC = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const handleImportQuestions = async (questions: Question[]) => {
+  const handleImportQuestions = async (questions: Question[]): Promise<ImportResponse> => {
     setIsSubmitting(true);
     
     try {
       // API-Endpoint zum Hinzufügen von Fragen
-      const response = await apiRequest('POST', '/api/questions/batch', { questions });
+      const response = await apiRequest<ImportResponse>('POST', '/api/questions/batch', { questions });
       
       // Cache aktualisieren
       queryClient.invalidateQueries({ queryKey: ['/api/questions'] });
       
-      if (response.imported === 0) {
-        toast({
-          title: "Keine neuen Fragen",
-          description: `Alle ${response.skipped} Fragen wurden bereits importiert.`,
-          variant: "default",
-        });
-      } else {
-        toast({
-          title: "Fragen gespeichert",
-          description: `${response.imported} Fragen wurden erfolgreich importiert. ${response.skipped || 0} bereits vorhandene Fragen wurden übersprungen.`,
-          variant: "success",
-        });
+      if (response && 'imported' in response) {
+        // Typensichere Prüfung
+        if (response.imported === 0) {
+          toast({
+            title: "Keine neuen Fragen",
+            description: `Alle ${response.skipped} Fragen wurden bereits importiert.`,
+            variant: "default",
+          });
+        } else {
+          toast({
+            title: "Fragen gespeichert",
+            description: `${response.imported} Fragen wurden erfolgreich importiert. ${response.skipped || 0} bereits vorhandene Fragen wurden übersprungen.`,
+            variant: "success",
+          });
+        }
+        
+        // Server-Antwort zurückgeben
+        return response;
       }
+      
+      // Wenn die Antwort nicht dem erwarteten Format entspricht
+      return { imported: 0, skipped: 0 };
     } catch (error) {
       console.error("Fehler beim Speichern der Fragen:", error);
       toast({
@@ -43,6 +59,9 @@ const Settings: React.FC = () => {
         description: "Die Fragen konnten nicht in der Datenbank gespeichert werden.",
         variant: "destructive",
       });
+      
+      // Fehlerfall: Leeres Objekt zurückgeben 
+      return { imported: 0, skipped: 0 };
     } finally {
       setIsSubmitting(false);
     }
