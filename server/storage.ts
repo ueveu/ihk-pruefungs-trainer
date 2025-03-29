@@ -3,6 +3,8 @@ import {
   questions, type Question, type InsertQuestion,
   userProgress, type UserProgress, type InsertUserProgress,
   userStats, type UserStats, type InsertUserStats,
+  quizLevels, type QuizLevel, type InsertQuizLevel,
+  userLevelProgress, type UserLevelProgress, type InsertUserLevelProgress,
   type QuestionOption
 } from "@shared/schema";
 
@@ -16,6 +18,8 @@ export interface IStorage {
   getQuestions(): Promise<Question[]>;
   getQuestionById(id: number): Promise<Question | undefined>;
   getQuestionsByCategory(category: string): Promise<Question[]>;
+  getQuestionsByDifficulty(difficulty: number): Promise<Question[]>;
+  getQuestionsByDifficultyRange(minDifficulty: number, maxDifficulty: number): Promise<Question[]>;
   createQuestion(question: InsertQuestion): Promise<Question>;
   createQuestions(questions: InsertQuestion[]): Promise<Question[]>;
   
@@ -26,6 +30,17 @@ export interface IStorage {
   // User Stats methods
   getUserStats(userId: number): Promise<UserStats | undefined>;
   updateUserStats(userId: number, updates: Partial<UserStats>): Promise<UserStats>;
+  
+  // Quiz Level methods
+  getLevels(): Promise<QuizLevel[]>;
+  getLevelById(id: number): Promise<QuizLevel | undefined>;
+  createLevel(level: InsertQuizLevel): Promise<QuizLevel>;
+  
+  // User Level Progress methods
+  getUserLevelProgress(userId: number): Promise<UserLevelProgress[]>;
+  getUserLevelProgressByLevelId(userId: number, levelId: number): Promise<UserLevelProgress | undefined>;
+  updateUserLevelProgress(userId: number, levelId: number, updates: Partial<UserLevelProgress>): Promise<UserLevelProgress>;
+  createUserLevelProgress(progress: InsertUserLevelProgress): Promise<UserLevelProgress>;
 }
 
 export class MemStorage implements IStorage {
@@ -33,28 +48,39 @@ export class MemStorage implements IStorage {
   private questions: Map<number, Question>;
   private userProgress: Map<number, UserProgress>;
   private userStats: Map<number, UserStats>;
+  private quizLevels: Map<number, QuizLevel>;
+  private userLevelProgress: Map<number, UserLevelProgress>;
   
   currentUserId: number;
   currentQuestionId: number;
   currentProgressId: number;
   currentStatsId: number;
+  currentLevelId: number;
+  currentLevelProgressId: number;
 
   constructor() {
     this.users = new Map();
     this.questions = new Map();
     this.userProgress = new Map();
     this.userStats = new Map();
+    this.quizLevels = new Map();
+    this.userLevelProgress = new Map();
     
     this.currentUserId = 1;
     this.currentQuestionId = 1;
     this.currentProgressId = 1;
     this.currentStatsId = 1;
+    this.currentLevelId = 1;
+    this.currentLevelProgressId = 1;
     
     // Initialize with some example questions
     this.initializeExampleQuestions();
     
     // Create a default user for testing
     this.initializeDefaultUser();
+    
+    // Initialize default levels
+    this.initializeDefaultLevels();
   }
   
   private initializeDefaultUser() {
@@ -191,6 +217,129 @@ export class MemStorage implements IStorage {
     const updatedStats = { ...existingStats, ...updates, lastActive: new Date() };
     this.userStats.set(existingStats.id, updatedStats);
     return updatedStats;
+  }
+  
+  // Neue Frage-Methoden für Schwierigkeitsgrad
+  async getQuestionsByDifficulty(difficulty: number): Promise<Question[]> {
+    return Array.from(this.questions.values()).filter(
+      (question) => question.difficulty === difficulty
+    );
+  }
+  
+  async getQuestionsByDifficultyRange(minDifficulty: number, maxDifficulty: number): Promise<Question[]> {
+    return Array.from(this.questions.values()).filter(
+      (question) => {
+        const diff = question.difficulty || 1; // Default zu 1, falls nicht gesetzt
+        return diff >= minDifficulty && diff <= maxDifficulty;
+      }
+    );
+  }
+  
+  // Quiz Level Methoden
+  async getLevels(): Promise<QuizLevel[]> {
+    // Sortiere Level nach ihrer Reihenfolge
+    return Array.from(this.quizLevels.values()).sort((a, b) => a.order - b.order);
+  }
+  
+  async getLevelById(id: number): Promise<QuizLevel | undefined> {
+    return this.quizLevels.get(id);
+  }
+  
+  async createLevel(level: InsertQuizLevel): Promise<QuizLevel> {
+    const id = this.currentLevelId++;
+    const newLevel: QuizLevel = { ...level, id, createdAt: new Date() };
+    this.quizLevels.set(id, newLevel);
+    return newLevel;
+  }
+  
+  // User Level Progress Methoden
+  async getUserLevelProgress(userId: number): Promise<UserLevelProgress[]> {
+    return Array.from(this.userLevelProgress.values()).filter(
+      (progress) => progress.userId === userId
+    );
+  }
+  
+  async getUserLevelProgressByLevelId(userId: number, levelId: number): Promise<UserLevelProgress | undefined> {
+    return Array.from(this.userLevelProgress.values()).find(
+      (progress) => progress.userId === userId && progress.levelId === levelId
+    );
+  }
+  
+  async updateUserLevelProgress(userId: number, levelId: number, updates: Partial<UserLevelProgress>): Promise<UserLevelProgress> {
+    const existingProgress = await this.getUserLevelProgressByLevelId(userId, levelId);
+    if (!existingProgress) {
+      throw new Error(`User level progress not found for user ${userId} and level ${levelId}`);
+    }
+    
+    const updatedProgress = { ...existingProgress, ...updates, lastPlayed: new Date() };
+    this.userLevelProgress.set(existingProgress.id, updatedProgress);
+    return updatedProgress;
+  }
+  
+  async createUserLevelProgress(progress: InsertUserLevelProgress): Promise<UserLevelProgress> {
+    const id = this.currentLevelProgressId++;
+    const newProgress: UserLevelProgress = { ...progress, id, lastPlayed: new Date() };
+    this.userLevelProgress.set(id, newProgress);
+    return newProgress;
+  }
+  
+  // Methode zum Initialisieren der Standard-Level
+  private initializeDefaultLevels() {
+    const defaultLevels: InsertQuizLevel[] = [
+      {
+        name: "Level 1: Grundlagen",
+        description: "Einfache Fragen zu IT-Grundlagen und Konzepten",
+        order: 1,
+        minDifficulty: 1,
+        maxDifficulty: 1,
+        requiredQuestionsToUnlock: 0, // Erstes Level, keine Voraussetzungen
+        color: "#4ade80", // Grün für einfach
+        imageUrl: "/images/level1.svg"
+      },
+      {
+        name: "Level 2: Fortgeschritten",
+        description: "Erweiterte Konzepte und Anwendungsfälle",
+        order: 2,
+        minDifficulty: 2,
+        maxDifficulty: 2,
+        requiredQuestionsToUnlock: 5, // 5 Fragen von Level 1
+        color: "#facc15", // Gelb für mittel
+        imageUrl: "/images/level2.svg"
+      },
+      {
+        name: "Level 3: Experte",
+        description: "Komplexe Zusammenhänge und Prüfungs-Herausforderungen",
+        order: 3,
+        minDifficulty: 3,
+        maxDifficulty: 3,
+        requiredQuestionsToUnlock: 10, // 10 Fragen von Level 2
+        color: "#f87171", // Rot für schwer
+        imageUrl: "/images/level3.svg"
+      }
+    ];
+    
+    // Level speichern und User-Fortschritt für Level 1 als entsperrt markieren
+    defaultLevels.forEach((level, index) => {
+      const id = this.currentLevelId++;
+      const newLevel: QuizLevel = { ...level, id, createdAt: new Date() };
+      this.quizLevels.set(id, newLevel);
+      
+      // Für Level 1 erstellen wir einen entsperrten Fortschritt für den Default-User
+      if (index === 0) {
+        const progressId = this.currentLevelProgressId++;
+        const progress: UserLevelProgress = {
+          id: progressId,
+          userId: 1, // Default-Benutzer
+          levelId: id,
+          questionsCompleted: 0,
+          questionsCorrect: 0,
+          isUnlocked: true, // Level 1 ist standardmäßig entsperrt
+          isCompleted: false,
+          lastPlayed: new Date()
+        };
+        this.userLevelProgress.set(progressId, progress);
+      }
+    });
   }
 
   // Helper method to initialize example questions

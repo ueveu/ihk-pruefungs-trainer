@@ -1,7 +1,13 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertUserSchema, insertQuestionSchema, insertUserProgressSchema } from "@shared/schema";
+import { 
+  insertUserSchema, 
+  insertQuestionSchema, 
+  insertUserProgressSchema,
+  insertQuizLevelSchema,
+  insertUserLevelProgressSchema
+} from "@shared/schema";
 import { z } from "zod";
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
@@ -382,6 +388,138 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message: "Failed to generate question hint", 
         error: error instanceof Error ? error.message : "Unknown error" 
       });
+    }
+  });
+  
+  // Level-System Routen
+  
+  // Get all levels
+  app.get("/api/levels", async (req, res) => {
+    try {
+      const levels = await storage.getLevels();
+      res.json(levels);
+    } catch (error) {
+      console.error("Error fetching levels:", error);
+      res.status(500).json({ message: "Failed to fetch levels" });
+    }
+  });
+  
+  // Get level by ID
+  app.get("/api/levels/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const level = await storage.getLevelById(id);
+      
+      if (!level) {
+        return res.status(404).json({ message: "Level not found" });
+      }
+      
+      res.json(level);
+    } catch (error) {
+      console.error(`Error fetching level ${req.params.id}:`, error);
+      res.status(500).json({ message: "Failed to fetch level" });
+    }
+  });
+  
+  // Create a new level (für Admin-Funktionalität)
+  app.post("/api/levels", async (req, res) => {
+    try {
+      const levelData = insertQuizLevelSchema.parse(req.body);
+      const level = await storage.createLevel(levelData);
+      
+      res.status(201).json(level);
+    } catch (error) {
+      console.error("Error creating level:", error);
+      res.status(400).json({ message: "Invalid level data" });
+    }
+  });
+  
+  // Get questions by difficulty
+  app.get("/api/questions/difficulty/:difficulty", async (req, res) => {
+    try {
+      const difficulty = parseInt(req.params.difficulty);
+      const questions = await storage.getQuestionsByDifficulty(difficulty);
+      res.json(questions);
+    } catch (error) {
+      console.error(`Error fetching questions for difficulty ${req.params.difficulty}:`, error);
+      res.status(500).json({ message: "Failed to fetch questions" });
+    }
+  });
+  
+  // Get questions by difficulty range
+  app.get("/api/questions/difficulty-range/:minDifficulty/:maxDifficulty", async (req, res) => {
+    try {
+      const minDifficulty = parseInt(req.params.minDifficulty);
+      const maxDifficulty = parseInt(req.params.maxDifficulty);
+      
+      if (isNaN(minDifficulty) || isNaN(maxDifficulty) || minDifficulty > maxDifficulty) {
+        return res.status(400).json({ message: "Invalid difficulty range" });
+      }
+      
+      const questions = await storage.getQuestionsByDifficultyRange(minDifficulty, maxDifficulty);
+      res.json(questions);
+    } catch (error) {
+      console.error(`Error fetching questions for difficulty range ${req.params.minDifficulty}-${req.params.maxDifficulty}:`, error);
+      res.status(500).json({ message: "Failed to fetch questions" });
+    }
+  });
+  
+  // Get user's progress for all levels
+  app.get("/api/level-progress/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const progress = await storage.getUserLevelProgress(userId);
+      res.json(progress);
+    } catch (error) {
+      console.error(`Error fetching level progress for user ${req.params.userId}:`, error);
+      res.status(500).json({ message: "Failed to fetch level progress" });
+    }
+  });
+  
+  // Get user's progress for a specific level
+  app.get("/api/level-progress/:userId/:levelId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const levelId = parseInt(req.params.levelId);
+      
+      const progress = await storage.getUserLevelProgressByLevelId(userId, levelId);
+      
+      if (!progress) {
+        return res.status(404).json({ message: "Level progress not found" });
+      }
+      
+      res.json(progress);
+    } catch (error) {
+      console.error(`Error fetching level progress for user ${req.params.userId} and level ${req.params.levelId}:`, error);
+      res.status(500).json({ message: "Failed to fetch level progress" });
+    }
+  });
+  
+  // Update user's level progress
+  app.patch("/api/level-progress/:userId/:levelId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const levelId = parseInt(req.params.levelId);
+      const updates = req.body;
+      
+      const progress = await storage.updateUserLevelProgress(userId, levelId, updates);
+      res.json(progress);
+    } catch (error) {
+      console.error(`Error updating level progress for user ${req.params.userId} and level ${req.params.levelId}:`, error);
+      res.status(500).json({ message: "Failed to update level progress" });
+    }
+  });
+  
+  // Create new user level progress
+  app.post("/api/level-progress", async (req, res) => {
+    try {
+      const progressData = insertUserLevelProgressSchema.parse(req.body);
+      const progress = await storage.createUserLevelProgress(progressData);
+      
+      res.status(201).json(progress);
+    } catch (error) {
+      console.error("Error creating level progress:", error);
+      res.status(400).json({ message: "Invalid level progress data" });
     }
   });
 
