@@ -1,0 +1,306 @@
+{
+  "exam_metadata": {
+    "exam_title": "Abschlussprüfung Herbst 2024",
+    "part": "Teil 1 der Abschlussprüfung",
+    "profession": "Fachinformatiker / Fachinformatikerin Anwendungsentwicklung",
+    "profession_code": "1201",
+    "area_code": "64",
+    "topic": "Einrichten eines IT-gestützten Arbeitsplatzes",
+    "date": "2024-09-17",
+    "duration_minutes": 90,
+    "total_points": 100,
+    "number_of_tasks": 4,
+    "institution": "IHK",
+    "language": "de"
+  },
+  "general_instructions": [
+    "Überprüfen Sie die Vollständigkeit des Aufgabensatzes.",
+    "Wenden Sie sich bei Unstimmigkeiten sofort an die Aufsicht.",
+    "Füllen Sie die Kopfzeile aus (Familienname, Vorname, Prüflings-Nr.).",
+    "Lesen Sie den Text der Aufgaben ganz durch, bevor Sie beginnen.",
+    "Halten Sie sich genau an die Vorgaben zum Umfang der Lösung.",
+    "Bei Nennung von mehr Angaben als gefordert, werden nur die ersten gewertet.",
+    "Tragen Sie Antworten in die dafür vorgesehenen Bereiche ein.",
+    "Stichwortartige Beantwortung ist zulässig, sofern nicht anders gefordert.",
+    "Schreiben Sie deutlich und gut lesbar.",
+    "Nicht programmierbarer, netzunabhängiger Taschenrechner ohne Kommunikationsmöglichkeit ist erlaubt.",
+    "Bei Weiterrechnung mit gerundeten Ergebnissen, nur das gerundete Ergebnis verwenden.",
+    "Konzeptpapier darf für Hilfsaufzeichnungen genutzt werden, wird aber nicht bewertet."
+  ],
+  "overarching_scenario": {
+    "title": "Situation",
+    "description": "Sie sind Auszubildender der Identify OHG, die sich auf die Herstellung von elektronischen Schlüsselsystemen und Ausweisen unter Beachtung höchster Sicherheitsanforderungen spezialisiert hat.",
+    "covered_topics": []
+  },
+  "tasks": [
+    {
+      "task_number": 1,
+      "total_points": 25,
+      "title": "Absicherung Besprechungsraum & PC-Konfiguration",
+      "subtasks": [
+        {
+          "part_letter": "a",
+          "points": 3,
+          "description": "Automatische Zutrittskontrolle für Besprechungsraum.",
+          "scenario_context": "Zur Absicherung des Besprechungsraums soll u. a. eine automatische Zutrittskontrolle an der Eingangstür eingerichtet werden.",
+          "question": "Nennen Sie drei technische Möglichkeiten, um eine automatische Zutrittskontrolle zu gewährleisten.",
+          "answer_format": "Liste von drei Möglichkeiten aus den Beispielen (RFID, Biometrie, PIN, NFC, Bluetooth, Video-Türsprechanlage, QR-Code, Magnetkarte, Funk-Schlüsselanhänger, Elektronisches Türschloss mit App).",
+          "provided_examples": [
+            "RFID-Kartenleser", "Biometrische Zugangssysteme", "PIN-Code-Tastaturen", "NFC-Zugangssysteme",
+            "Bluetooth-basierte Zugangssysteme", "Video-Türsprechanlage mit Fernzugriff", "QR-Code-Scanner",
+            "Magnetkartenleser", "Schlüsselanhänger mit Funktechnologie", "Elektronische Türschlösser mit App-Steuerung"
+          ]
+        },
+        {
+          "part_letter": "b",
+          "points": 3,
+          "description": "Sicherheitsrisiken beschreiben.",
+          "question": "Beschreiben Sie die Sicherheitsrisiken der folgenden Situationen: Geöffnete Fenster/Türen; Nutzung durch externe Personen; Lose verlegte Kabel; Nutzung von BYOD.",
+          "answer_format": "Beschreibung der Risiken für jede Situation (Beispiele im OCR vorhanden)."
+        },
+        {
+          "part_letter": "c",
+          "points": 4,
+          "description": "Sichere Konfiguration eines Präsentations-PCs (BSI Grundschutz).",
+          "scenario_context": "Ein PC soll für Präsentationen mit Anzeigegerät verbunden werden.",
+          "question": "Begründen Sie die folgenden vorgeschlagenen Maßnahmen: Nutzung einer Minimalkonfiguration mit festgelegter Anwendungssoftware; Anschluss an ein vom LAN der Institution getrenntes Datennetz.",
+          "answer_format": "Begründung für Minimalkonfiguration; Begründung für getrenntes Netz (Beispiele im OCR vorhanden)."
+        },
+        {
+          "part_letter": "d",
+          "description": "Netzwerkkonfiguration des Präsentationsrechners.",
+          "scenario_context": "Vorgaben: Statische IP, Netzwerk 192.168.20.0/24, DHCP-Range .20-.254, Router .1.",
+          "sub_parts": [
+            {
+              "sub_part_letter": "da",
+              "points": 2,
+              "question": "Bei der Analyse des PCs wird die IP-Adresse 169.254.122.115 angezeigt. Begründen Sie diese „Vorkonfiguration“.",
+              "answer_format": "Erklärung (APIPA, DHCP-Fehler - Beispiel im OCR vorhanden)."
+            },
+            {
+              "sub_part_letter": "db",
+              "points": 4,
+              "question": "Markieren Sie bzw. passen Sie die Konfiguration entsprechend der Vorgaben des Administrators in der folgenden Eingabemaske an (IP automatisch beziehen ODER Folgende IP verwenden).",
+              "image_references": ["Eingabemaske IP-Konfiguration"],
+              "answer_format": "Auswahl 'Folgende IP-Adresse verwenden' markieren und Felder ausfüllen: IP-Adresse (Bereich 192.168.20.2 bis 192.168.20.19), Subnetzmaske (255.255.255.0), Standardgateway (192.168.20.1)."
+            },
+            {
+              "sub_part_letter": "dc",
+              "points": 5,
+              "scenario_context": "Netz des Präsentationsrechners ist vom Firmennetz getrennt. Unbeschriftete Netzwerk-Doppeldose mit einer Buchse für Firmennetz, einer für Präsentationsnetz. Aufgabe: Richtige Buchse ermitteln und beschriften.",
+              "question": "Beschreiben Sie Ihre Vorgehensweise stichpunktartig.",
+              "answer_format": "Nummerierte Liste der Schritte (Beispiel im OCR vorhanden)."
+            },
+            {
+              "sub_part_letter": "dd",
+              "points": 4,
+              "scenario_context": "Administrator benötigt MAC-Adresse des Präsentationsrechners.",
+              "question": "Geben Sie einen möglichen Konsolenbefehl an, um die Adresse zu ermitteln und nennen Sie ein Beispiel für eine MAC-Adresse in strukturierter hexadezimaler Darstellung.",
+              "answer_format": "Konsolenbefehl (z.B. ipconfig /all, ifconfig); Beispiel MAC (z.B. 00:1A:2B:3C:4D:5E - Beispiele im OCR vorhanden)."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "task_number": 2,
+      "total_points": 25,
+      "title": "Softwareentwicklung Schließsystem",
+      "subtasks": [
+        {
+          "part_letter": "a",
+          "points": 2,
+          "description": "Fremdvergabe vs. Eigenentwicklung.",
+          "scenario_context": "Identify OHG benötigt neue Software für Schließsysteme. Personeller Engpass in der Entwicklung, Überlegung zur Fremdvergabe.",
+          "question": "Nennen Sie zwei Argumente, die gegen eine Fremdvergabe sprechen.",
+          "answer_format": "Liste von zwei Argumenten (Beispiele im OCR vorhanden)."
+        },
+        {
+          "part_letter": "b",
+          "points": 3,
+          "description": "Auswahl einer Programmiersprache.",
+          "scenario_context": "Software soll selbst entwickelt werden.",
+          "question": "Nennen Sie ein allgemeingültiges Kriterium, welches für die Auswahl der Programmiersprache von Bedeutung ist und geben Sie dazu eine kurze Begründung an.",
+          "answer_format": "Kriterium + kurze Begründung (Beispiele im OCR vorhanden)."
+        },
+        {
+          "part_letter": "c",
+          "points": 3,
+          "description": "Compiler vs. Interpreter.",
+          "question": "Zur Auswahl der Programmiersprachen stehen Compiler- und Interpreter-Sprachen. Erläutern Sie den wesentlichen Unterschied zwischen den beiden Übersetzungsarten.",
+          "answer_format": "Erklärung des Unterschieds (Beispiel im OCR vorhanden)."
+        },
+        {
+          "part_letter": "d",
+          "points": 5,
+          "description": "UML Use-Case-Diagramm erstellen.",
+          "scenario_context": "Anforderungen: Mitarbeiter kann Türen öffnen/schließen (immer mit Berechtigungsprüfung); Administrator kann alles wie Mitarbeiter + Türschlösser programmieren (immer mit Berechtigungsprüfung).",
+          "question": "Ergänzen Sie das gegebene UML-Anwendungsfalldiagramm.",
+          "image_references": ["Unvollständiges UML Use-Case Diagramm"],
+          "answer_format": "Vervollständigtes Diagramm mit Akteuren (Mitarbeiter, Admin), Use Cases (Tür öffnen, Tür schließen, Türschlösser programmieren, Berechtigungsprüfung) und Beziehungen (extend, include, Vererbung)."
+        },
+        {
+          "part_letter": "e",
+          "points": 6,
+          "description": "Pseudocode-Analyse.",
+          "scenario_context": "Methode `bool checkAuthority(int id, int roomNr)` prüft Zutrittsberechtigung anhand 2D-Array `keyData[][]` (Spalte 0: Mitarbeiter-ID, weitere Spalten: erlaubte Räume). Array-Indizes starten bei 0.",
+          "data_table": {
+            "headers": ["Mitarbeiter-ID", "Room1", "Room2", "Room3", "Room4", "Room5", "Room6", "Roomxx"],
+            "rows": [
+              {"Mitarbeiter-ID": 1, "Room1": 223, "Room2": 312, "Room3": 154, "Room4": 47, "Room5": 124, "Room6": 236, "Roomxx": 334},
+              {"Mitarbeiter-ID": 2, "Room1": 103, "Room2": 401, "Room3": 14, "Room4": 236, "Room5": 56},
+              {"Mitarbeiter-ID": 3, "Room1": 20, "Room2": 312, "Room3": 235, "Room4": 17, "Room5": 124, "Room6": 32}
+            ]
+          },
+          "code_provided": "1 Funktion checkAuthority(id, roomNr)\n2   Für i von 0 bis (AnzahlZeilen von keyData) - 1\n3     Für j von 1 bis (AnzahlBelegteSpalten von keyData) - 1\n4       Wenn id gleich keyData[i][0] und roomNr gleich keyData[i][j] dann\n5         Rückgabe True\n6       Ende Wenn\n7     Ende Für\n8   Ende Für\n9   Rückgabe False\n10 Ende Funktion",
+          "question": "Ermitteln und begründen Sie den Rückgabewert, der bei Aufruf der Funktion mit id = 3 und roomNr = 236 geliefert wird.",
+          "answer_format": "Rückgabewert (True/False) und Begründung des Ablaufs. (OCR gibt 'False' als Antwort an)."
+        },
+        {
+          "part_letter": "f",
+          "points": 6,
+          "description": "Kostenkalkulation.",
+          "scenario_context": "Anfrage einer Schule: 65 Schließzylinder à 512€ (Netto), 80 Transponder à 39€ (Netto), 1 Programmiergerät à 2300€ (Netto), Administrationssoftware Lizenz 349€/Jahr (Netto).",
+          "question": "Berechnen Sie die Gesamtkosten für die Schule über einen Zeitraum von fünf Jahren. Geben Sie sowohl den Nettopreis als auch den Bruttopreis bei 19% Mehrwertsteuer an. Der Rechenweg ist anzugeben.",
+          "answer_format": "Nettopreis, Bruttopreis, detaillierter Rechenweg (Beispiel im OCR vorhanden)."
+        }
+      ]
+    },
+    {
+      "task_number": 3,
+      "total_points": 24,
+      "title": "Computerbeschaffung und Laptop-Erweiterung",
+      "subtasks": [
+        {
+          "part_letter": "a",
+          "points": 7,
+          "description": "Ratendarlehen berechnen.",
+          "scenario_context": "Kauf von 10 Computern für 12.000 EUR auf Kredit. Angebot: Nominalzins 6% jährlich, Laufzeit 36 Monate, Tilgung jährlich in gleichen Beträgen.",
+          "question": "Ermitteln Sie für den genannten Darlehensbetrag die jährlichen Zahlungen und die fälligen Gesamtzinsen sowie die Zahlungen insgesamt.",
+          "data_table": {
+             "headers": ["Zeitraum", "Restschuld EUR", "Zinsen EUR", "Tilgung EUR", "Zahlungen/ 12 Monate EUR"],
+             "rows": [
+               {"Zeitraum": "01.04.2025 - 31.03.2026", "Restschuld EUR": "8.000,00", "Zinsen EUR": "?", "Tilgung EUR": "4.000,00", "Zahlungen/ 12 Monate EUR": "?"},
+               {"Zeitraum": "01.04.2026 - 31.03.2027", "Restschuld EUR": "4.000,00", "Zinsen EUR": "?", "Tilgung EUR": "4.000,00", "Zahlungen/ 12 Monate EUR": "?"},
+               {"Zeitraum": "01.04.2027 - 31.03.2028", "Restschuld EUR": "0,00", "Zinsen EUR": "?", "Tilgung EUR": "4.000,00", "Zahlungen/ 12 Monate EUR": "?"},
+               {"Zeitraum": "Summe", "Restschuld EUR": "", "Zinsen EUR": "?", "Tilgung EUR": "12.000", "Zahlungen/ 12 Monate EUR": "?"}
+             ]
+           },
+          "answer_format": "Ausgefüllte Tabelle mit Zinsen, Zahlungen pro Jahr und Gesamtsummen (OCR zeigt ausgefüllte Tabelle)."
+        },
+        {
+          "part_letter": "b",
+          "description": "Arbeitsspeicher-Erweiterung für Laptops.",
+          "scenario_context": "Entwickler-Laptops (Intel Core i5-1335U, Win11 Pro, 16GB DDR4-3200MHz, 1TB HDD, Intel Wi-Fi 6 AX201) benötigen 32GB RAM. Ein Slot ist frei. Angebote: Speicher 1 (16GB DDR5-6000MHz), Speicher 2 (16GB DDR4-5600MHz), Speicher 3 (16GB DDR4-3200MHz).",
+          "sub_parts": [
+            {
+              "sub_part_letter": "ba",
+              "points": 3,
+              "question": "Erklären Sie die Kompatibilität für jeden der drei Arbeitsspeicher mit dem vorhandenen Laptop.",
+              "answer_format": "Erklärung für Speicher 1, 2 und 3 (Beispiele im OCR vorhanden)."
+            },
+            {
+              "sub_part_letter": "bb",
+              "points": 2,
+              "question": "Begründen Sie, welchen Arbeitsspeicher Sie dem Abteilungsleiter zur Anschaffung empfehlen.",
+              "answer_format": "Empfehlung (Speicher 3) + Begründung (Kompatibilität, Taktfrequenz, Preis - Beispiel im OCR vorhanden)."
+            },
+            {
+              "sub_part_letter": "bc",
+              "points": 3,
+              "question": "Sie schlagen dem Abteilungsleiter vor, die HDD im Laptop mit einer SSD zu ersetzen. Nennen Sie drei Vorteile einer SSD gegenüber einer HDD.",
+              "answer_format": "Liste von drei Vorteilen (Beispiele im OCR vorhanden)."
+            }
+          ]
+        },
+        {
+          "part_letter": "c",
+          "description": "Umgang mit Phishing-Mails.",
+          "scenario_context": "Häufige E-Mail-Korrespondenz mit Hardwarelieferanten.",
+          "sub_parts": [
+            {
+              "sub_part_letter": "ca",
+              "points": 2,
+              "question": "Beschreiben Sie eine Gefahr durch Phishingmails.",
+              "answer_format": "Beschreibung einer Gefahr (z.B. Datendiebstahl, Malware - Beispiel im OCR vorhanden)."
+            },
+            {
+              "sub_part_letter": "cb",
+              "points": 3,
+              "question": "Nennen Sie drei Anzeichen, an denen der User erkennen kann, dass es sich um eine Phishingmail handelt.",
+              "answer_format": "Liste von drei Anzeichen (Beispiele im OCR vorhanden)."
+            },
+            {
+              "sub_part_letter": "cc",
+              "points": 2,
+              "question": "Nennen Sie zwei Maßnahmen, die Sie dem Unternehmen zum Schutz vor Phishingmails empfehlen.",
+              "answer_format": "Liste von zwei Maßnahmen für das Unternehmen (Beispiele im OCR vorhanden)."
+            },
+            {
+              "sub_part_letter": "cd",
+              "points": 2,
+              "question": "Nennen Sie zwei Maßnahmen, die das Unternehmen den Mitarbeitern beim Empfang von Mails vorgibt, um sich vor Phishingmail zu schützen.",
+              "answer_format": "Liste von zwei Maßnahmen für Mitarbeiter (Beispiele im OCR vorhanden)."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "task_number": 4,
+      "total_points": 26,
+      "title": "Prozessdokumentation und Datenmodellierung",
+      "subtasks": [
+        {
+          "part_letter": "a",
+          "points": 6,
+          "description": "Lastenheft vs. Pflichtenheft.",
+          "scenario_context": "Alle Vorgänge des Produktionsprozesses müssen dokumentiert werden. Bei Identify OHG ist auch bei internen Aufträgen ein Lasten- und Pflichtenheft üblich.",
+          "question": "Erklären Sie jeweils den Zweck von Lasten- und Pflichtenheft und führen Sie jeweils ein konkretes Beispiel für den Inhalt an. Tragen Sie Ihr Ergebnis in nachfolgende Tabelle ein.",
+          "answer_format": "Ausfüllen der Tabelle für Zweck und Beispiel von Lastenheft und Pflichtenheft (Beispiele im OCR vorhanden)."
+        },
+        {
+          "part_letter": "b",
+          "points": 6,
+          "description": "Erweiterung eines Datenmodells (ER-Modell).",
+          "scenario_context": "Angaben zur Datenbank: Bearbeitung eines Auftrags immer nur von einem Mitarbeiter. Mitarbeiter hat Name und Vorname. Auftrag hat Beginn und Ende der Bearbeitung. Eindeutige Identifizierung durch Primärschlüssel.",
+          "question": "Erweitern Sie das unten angegebene Datenmodell redundanzfrei um die vorliegenden Angaben. Geben Sie auch die Kardinalitäten an.",
+          "image_references": ["Basis-ER-Modell (Mitarbeiter, Auftrag, Beziehung 'bearbeitet')"],
+          "answer_format": "Erweitertes ER-Diagramm mit Attributen (Mitarbeiter_Name, Mitarbeiter_Vorname, Bearbeitung_Beginn, Bearbeitung_Ende), Primärschlüsseln (Mitarbeiter-ID, Auftrag-ID) und Kardinalitäten (1:N zwischen Mitarbeiter und Auftrag)."
+        },
+        {
+          "part_letter": "c",
+          "points": 6,
+          "description": "Vorteile von Leasing.",
+          "scenario_context": "Störungen an einer Maschine häufen sich, neue Maschine zur Ausweiskartenherstellung soll beschafft werden. Überlegung: Leasing.",
+          "question": "Beschreiben Sie drei Vorteile der Beschaffung über Leasing.",
+          "answer_format": "Liste von drei Vorteilen (Beispiele im OCR vorhanden)."
+        },
+        {
+          "part_letter": "d",
+          "points": 4,
+          "description": "Optionen nach Leasingende.",
+          "question": "Nach Ablauf der Leasingdauer bieten sich bezüglich der weiteren Nutzung der Maschine mehrere Möglichkeiten. Beschreiben Sie zwei dieser Möglichkeiten.",
+          "answer_format": "Liste von zwei Möglichkeiten (Beispiele im OCR vorhanden)."
+        },
+        {
+          "part_letter": "e",
+          "points": 4,
+          "description": "Ökologische Aspekte bei Beschaffung.",
+          "scenario_context": "Kollege informiert, dass alte Maschine trotz technischer Veralterung/Störungen/Ausschuss weiter genutzt werden kann. Bei Beschaffung spielen auch ökologische Aspekte eine Rolle.",
+          "question": "Beschreiben Sie zwei ökologische Aspekte, die bei einer Neuinvestition zu beachten sind.",
+          "answer_format": "Liste von zwei ökologischen Aspekten (Beispiele im OCR vorhanden)."
+        }
+      ]
+    }
+  ],
+  "final_self_assessment": {
+    "question": "Wie beurteilen Sie nach der Bearbeitung der Aufgaben die zur Verfügung stehende Prüfungszeit?",
+    "options": [
+      "Sie hätte kürzer sein können.",
+      "Sie war angemessen.",
+      "Sie hätte länger sein müssen."
+    ],
+    "is_graded": false
+  }
+}

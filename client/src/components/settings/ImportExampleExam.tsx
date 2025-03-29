@@ -3,7 +3,7 @@ import { FileText, Download } from 'lucide-react';
 import { Question } from '@/lib/types';
 import { loadIHKExamFromURL } from '@/lib/ihk-exam-importer';
 import { useToast } from '@/hooks/use-toast';
-// Path to the example exam JSON file in attached assets
+// Pfad zur lokalen JSON-Datei
 const examJsonPath = '/attached_assets/ap1_frühjahr_2025.json';
 
 interface ImportResponse {

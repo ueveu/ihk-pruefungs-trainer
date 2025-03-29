@@ -95,16 +95,23 @@ function calculateDifficulty(points: number): number {
 }
 
 /**
- * Lädt und konvertiert eine IHK-Prüfungsdatei aus einer JSON-URL
+ * Lädt und konvertiert eine IHK-Prüfungsdatei aus einer JSON-URL oder direkt aus einem JSON-Objekt
  */
-export async function loadIHKExamFromURL(url: string): Promise<Question[]> {
+export async function loadIHKExamFromURL(urlOrData: string | IHKExam): Promise<Question[]> {
   try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+    let examData: IHKExam;
+    
+    if (typeof urlOrData === 'string') {
+      const response = await fetch(urlOrData);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      examData = await response.json();
+    } else {
+      // Es wurde bereits ein JSON-Objekt übergeben
+      examData = urlOrData;
     }
     
-    const examData: IHKExam = await response.json();
     return convertIHKExamToQuestions(examData);
   } catch (error) {
     console.error("Fehler beim Laden der IHK-Prüfung:", error);
