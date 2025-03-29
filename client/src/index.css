@@ -54,5 +54,7 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground transition-colors duration-300;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }

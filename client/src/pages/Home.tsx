@@ -121,13 +121,15 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-neutral-900 mb-2">
-        IHK Prüfungsvorbereitung
-      </h1>
-      <p className="text-lg text-neutral-600 mb-8">
-        Interaktives Lernen für die Fachinformatiker-Prüfungen
-      </p>
+    <div className="container mx-auto px-4 py-12 max-w-6xl">
+      <div className="text-center mb-12">
+        <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 font-heading">
+          IHK Prüfungsvorbereitung
+        </h1>
+        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+          Interaktives Lernen für die Fachinformatiker-Prüfungen
+        </p>
+      </div>
 
       {isLoading ? (
         <div className="grid grid-cols-1 gap-6">
@@ -144,12 +146,12 @@ const Home: React.FC = () => {
         <>
           {Object.keys(examsByCategory).length > 0 ? (
             <>
-              <div className="bg-card rounded-xl shadow-md p-6 mb-10">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-2xl font-semibold text-foreground">
+              <div className="bg-card/50 backdrop-blur-sm rounded-2xl shadow-lg border border-border/50 p-8 mb-10">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl md:text-3xl font-semibold text-foreground font-heading">
                     Aktuelle Prüfungen
                   </h2>
-                  <div className="text-sm text-primary font-medium">
+                  <div className="px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium">
                     {Object.keys(examsByCategory).length} Prüfungen verfügbar
                   </div>
                 </div>
@@ -158,7 +160,7 @@ const Home: React.FC = () => {
                   {Object.entries(examsByCategory).map(([category, questions], index) => (
                     <div 
                       key={category}
-                      className="border border-border rounded-lg p-4 transition-all hover:border-primary"
+                      className="bg-card border border-border/50 rounded-xl p-6 transition-all hover:border-primary/50 hover:shadow-lg hover:-translate-y-0.5"
                     >
                       <div className="flex items-center">
                         <div className={`rounded-full w-8 h-8 flex items-center justify-center mr-4 text-white ${index === 0 ? 'bg-green-500' : 'bg-primary'}`}>
@@ -172,8 +174,8 @@ const Home: React.FC = () => {
                         </div>
                         <button
                           onClick={() => handleStartLearning(category)}
-                          className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 
-                                    transition-colors flex items-center gap-1"
+                          className="px-5 py-2.5 bg-primary text-primary-foreground rounded-full font-medium shadow-lg shadow-primary/20 hover:bg-primary/90 hover:shadow-primary/30
+                                    transition-all duration-200 flex items-center gap-2"
                         >
                           Lernen <ArrowRight className="h-4 w-4" />
                         </button>
