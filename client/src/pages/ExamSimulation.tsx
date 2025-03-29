@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { generateAIFeedback } from '@/lib/ai-feedback';
+import { generateAIFeedback } from '../lib/ai-feedback';
 
 interface ExamState {
   currentQuestionIndex: number;

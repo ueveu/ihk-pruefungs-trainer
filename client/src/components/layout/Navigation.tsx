@@ -1,16 +1,16 @@
 import React from 'react';
 import { useLocation, Link } from 'wouter';
-import { Home as HomeIcon, BookOpen, Layers, BarChart3, Award, Settings as SettingsIcon } from 'lucide-react';
+import { Home as HomeIcon, BookOpen, Layers, BarChart3, Award, Settings as SettingsIcon, BrainCircuit } from 'lucide-react';
 
 interface NavigationProps {
-  activeTab: 'home' | 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings';
-  onTabChange: (tab: 'home' | 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings') => void;
+  activeTab: 'home' | 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings' | 'ai-chat';
+  onTabChange: (tab: 'home' | 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings' | 'ai-chat') => void;
 }
 
 const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
   const [location, setLocation] = useLocation();
 
-  const handleTabClick = (tab: 'home' | 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings', path: string) => {
+  const handleTabClick = (tab: 'home' | 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings' | 'ai-chat', path: string) => {
     onTabChange(tab);
     setLocation(path);
   };
@@ -77,6 +77,18 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
           >
             <Award className="h-5 w-5 mr-2" />
             Erfolge
+          </button>
+          
+          <button 
+            onClick={() => handleTabClick('ai-chat', '/ai-chat')}
+            className={`flex items-center px-4 py-4 border-b-2 font-medium whitespace-nowrap transition-colors ${
+              activeTab === 'ai-chat' 
+                ? 'border-primary text-primary' 
+                : 'border-transparent text-neutral-600 hover:text-neutral-900'
+            }`}
+          >
+            <BrainCircuit className="h-5 w-5 mr-2" />
+            KI-Chat
           </button>
           
           <button 

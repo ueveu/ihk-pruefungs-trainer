@@ -52,6 +52,33 @@ export class MemStorage implements IStorage {
     
     // Initialize with some example questions
     this.initializeExampleQuestions();
+    
+    // Create a default user for testing
+    this.initializeDefaultUser();
+  }
+  
+  private initializeDefaultUser() {
+    // Create default user
+    const defaultUser: User = {
+      id: 1,
+      username: "testuser",
+      email: "test@example.com",
+      password: "hashedpassword",
+      createdAt: new Date()
+    };
+    this.users.set(1, defaultUser);
+    
+    // Create default stats for user
+    const defaultStats: UserStats = {
+      id: 1,
+      userId: 1,
+      totalQuestions: 0,
+      correctAnswers: 0,
+      streakDays: 0,
+      totalStudyTime: 0,
+      lastActive: new Date()
+    };
+    this.userStats.set(1, defaultStats);
   }
 
   // User methods
@@ -67,7 +94,7 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentUserId++;
-    const user: User = { ...insertUser, id };
+    const user: User = { ...insertUser, id, createdAt: new Date() };
     this.users.set(id, user);
     
     // Create initial stats for the user

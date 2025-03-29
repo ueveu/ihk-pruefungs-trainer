@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertUserSchema, insertQuestionSchema, insertUserProgressSchema } from "@shared/schema";
 import { z } from "zod";
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
@@ -123,6 +124,153 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error importing batch questions:", error);
       res.status(400).json({ 
         message: "Failed to import questions", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+
+  // AI Feedback API
+  app.post("/api/ai/feedback", async (req, res) => {
+    try {
+      const feedbackSchema = z.object({
+        questionText: z.string(),
+        userAnswer: z.string(),
+        correctAnswer: z.string(),
+        difficulty: z.number(),
+        maxPoints: z.number()
+      });
+      
+      const request = feedbackSchema.parse(req.body);
+      
+      // Initialisiere die Gemini API mit dem API-Schlüssel aus der Umgebungsvariablen
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey) {
+        return res.status(500).json({ 
+          message: "Gemini API key not configured",
+          error: "API key is missing"
+        });
+      }
+      
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+      
+      // Prompt für die KI erstellen
+      const prompt = `
+      Du bist ein IHK-Prüfer für Fachinformatiker. Bitte bewerte die Antwort eines Prüflings auf eine Prüfungsfrage.
+      
+      Prüfungsfrage: ${request.questionText}
+      
+      Richtige Antwort gemäß Lösungsschlüssel: ${request.correctAnswer}
+      
+      Antwort des Prüflings: ${request.userAnswer}
+      
+      Schwierigkeitsgrad der Frage: ${request.difficulty}/3
+      Maximale Punktzahl: ${request.maxPoints}
+      
+      Bitte bewerte die Antwort nach den folgenden Kriterien:
+      1. Inhaltliche Richtigkeit
+      2. Vollständigkeit
+      3. Fachliche Präzision
+      
+      Gib deine Bewertung im folgenden Format zurück:
+      - Punktzahl: X / ${request.maxPoints}
+      - Feedback: Dein detailliertes Feedback zur Antwort
+      - Korrekt: Ja/Nein (Ist die Antwort insgesamt richtig oder falsch?)
+      
+      Halte das Feedback konstruktiv und gib spezifische Hinweise, wie die Antwort verbessert werden könnte.
+      Beziehe dich auf konkrete fachliche Aspekte der Antwort.
+      `;
+      
+      // KI-Anfrage senden
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      const text = response.text();
+      
+      // Antwort parsen
+      let score = 0;
+      let isCorrect = false;
+      let feedback = "Keine Bewertung verfügbar.";
+      
+      // Punktzahl extrahieren
+      const scoreMatch = text.match(/Punktzahl:?\s*(\d+)\s*\/\s*\d+/i);
+      if (scoreMatch && scoreMatch[1]) {
+        score = parseInt(scoreMatch[1], 10);
+      }
+      
+      // Richtigkeit extrahieren
+      const correctMatch = text.match(/Korrekt:?\s*(Ja|Nein)/i);
+      if (correctMatch && correctMatch[1]) {
+        isCorrect = correctMatch[1].toLowerCase() === 'ja';
+      }
+      
+      // Feedback extrahieren
+      const feedbackMatch = text.match(/Feedback:?([\s\S]*?)(?=\n- Korrekt:|$)/i);
+      if (feedbackMatch && feedbackMatch[1]) {
+        feedback = feedbackMatch[1].trim();
+      } else {
+        // Fallback: Gesamten Text als Feedback verwenden, wenn das Format nicht erkannt wurde
+        feedback = text;
+      }
+      
+      res.json({
+        feedback,
+        isCorrect,
+        score,
+        maxScore: request.maxPoints
+      });
+    } catch (error) {
+      console.error("Error generating AI feedback:", error);
+      res.status(500).json({ 
+        message: "Failed to generate AI feedback", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+
+  // AI Chat API
+  app.post("/api/ai/chat", async (req, res) => {
+    try {
+      const chatSchema = z.object({
+        message: z.string()
+      });
+      
+      const { message } = chatSchema.parse(req.body);
+      
+      // Initialisiere die Gemini API mit dem API-Schlüssel aus der Umgebungsvariablen
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey) {
+        return res.status(500).json({ 
+          message: "Gemini API key not configured",
+          error: "API key is missing"
+        });
+      }
+      
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+      
+      // Prompt für die KI erstellen
+      const prompt = `
+      Du bist ein Assistent für IHK-Prüfungen im Bereich Fachinformatiker für Anwendungsentwicklung.
+      Der Nutzer bereitet sich auf diese Prüfung vor und hat folgende Frage: 
+      
+      ${message}
+      
+      Gib eine klare, hilfreiche und fachlich korrekte Antwort. Verwende Beispiele wo möglich und stelle sicher, 
+      dass deine Erklärungen dem Niveau der IHK-Prüfung entsprechen. Beziehe dich auf relevante Konzepte
+      der Anwendungsentwicklung, Programmierung, Datenbanken oder IT-Systeme, je nachdem, was für die Frage relevant ist.
+      `;
+      
+      // KI-Anfrage senden
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      
+      res.json({
+        response: response.text()
+      });
+    } catch (error) {
+      console.error("Error generating AI chat response:", error);
+      res.status(500).json({ 
+        message: "Failed to generate AI response", 
         error: error instanceof Error ? error.message : "Unknown error" 
       });
     }
