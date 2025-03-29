@@ -65,14 +65,14 @@ export function LevelSelector({ userId, onLevelSelect, onBack }: LevelSelectorPr
           <ArrowLeftIcon className="h-4 w-4 mr-2" />
           Zurück
         </Button>
-        <h1 className="text-2xl font-bold">Wähle ein Level</h1>
+        <h1 className="text-2xl font-bold text-foreground">Wähle ein Level</h1>
       </div>
       
       {/* Lernhilfe */}
-      <Alert className="mb-6 bg-amber-50 border-amber-200">
+      <Alert className="mb-6 bg-amber-50 dark:bg-amber-950 border-amber-200 dark:border-amber-800">
         <LightbulbIcon className="h-4 w-4 text-amber-500" />
-        <AlertTitle>Lernziele und Level-System</AlertTitle>
-        <AlertDescription>
+        <AlertTitle className="text-foreground">Lernziele und Level-System</AlertTitle>
+        <AlertDescription className="text-muted-foreground">
           Jedes Level beinhaltet Fragen mit unterschiedlichem Schwierigkeitsgrad. 
           Beginne mit Level 1 und schalte höhere Level frei, indem du ausreichend Fragen beantwortest.
           Um ein Level als abgeschlossen zu markieren, beantworte mindestens 80% der Fragen korrekt.
