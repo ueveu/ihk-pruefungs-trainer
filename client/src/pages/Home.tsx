@@ -14,12 +14,12 @@ const Home: React.FC = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isImporting, setIsImporting] = useState(false);
-  
+
   // Lade alle verfügbaren Prüfungen
   const { data, isLoading } = useQuery<Question[]>({
     queryKey: ['/api/questions'],
   });
-  
+
   // Sicherstellen, dass wir ein Array haben
   const questions = data || [];
 
@@ -38,14 +38,14 @@ const Home: React.FC = () => {
 
   const handleImportQuestions = async (questions: Question[]) => {
     setIsImporting(true);
-    
+
     try {
       // API-Endpoint zum Hinzufügen von Fragen
       await apiRequest('POST', '/api/questions/batch', { questions });
-      
+
       // Cache aktualisieren
       queryClient.invalidateQueries({ queryKey: ['/api/questions'] });
-      
+
       toast({
         title: "Prüfung importiert",
         description: `${questions.length} Fragen wurden erfolgreich importiert.`,
@@ -66,12 +66,12 @@ const Home: React.FC = () => {
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-    
+
     setIsImporting(true);
-    
+
     try {
       const questions = await loadIHKExamFromFile(file);
-      
+
       if (questions.length > 0) {
         handleImportQuestions(questions);
       } else {
@@ -95,10 +95,10 @@ const Home: React.FC = () => {
 
   const handleImportExample = async () => {
     setIsImporting(true);
-    
+
     try {
       const questions = await loadIHKExamFromURL(examJsonPath);
-      
+
       if (questions.length > 0) {
         handleImportQuestions(questions);
       } else {
@@ -155,7 +155,7 @@ const Home: React.FC = () => {
                     {Object.keys(examsByCategory).length} Prüfungen verfügbar
                   </div>
                 </div>
-                
+
                 <div className="space-y-4">
                   {Object.entries(examsByCategory).map(([category, questions], index) => (
                     <div 
@@ -180,7 +180,7 @@ const Home: React.FC = () => {
                           Lernen <ArrowRight className="h-4 w-4" />
                         </button>
                       </div>
-                                            
+
                       <div className="mt-4 grid grid-cols-3 gap-2">
                         <div 
                           className="border border-border rounded p-3 cursor-pointer hover:bg-primary/5 transition-colors"
@@ -210,8 +210,8 @@ const Home: React.FC = () => {
               </div>
             </>
           ) : (
-            <div className="bg-card rounded-xl shadow-md p-10 mb-8 text-center">
-              <h2 className="text-xl font-semibold text-foreground mb-2">
+            <div className="bg-card rounded-xl shadow-md p-10 mb-8 text-center text-card-foreground">
+              <h2 className="text-xl font-semibold mb-2">
                 Noch keine Prüfungen verfügbar
               </h2>
               <p className="text-muted-foreground mb-4">
@@ -234,7 +234,7 @@ const Home: React.FC = () => {
                 <p className="text-muted-foreground mb-4">
                   Lade eine Beispiel-Prüfungsdatei, um die App sofort mit Inhalten zu testen.
                 </p>
-                
+
                 <button
                   onClick={handleImportExample}
                   disabled={isImporting}
@@ -254,7 +254,7 @@ const Home: React.FC = () => {
                 <p className="text-muted-foreground mb-4">
                   Lade eine IHK-Prüfungsdatei im JSON-Format hoch.
                 </p>
-                
+
                 <label className="w-full cursor-pointer">
                   <div className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 
                                   transition-colors flex items-center justify-center gap-2">
@@ -269,7 +269,7 @@ const Home: React.FC = () => {
                     disabled={isImporting}
                   />
                 </label>
-                
+
                 <p className="mt-4 text-sm text-muted-foreground">
                   Unterstützt nur JSON-Dateien im IHK-Prüfungsformat.
                 </p>
@@ -282,7 +282,7 @@ const Home: React.FC = () => {
             <p className="text-muted-foreground mb-4">
               Weitere Funktionen, die wir bald hinzufügen werden:
             </p>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">              
               <div className="bg-card/90 backdrop-blur-sm rounded-lg p-4 border border-primary/20">
                 <h3 className="font-medium mb-2 flex items-center gap-1 text-foreground">
@@ -292,7 +292,7 @@ const Home: React.FC = () => {
                   Persönlicher Lernassistent mit individueller Betreuung
                 </p>
               </div>
-              
+
               <div className="bg-card/90 backdrop-blur-sm rounded-lg p-4 border border-primary/20">
                 <h3 className="font-medium mb-2 flex items-center gap-1 text-foreground">
                   <Lock className="h-4 w-4 text-primary" /> Lernpfade
@@ -301,7 +301,7 @@ const Home: React.FC = () => {
                   Strukturierte Lernwege durch die Prüfungsinhalte
                 </p>
               </div>
-              
+
               <div className="bg-card/90 backdrop-blur-sm rounded-lg p-4 border border-primary/20">
                 <h3 className="font-medium mb-2 flex items-center gap-1 text-foreground">
                   <Lock className="h-4 w-4 text-primary" /> Kommentarfunktion
