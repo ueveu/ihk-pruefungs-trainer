@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import Header from "@/components/layout/Header";
 import Navigation from "@/components/layout/Navigation";
+import Home from "@/pages/Home";
 import QuizMode from "@/pages/QuizMode";
 import FlashcardMode from "@/pages/FlashcardMode";
 import StatsView from "@/pages/StatsView";
@@ -13,10 +14,10 @@ import Settings from "@/pages/Settings";
 import QuickTip from "@/components/common/QuickTip";
 import { useState } from "react";
 
-type ActiveTab = "quiz" | "flashcards" | "stats" | "achievements" | "settings";
+type ActiveTab = "home" | "quiz" | "flashcards" | "stats" | "achievements" | "settings";
 
 function Router() {
-  const [activeTab, setActiveTab] = useState<ActiveTab>("quiz");
+  const [activeTab, setActiveTab] = useState<ActiveTab>("home");
 
   return (
     <div className="min-h-screen flex flex-col bg-neutral-100 font-sans text-neutral-800">
@@ -26,6 +27,9 @@ function Router() {
       <main className="flex-grow container mx-auto px-4 py-6">
         <Switch>
           <Route path="/">
+            <Home />
+          </Route>
+          <Route path="/quiz">
             <QuizMode />
           </Route>
           <Route path="/flashcards">

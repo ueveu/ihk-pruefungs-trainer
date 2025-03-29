@@ -1,16 +1,16 @@
 import React from 'react';
 import { useLocation, Link } from 'wouter';
-import { BookOpen, Layers, BarChart3, Award, Settings as SettingsIcon } from 'lucide-react';
+import { Home as HomeIcon, BookOpen, Layers, BarChart3, Award, Settings as SettingsIcon } from 'lucide-react';
 
 interface NavigationProps {
-  activeTab: 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings';
-  onTabChange: (tab: 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings') => void;
+  activeTab: 'home' | 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings';
+  onTabChange: (tab: 'home' | 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings') => void;
 }
 
 const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
   const [location, setLocation] = useLocation();
 
-  const handleTabClick = (tab: 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings', path: string) => {
+  const handleTabClick = (tab: 'home' | 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings', path: string) => {
     onTabChange(tab);
     setLocation(path);
   };
@@ -20,7 +20,19 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
       <div className="container mx-auto px-4">
         <div className="flex overflow-x-auto hide-scrollbar">
           <button 
-            onClick={() => handleTabClick('quiz', '/')}
+            onClick={() => handleTabClick('home', '/')}
+            className={`flex items-center px-4 py-4 border-b-2 font-medium whitespace-nowrap transition-colors ${
+              activeTab === 'home' 
+                ? 'border-primary text-primary' 
+                : 'border-transparent text-neutral-600 hover:text-neutral-900'
+            }`}
+          >
+            <HomeIcon className="h-5 w-5 mr-2" />
+            Home
+          </button>
+        
+          <button 
+            onClick={() => handleTabClick('quiz', '/quiz')}
             className={`flex items-center px-4 py-4 border-b-2 font-medium whitespace-nowrap transition-colors ${
               activeTab === 'quiz' 
                 ? 'border-primary text-primary' 
