@@ -239,7 +239,11 @@ const StudyPlanGenerator: React.FC = () => {
               
               <div className="space-y-3">
                 {plan.sessions.map((session, index) => (
-                  <div key={index} className="border rounded-md p-3 bg-white">
+                  <div 
+                    key={index} 
+                    className="border rounded-md p-3 bg-white opacity-0 animate-fade-in"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-medium">{session.day}</span>
                       <span className="text-sm text-neutral-500">
@@ -252,9 +256,24 @@ const StudyPlanGenerator: React.FC = () => {
                       {session.topic}
                     </div>
                     
+                    <div className="relative h-1 w-full bg-neutral-100 rounded mb-2">
+                      <div 
+                        className="absolute h-1 bg-green-400 rounded opacity-0 animate-progress-grow"
+                        style={{ 
+                          width: '100%', 
+                          animationDelay: `${0.5 + index * 0.2}s`,
+                          animationDuration: '1s'
+                        }}
+                      />
+                    </div>
+                    
                     <div className="space-y-1">
                       {session.activities.map((activity, idx) => (
-                        <div key={idx} className="text-xs text-neutral-600 flex items-start gap-1">
+                        <div 
+                          key={idx} 
+                          className="text-xs text-neutral-600 flex items-start gap-1 opacity-0 animate-fade-in"
+                          style={{ animationDelay: `${0.7 + (index * 0.1) + (idx * 0.1)}s` }}
+                        >
                           <CheckCircle2 className="h-3 w-3 text-green-500 mt-0.5 shrink-0" />
                           <span>{activity}</span>
                         </div>
@@ -273,7 +292,8 @@ const StudyPlanGenerator: React.FC = () => {
                 {plan.focusTopics.map((topic, index) => (
                   <div 
                     key={index} 
-                    className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full"
+                    className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full opacity-0 animate-fade-in"
+                    style={{ animationDelay: `${1 + index * 0.15}s` }}
                   >
                     {topic}
                   </div>

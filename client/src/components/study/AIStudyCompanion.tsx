@@ -184,24 +184,32 @@ Gib nur einen kurzen, prägnanten Tipp (max. 120 Zeichen), der motivierend und h
       
       <CardContent>
         {isLoading ? (
-          <div className="animate-pulse space-y-3">
-            <div className="h-4 bg-neutral-200 rounded w-5/6"></div>
-            <div className="h-4 bg-neutral-200 rounded w-4/6"></div>
-            <div className="h-4 bg-neutral-200 rounded w-3/6"></div>
+          <div className="space-y-3">
+            <div className="h-4 bg-neutral-200 rounded w-5/6 animate-pulse"></div>
+            <div className="h-4 bg-neutral-200 rounded w-4/6 animate-pulse" style={{ animationDelay: "0.1s" }}></div>
+            <div className="h-4 bg-neutral-200 rounded w-3/6 animate-pulse" style={{ animationDelay: "0.2s" }}></div>
           </div>
         ) : currentTip ? (
           <div className="flex gap-3 items-start">
-            <div className="mt-1 p-2 bg-primary/10 rounded-full">
+            <div className="mt-1 p-2 bg-primary/10 rounded-full opacity-0 animate-fade-in" style={{ animationDuration: "0.5s" }}>
               {currentTip.icon}
             </div>
-            <div>
-              <div className="text-sm font-medium mb-1">
+            <div className="flex-1">
+              <div className="text-sm font-medium mb-1 opacity-0 animate-fade-in" style={{ animationDelay: "0.15s", animationDuration: "0.5s" }}>
                 {currentTip.category === 'general' && 'Allgemeiner Tipp'}
                 {currentTip.category === 'topic' && 'Themenbezogener Tipp'}
                 {currentTip.category === 'timeManagement' && 'Zeitmanagement-Tipp'}
                 {currentTip.category === 'motivation' && 'Motivationstipp'}
               </div>
-              <p className="text-neutral-700">
+              <div className="relative">
+                <div className="h-0.5 w-0 bg-primary/20 rounded opacity-0 animate-progress-grow" 
+                  style={{ 
+                    animationDelay: "0.3s", 
+                    animationDuration: "0.8s", 
+                    width: "100%"
+                  }}></div>
+              </div>
+              <p className="text-neutral-700 opacity-0 animate-slide-up" style={{ animationDelay: "0.4s", animationDuration: "0.6s" }}>
                 {currentTip.tip}
               </p>
             </div>
@@ -226,7 +234,10 @@ Gib nur einen kurzen, prägnanten Tipp (max. 120 Zeichen), der motivierend und h
         >
           {isGenerating ? (
             <>
-              <div className="h-3 w-3 rounded-full border-2 border-primary border-t-transparent animate-spin mr-1"></div>
+              <div className="relative h-3 w-3 mr-1">
+                <div className="absolute inset-0 rounded-full border-2 border-primary border-t-transparent animate-spin"></div>
+                <div className="absolute inset-0 rounded-full border-2 border-primary/30 border-t-transparent animate-spin" style={{ animationDuration: "1.5s" }}></div>
+              </div>
               Generiere...
             </>
           ) : (

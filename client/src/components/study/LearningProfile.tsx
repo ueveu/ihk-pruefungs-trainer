@@ -128,10 +128,20 @@ const LearningProfile: React.FC<LearningProfileProps> = ({
                 {userStats.correctAnswers}/{userStats.totalQuestions}
               </div>
             </div>
-            <Progress 
-              value={correctPercentage} 
-              className="h-1.5 mt-2" 
-            />
+            <div className="relative mt-2">
+              <Progress 
+                value={0} 
+                className="h-1.5 bg-neutral-100" 
+              />
+              <Progress 
+                value={correctPercentage} 
+                className="h-1.5 absolute top-0 left-0 right-0 animate-progress-grow" 
+                style={{
+                  animationDelay: "0.1s",
+                  animationDuration: "1.5s"
+                }}
+              />
+            </div>
           </div>
           
           <div className="bg-white border rounded-lg p-3">
@@ -147,10 +157,20 @@ const LearningProfile: React.FC<LearningProfileProps> = ({
                 Tage am Stück
               </div>
             </div>
-            <Progress 
-              value={Math.min(userStats.streakDays / 7 * 100, 100)} 
-              className="h-1.5 mt-2" 
-            />
+            <div className="relative mt-2">
+              <Progress 
+                value={0} 
+                className="h-1.5 bg-neutral-100" 
+              />
+              <Progress 
+                value={Math.min(userStats.streakDays / 7 * 100, 100)}
+                className="h-1.5 absolute top-0 left-0 right-0 animate-progress-grow" 
+                style={{
+                  animationDelay: "0.3s",
+                  animationDuration: "1.5s"
+                }}
+              />
+            </div>
           </div>
         </div>
         
@@ -183,10 +203,20 @@ const LearningProfile: React.FC<LearningProfileProps> = ({
                       <div className="text-sm font-medium">{achievement.title}</div>
                       <div className="text-xs text-neutral-500">{achievement.description}</div>
                       {achievement.progress && (
-                        <Progress 
-                          value={(achievement.progress.current / achievement.progress.required) * 100}
-                          className="h-1 mt-1"
-                        />
+                        <div className="relative mt-1">
+                          <Progress 
+                            value={0}
+                            className="h-1 bg-neutral-100"
+                          />
+                          <Progress 
+                            value={(achievement.progress.current / achievement.progress.required) * 100}
+                            className="h-1 absolute top-0 left-0 right-0 animate-progress-grow"
+                            style={{
+                              animationDelay: `${0.5 + achievement.id * 0.1}s`,
+                              animationDuration: "1.8s"
+                            }}
+                          />
+                        </div>
                       )}
                     </div>
                     {achievement.progress && (
