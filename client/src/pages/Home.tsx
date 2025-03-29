@@ -194,11 +194,12 @@ const Home: React.FC = () => {
                           <div className="text-xs text-neutral-500 mb-1">02</div>
                           <div className="text-sm font-medium">Karteikarten</div>
                         </div>
-                        <div className="border rounded p-3 bg-neutral-50 opacity-75">
+                        <div 
+                          className="border rounded p-3 cursor-pointer hover:bg-primary/5 transition-colors"
+                          onClick={() => setLocation(`/exam-simulation/${encodeURIComponent(category)}`)}
+                        >
                           <div className="text-xs text-neutral-500 mb-1">03</div>
-                          <div className="text-sm font-medium flex items-center">
-                            Prüfungssimulation <Lock className="h-3 w-3 ml-1" />
-                          </div>
+                          <div className="text-sm font-medium">Prüfungssimulation</div>
                         </div>
                       </div>
                     </div>
@@ -280,13 +281,13 @@ const Home: React.FC = () => {
               Weitere Funktionen, die wir bald hinzufügen werden:
             </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">              
               <div className="bg-white/80 backdrop-blur-sm rounded-lg p-4 border border-primary/20">
                 <h3 className="font-medium mb-2 flex items-center gap-1">
-                  <Lock className="h-4 w-4 text-primary" /> Prüfungssimulation
+                  <Lock className="h-4 w-4 text-primary" /> KI-Tutor
                 </h3>
                 <p className="text-sm text-neutral-600">
-                  Realistische Prüfungsumgebung mit Zeitdruck und Bewertung
+                  Persönlicher Lernassistent mit individueller Betreuung
                 </p>
               </div>
               

@@ -11,6 +11,7 @@ import FlashcardMode from "@/pages/FlashcardMode";
 import StatsView from "@/pages/StatsView";
 import Achievements from "@/pages/Achievements";
 import Settings from "@/pages/Settings";
+import ExamSimulation from "@/pages/ExamSimulation";
 import QuickTip from "@/components/common/QuickTip";
 import { useState } from "react";
 
@@ -43,6 +44,9 @@ function Router() {
           </Route>
           <Route path="/settings">
             <Settings />
+          </Route>
+          <Route path="/exam-simulation/:category">
+            <ExamSimulation />
           </Route>
           <Route component={NotFound} />
         </Switch>
