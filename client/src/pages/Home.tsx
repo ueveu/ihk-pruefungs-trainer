@@ -144,9 +144,9 @@ const Home: React.FC = () => {
         <>
           {Object.keys(examsByCategory).length > 0 ? (
             <>
-              <div className="bg-white rounded-xl shadow-md p-6 mb-10">
+              <div className="bg-card rounded-xl shadow-md p-6 mb-10">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-2xl font-semibold text-neutral-900">
+                  <h2 className="text-2xl font-semibold text-foreground">
                     Aktuelle Prüfungen
                   </h2>
                   <div className="text-sm text-primary font-medium">
@@ -158,21 +158,21 @@ const Home: React.FC = () => {
                   {Object.entries(examsByCategory).map(([category, questions], index) => (
                     <div 
                       key={category}
-                      className="border rounded-lg p-4 transition-all hover:border-primary"
+                      className="border border-border rounded-lg p-4 transition-all hover:border-primary"
                     >
                       <div className="flex items-center">
                         <div className={`rounded-full w-8 h-8 flex items-center justify-center mr-4 text-white ${index === 0 ? 'bg-green-500' : 'bg-primary'}`}>
                           {index === 0 ? <CheckCircle2 className="h-5 w-5" /> : (index + 1)}
                         </div>
                         <div className="flex-grow">
-                          <h3 className="text-lg font-medium text-neutral-900">{category}</h3>
-                          <p className="text-sm text-neutral-500">
+                          <h3 className="text-lg font-medium text-foreground">{category}</h3>
+                          <p className="text-sm text-muted-foreground">
                             {questions.length} Fragen • Multiple-Choice & Textantworten
                           </p>
                         </div>
                         <button
                           onClick={() => handleStartLearning(category)}
-                          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 
+                          className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 
                                     transition-colors flex items-center gap-1"
                         >
                           Lernen <ArrowRight className="h-4 w-4" />
@@ -181,25 +181,25 @@ const Home: React.FC = () => {
                                             
                       <div className="mt-4 grid grid-cols-3 gap-2">
                         <div 
-                          className="border rounded p-3 cursor-pointer hover:bg-primary/5 transition-colors"
+                          className="border border-border rounded p-3 cursor-pointer hover:bg-primary/5 transition-colors"
                           onClick={() => setLocation(`/quiz?category=${encodeURIComponent(category)}`)}
                         >
-                          <div className="text-xs text-neutral-500 mb-1">01</div>
-                          <div className="text-sm font-medium">Quiz-Modus</div>
+                          <div className="text-xs text-muted-foreground mb-1">01</div>
+                          <div className="text-sm font-medium text-foreground">Quiz-Modus</div>
                         </div>
                         <div 
-                          className="border rounded p-3 cursor-pointer hover:bg-primary/5 transition-colors"
+                          className="border border-border rounded p-3 cursor-pointer hover:bg-primary/5 transition-colors"
                           onClick={() => setLocation(`/flashcards?category=${encodeURIComponent(category)}`)}
                         >
-                          <div className="text-xs text-neutral-500 mb-1">02</div>
-                          <div className="text-sm font-medium">Karteikarten</div>
+                          <div className="text-xs text-muted-foreground mb-1">02</div>
+                          <div className="text-sm font-medium text-foreground">Karteikarten</div>
                         </div>
                         <div 
-                          className="border rounded p-3 cursor-pointer hover:bg-primary/5 transition-colors"
+                          className="border border-border rounded p-3 cursor-pointer hover:bg-primary/5 transition-colors"
                           onClick={() => setLocation(`/exam-simulation/${encodeURIComponent(category)}`)}
                         >
-                          <div className="text-xs text-neutral-500 mb-1">03</div>
-                          <div className="text-sm font-medium">Prüfungssimulation</div>
+                          <div className="text-xs text-muted-foreground mb-1">03</div>
+                          <div className="text-sm font-medium text-foreground">Prüfungssimulation</div>
                         </div>
                       </div>
                     </div>
@@ -208,35 +208,35 @@ const Home: React.FC = () => {
               </div>
             </>
           ) : (
-            <div className="bg-white rounded-xl shadow-md p-10 mb-8 text-center">
-              <h2 className="text-xl font-semibold text-neutral-800 mb-2">
+            <div className="bg-card rounded-xl shadow-md p-10 mb-8 text-center">
+              <h2 className="text-xl font-semibold text-foreground mb-2">
                 Noch keine Prüfungen verfügbar
               </h2>
-              <p className="text-neutral-600 mb-4">
+              <p className="text-muted-foreground mb-4">
                 Importiere eine IHK-Prüfung unten, um mit dem Lernen zu beginnen
               </p>
             </div>
           )}
 
-          <div className="bg-white rounded-xl shadow-md p-6 mb-10">
-            <h2 className="text-2xl font-semibold text-neutral-900 mb-4">
+          <div className="bg-card rounded-xl shadow-md p-6 mb-10">
+            <h2 className="text-2xl font-semibold text-foreground mb-4">
               Neue IHK-Prüfung importieren
             </h2>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Beispiel-Prüfung importieren */}
-              <div className="border rounded-lg p-5">
-                <h3 className="text-lg font-semibold text-neutral-900 mb-2">
+              <div className="border border-border rounded-lg p-5">
+                <h3 className="text-lg font-semibold text-foreground mb-2">
                   Beispiel-Prüfung laden
                 </h3>
-                <p className="text-neutral-600 mb-4">
+                <p className="text-muted-foreground mb-4">
                   Lade eine Beispiel-Prüfungsdatei, um die App sofort mit Inhalten zu testen.
                 </p>
                 
                 <button
                   onClick={handleImportExample}
                   disabled={isImporting}
-                  className="w-full px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 
+                  className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 
                             transition-colors flex items-center justify-center gap-2"
                 >
                   <Download className="h-5 w-5" />
@@ -245,16 +245,16 @@ const Home: React.FC = () => {
               </div>
 
               {/* Eigene Prüfungsdatei importieren */}
-              <div className="border rounded-lg p-5">
-                <h3 className="text-lg font-semibold text-neutral-900 mb-2">
+              <div className="border border-border rounded-lg p-5">
+                <h3 className="text-lg font-semibold text-foreground mb-2">
                   Eigene IHK-Prüfungsdatei importieren
                 </h3>
-                <p className="text-neutral-600 mb-4">
+                <p className="text-muted-foreground mb-4">
                   Lade eine IHK-Prüfungsdatei im JSON-Format hoch.
                 </p>
                 
                 <label className="w-full cursor-pointer">
-                  <div className="w-full px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 
+                  <div className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 
                                   transition-colors flex items-center justify-center gap-2">
                     <Upload className="h-5 w-5" />
                     {isImporting ? "Wird importiert..." : "JSON-Datei auswählen"}
@@ -268,43 +268,43 @@ const Home: React.FC = () => {
                   />
                 </label>
                 
-                <p className="mt-4 text-sm text-neutral-500">
+                <p className="mt-4 text-sm text-muted-foreground">
                   Unterstützt nur JSON-Dateien im IHK-Prüfungsformat.
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl p-6">
-            <h2 className="text-xl font-semibold text-neutral-900 mb-3">Demnächst verfügbar</h2>
-            <p className="text-neutral-600 mb-4">
+          <div className="bg-gradient-to-br from-primary/10 to-primary/5 dark:from-primary/20 dark:to-primary/10 rounded-xl p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-3">Demnächst verfügbar</h2>
+            <p className="text-muted-foreground mb-4">
               Weitere Funktionen, die wir bald hinzufügen werden:
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">              
-              <div className="bg-white/80 backdrop-blur-sm rounded-lg p-4 border border-primary/20">
-                <h3 className="font-medium mb-2 flex items-center gap-1">
+              <div className="bg-card/90 backdrop-blur-sm rounded-lg p-4 border border-primary/20">
+                <h3 className="font-medium mb-2 flex items-center gap-1 text-foreground">
                   <Lock className="h-4 w-4 text-primary" /> KI-Tutor
                 </h3>
-                <p className="text-sm text-neutral-600">
+                <p className="text-sm text-muted-foreground">
                   Persönlicher Lernassistent mit individueller Betreuung
                 </p>
               </div>
               
-              <div className="bg-white/80 backdrop-blur-sm rounded-lg p-4 border border-primary/20">
-                <h3 className="font-medium mb-2 flex items-center gap-1">
+              <div className="bg-card/90 backdrop-blur-sm rounded-lg p-4 border border-primary/20">
+                <h3 className="font-medium mb-2 flex items-center gap-1 text-foreground">
                   <Lock className="h-4 w-4 text-primary" /> Lernpfade
                 </h3>
-                <p className="text-sm text-neutral-600">
+                <p className="text-sm text-muted-foreground">
                   Strukturierte Lernwege durch die Prüfungsinhalte
                 </p>
               </div>
               
-              <div className="bg-white/80 backdrop-blur-sm rounded-lg p-4 border border-primary/20">
-                <h3 className="font-medium mb-2 flex items-center gap-1">
+              <div className="bg-card/90 backdrop-blur-sm rounded-lg p-4 border border-primary/20">
+                <h3 className="font-medium mb-2 flex items-center gap-1 text-foreground">
                   <Lock className="h-4 w-4 text-primary" /> Kommentarfunktion
                 </h3>
-                <p className="text-sm text-neutral-600">
+                <p className="text-sm text-muted-foreground">
                   Diskutiere Fragen und Antworten mit anderen Lernenden
                 </p>
               </div>
