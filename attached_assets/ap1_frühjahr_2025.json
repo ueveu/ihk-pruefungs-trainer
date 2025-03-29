@@ -1,0 +1,360 @@
+{
+  "exam_metadata": {
+    "exam_title": "Abschlussprüfung Frühjahr 2025",
+    "part": "Teil 1 der Abschlussprüfung",
+    "profession": "Fachinformatiker / Fachinformatikerin Systemintegration",
+    "profession_code": "1202",
+    "area_code": "64",
+    "topic": "Einrichten eines IT-gestützten Arbeitsplatzes",
+    "date": "2025-03-25",
+    "duration_minutes": 90,
+    "total_points": 100,
+    "number_of_tasks": 4,
+    "institution": "IHK",
+    "language": "de"
+  },
+  "general_instructions": [
+    "Überprüfen Sie die Vollständigkeit des Aufgabensatzes.",
+    "Wenden Sie sich bei Unstimmigkeiten sofort an die Aufsicht.",
+    "Füllen Sie die Kopfzeile aus (Familienname, Vorname, Prüflings-Nr.).",
+    "Lesen Sie den Text der Aufgaben ganz durch, bevor Sie beginnen.",
+    "Halten Sie sich genau an die Vorgaben zum Umfang der Lösung.",
+    "Bei Nennung von mehr Angaben als gefordert, werden nur die ersten gewertet.",
+    "Tragen Sie Antworten in die dafür vorgesehenen Bereiche ein.",
+    "Stichwortartige Beantwortung ist zulässig, sofern nicht anders gefordert.",
+    "Schreiben Sie deutlich und gut lesbar.",
+    "Nicht programmierbarer, netzunabhängiger Taschenrechner ohne Kommunikationsmöglichkeit ist erlaubt.",
+    "Bei Weiterrechnung mit gerundeten Ergebnissen, nur das gerundete Ergebnis verwenden.",
+    "Konzeptpapier darf für Hilfsaufzeichnungen genutzt werden, wird aber nicht bewertet."
+  ],
+  "overarching_scenario": {
+    "title": "Ausgangssituation für Aufgaben 1 bis 4",
+    "description": "Drei Rechtsanwälte eröffnen eine Gemeinschaftskanzlei und möchten moderne Technik zur Mandantenbetreuung nutzen. Ihr Ausbildungsbetrieb (Innova DVTech 2000 OHG) übernimmt die IT-technische Betreuung.",
+    "covered_topics": [
+      "Auswahl und Anschluss eines Multifunktionsgerätes",
+      "Datensicherheit im E-Mail-Verkehr",
+      "Aufbau und Betrieb einer Webseite",
+      "Einsatz von KI wirtschaftlich und technisch vorbereiten"
+    ]
+  },
+  "tasks": [
+    {
+      "task_number": 1,
+      "total_points": 25,
+      "title": "Auswahl und Anschluss eines Multifunktionsgerätes",
+      "subtasks": [
+        {
+          "part_letter": "a",
+          "description": "Auswahl eines Multifunktionsgeräts basierend auf Kriterien und Daten.",
+          "scenario_context": "Kanzlei druckt ca. 2.000 S/W und 500 Farbseiten/Monat. Wichtige Kriterien: hohe Druckqualität, geringe Wartungskosten, hohe Druck-/Scangeschwindigkeit.",
+          "data_table": {
+            "headers": ["Kriterien", "Multifunktionsgerät 1", "Multifunktionsgerät 2", "Multifunktionsgerät 3"],
+            "rows": [
+              {"Kriterien": "Geschwindigkeit Druck", "Multifunktionsgerät 1": "40 Seiten/min", "Multifunktionsgerät 2": "62 Seiten/min", "Multifunktionsgerät 3": "50 Seiten/min"},
+              {"Kriterien": "Geschwindigkeit Scan", "Multifunktionsgerät 1": "20 Seiten/min", "Multifunktionsgerät 2": "50 Seiten/min", "Multifunktionsgerät 3": "40 Seiten/min"},
+              {"Kriterien": "Druckqualität", "Multifunktionsgerät 1": "1.200x1.200 dpi", "Multifunktionsgerät 2": "1.200x1.200 dpi", "Multifunktionsgerät 3": "1.200x1.200 dpi"},
+              {"Kriterien": "Wartungskosten", "Multifunktionsgerät 1": "50 EUR/Monat", "Multifunktionsgerät 2": "10 EUR/Monat", "Multifunktionsgerät 3": "15 EUR/Monat"},
+              {"Kriterien": "Tonermenge", "Multifunktionsgerät 1": "10.000 Seiten/SW", "Multifunktionsgerät 2": "8.000 Seiten/SW", "Multifunktionsgerät 3": "6.000 Seiten/SW"},
+              {"Kriterien": "Preis", "Multifunktionsgerät 1": "3.456 EUR", "Multifunktionsgerät 2": "2.844 EUR", "Multifunktionsgerät 3": "1.656 EUR"}
+            ]
+          },
+          "sub_parts": [
+            {
+              "sub_part_letter": "aa",
+              "points": 6,
+              "question": "Vervollständigen Sie die Entscheidungsmatrix. Bestimmen Sie für jedes Kriterium pro Zeile eine Rangfolge (1 bis 3, 3=bester Wert, 1=schlechtester Wert). Berechnen Sie das Ergebnis (Summe der Punkte pro Gerät).",
+              "answer_format": "Tabelle ausfüllen (Punkte pro Kriterium/Gerät und Gesamtpunktzahl pro Gerät)",
+              "relevant_criteria_for_matrix": ["Geschwindigkeit Druck", "Geschwindigkeit Scan", "Wartungskosten", "Preis"]
+            },
+            {
+              "sub_part_letter": "ab",
+              "points": 1,
+              "question": "Nennen Sie das Gerät, das Sie aufgrund der Entscheidungsmatrix auswählen.",
+              "answer_format": "Name des Geräts (Multifunktionsgerät X)"
+            }
+          ]
+        },
+        {
+          "part_letter": "ac",
+          "points": 3,
+          "description": "Kostenberechnung für das ausgewählte Gerät.",
+          "scenario_context": "Gerät wird gekauft. Kosten: 0,05 EUR/Seite S/W, 0,07 EUR/Seite Farbe. Nutzungsdauer: 3 Jahre (36 Monate).",
+          "question": "Berechnen Sie die Kosten je Monat mit Angabe des Rechenweges. Runden Sie das Ergebnis auf ganze EUR.",
+          "answer_format": "Rechenweg und gerundetes Ergebnis in EUR.",
+          "calculation_needed": "((Kaufpreis Gerät aus ab) / 36) + (2000 * 0.05) + (500 * 0.07)"
+        },
+        {
+          "part_letter": "b",
+          "points": 4,
+          "description": "Identifizierung von Anschlüssen.",
+          "question": "Ordnen Sie die Anschlüsse (RJ45, USB Typ A, USB Typ C, Kaltgerätebuchse) den Abbildungen 1 bis 4 zu.",
+          "image_references": ["Abbildung 1", "Abbildung 2", "Abbildung 3", "Abbildung 4"],
+          "answer_format": "Zuordnung: Anschlussname -> Abbildungsnummer"
+        },
+        {
+          "part_letter": "c",
+          "points": 2,
+          "description": "Identifizierung von Symbolen.",
+          "image_references": ["Symbol 1", "Symbol 2"],
+          "question": "Benennen Sie die beiden Symbole.",
+          "answer_format": "Symbol 1: Bedeutung; Symbol 2: Bedeutung"
+        },
+        {
+          "part_letter": "d",
+          "points": 2,
+          "description": "Netzwerkkonfiguration des Druckers.",
+          "scenario_context": "Multifunktionsgerät 'Druckstation 1' wird per LAN angebunden. Netz: 192.168.100.0/26. PC1: 192.168.100.21, PC2: 192.168.100.42. Gateway nutzt letzte mögliche IP. Drucker soll vorletzte mögliche IP nutzen.",
+          "question": "Ergänzen Sie die Grafik mit der IP-Adresse für 'Druckstation 1'.",
+          "answer_format": "IP-Adresse eintragen",
+          "calculation_needed": "Netz 192.168.100.0/26 -> Range .1 bis .62. Letzte IP (.62) = Gateway. Vorletzte IP (.61) = Drucker."
+        },
+        {
+          "part_letter": "e",
+          "description": "Sicherheitsmaßnahmen basierend auf einem englischen Text.",
+          "text_provided": "Whether you're an individual user or part of an organization, these measures will help protect your system. First the Security Baseline adds extra security enhancements to the existing protocols. You can download and install it from the Security Compliance Toolkit. By doing so, recommended security configurations will be applied to your system. Further on strong, unique passwords are crucial to prevent unauthorized access. Avoid using simple or easily guessable passwords. Also, the built-in Firewall filters incoming and outgoing network traffic. Make sure it's enabled to block unwanted connections. Additionally regular updates are essential to patch security vulnerabilities and fix bugs. Enable automatic updates to ensure your system stays protected. Further on the Memory Integrity feature protects against memory-based attacks. It monitors RAM for unwanted changes and prevents malicious code injection.",
+          "sub_parts": [
+            {
+              "sub_part_letter": "ea",
+              "points": 4,
+              "question": "Nennen Sie vier Sicherheitsmaßnahmen, die im obigen Text beschrieben werden.",
+              "answer_format": "Liste von vier Maßnahmen"
+            },
+            {
+              "sub_part_letter": "eb",
+              "points": 3,
+              "question": "Bei der Anlage der Benutzerkonten wird vorgeschlagen, allen Benutzern Adminrechte zu geben. Erläutern Sie einen Grund, warum dieses Vorgehen aus Sicherheitsgründen nicht zu empfehlen ist.",
+              "answer_format": "Erläuterung eines Sicherheitsrisikos"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "task_number": 2,
+      "total_points": 20,
+      "title": "Datensicherheit im E-Mail-Verkehr",
+      "subtasks": [
+        {
+          "part_letter": "a",
+          "description": "Rechtliche Grundlagen der E-Mail-Kommunikation für Anwälte.",
+          "scenario_context": "E-Mail-Kommunikation zwischen Anwalt und Mandant unterliegt erhöhten Sicherheitsanforderungen.",
+          "sub_parts": [
+            {
+              "sub_part_letter": "aa",
+              "points": 1,
+              "question": "Nennen Sie dafür eine rechtliche Grundlage.",
+              "answer_format": "Nennung einer Rechtsnorm (z.B. DSGVO, §203 StGB)"
+            },
+            {
+              "sub_part_letter": "ab",
+              "points": 2,
+              "question": "Beschreiben Sie den Zweck dieser rechtlichen Grundlage.",
+              "answer_format": "Kurze Beschreibung des Schutzzwecks"
+            }
+          ]
+        },
+        {
+          "part_letter": "b",
+          "description": "Asymmetrische Verschlüsselung.",
+          "scenario_context": "Anwalt erhält öffentlichen Schlüssel vom Mandanten für sichere Kommunikation.",
+          "image_references": ["Diagramm Asymmetrische Verschlüsselung Anwalt -> Mandant"],
+          "sub_parts": [
+            {
+              "sub_part_letter": "ba",
+              "points": 4,
+              "question": "Beschreiben Sie die Vorgehensweise bei der Verschlüsselung und Entschlüsselung zur Übertragung von E-Mails vom Anwalt zum Mandanten anhand der Skizze.",
+              "answer_format": "Beschreibung des Prozesses (Verschlüsselung mit öffentlichem Schlüssel des Empfängers, Entschlüsselung mit privatem Schlüssel des Empfängers)"
+            },
+            {
+              "sub_part_letter": "bb",
+              "points": 1,
+              "question": "Nennen Sie das IT-Schutzziel, welches durch die beschriebene Verwendung der Schlüssel erreicht werden kann.",
+              "answer_format": "Nennung des Schutz-Ziels (Vertraulichkeit)"
+            },
+            {
+              "sub_part_letter": "bc",
+              "points": 2,
+              "question": "Nennen Sie einen Vorteil und einen Nachteil der asymmetrischen Verschlüsselung im Vergleich zu einer symmetrischen Verschlüsselung.",
+              "answer_format": "1 Vorteil, 1 Nachteil"
+            }
+          ]
+        },
+        {
+          "part_letter": "c",
+          "points": 4,
+          "description": "Vergleich von Software-Lizenzmodellen.",
+          "scenario_context": "Auswahl einer E-Mail-Verschlüsselungssoftware: Open Source vs. proprietäre Software.",
+          "question": "Nennen Sie jeweils zwei Vorteile dieser Lizenzmodelle.",
+          "answer_format": "2 Vorteile Open Source, 2 Vorteile Proprietär"
+        },
+        {
+          "part_letter": "d",
+          "description": "Softwareinstallation und Protokolle.",
+          "sub_parts": [
+            {
+              "sub_part_letter": "da",
+              "points": 4,
+              "scenario_context": "Software-Download wird mit Hashwert angeboten: Dateiname: emailclient.exe, SHA-256: F68F...252F.",
+              "question": "Erläutern Sie den Zweck der Verwendung eines Hashwerts beim Softwaredownload.",
+              "answer_format": "Erläuterung (Integritätsprüfung)"
+            },
+            {
+              "sub_part_letter": "db",
+              "points": 2,
+              "scenario_context": "Bei Einrichtung der Software werden IMAP und POP3 angeboten.",
+              "question": "Geben Sie eine Begründung dafür an, dass Sie sich für die Variante IMAP entscheiden.",
+              "answer_format": "Begründung für IMAP (z.B. Synchronisation, serverseitige Speicherung)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "task_number": 3,
+      "total_points": 30,
+      "title": "Aufbau und Betrieb einer Webseite",
+      "subtasks": [
+        {
+          "part_letter": "a",
+          "description": "Netzplan für Website-Erstellung.",
+          "image_references": ["Netzplan-Vorlage mit Tabelle (Abbildung zu Aufgabe 3 aa) und 3 ab)"],
+          "sub_parts": [
+            {
+              "sub_part_letter": "aa",
+              "points": 9,
+              "question": "Tragen Sie die fehlenden FAZ, FEZ, SAZ, SEZ, GP und FP in den nebenstehenden Plan ein.",
+              "answer_format": "Ausgefüllter Netzplan",
+              "calculation_needed": "Vorwärts- und Rückwärtsrechnung im Netzplan"
+            },
+            {
+              "sub_part_letter": "ab",
+              "points": 1,
+              "question": "Nennen Sie die Vorgänge des kritischen Pfads.",
+              "answer_format": "Liste der Vorgangs-Buchstaben des kritischen Pfades"
+            }
+          ]
+        },
+        {
+          "part_letter": "b",
+          "points": 3,
+          "description": "Unterschied dynamische vs. statische Website.",
+          "question": "Die zukünftige Website soll als dynamische Website erstellt werden. Erläutern Sie den Unterschied gegenüber einer statischen Website.",
+          "answer_format": "Erläuterung der Unterschiede"
+        },
+        {
+          "part_letter": "c",
+          "points": 3,
+          "description": "Programmiersprachen für dynamische Webseiten.",
+          "question": "Nennen Sie drei Programmiersprachen, die für die Entwicklung von dynamischen Webinhalten verwendet werden.",
+          "answer_format": "Liste von drei Programmiersprachen (z.B. PHP, Python, JavaScript)"
+        },
+        {
+          "part_letter": "d",
+          "points": 6,
+          "description": "Schreibtischtest einer Python-Funktion.",
+          "code_provided": "def analytics_berechnen(besucher, seitenaufrufe, besucherSuchmaschinen, anzahlBounces):\n  durchschnittSeitenaufrufeProBesucher = seitenaufrufe / besucher\n  prozentsatzSuchmaschinenBesucher = (besucherSuchmaschinen / besucher) * 100\n  nonBounceRate = ((besucher - anzahlBounces) / besucher) * 100\n  return (durchschnittSeitenaufrufeProBesucher, prozentsatzSuchmaschinenBesucher, nonBounceRate)\n\nAufruf:\nergebnis = analytics_berechnen(12000, 33000, 5562, 7554)",
+          "question": "Berechnen Sie die drei Rückgabewerte des folgenden Funktionsaufrufs. Geben Sie die Rückgabewerte der Funktion mit zwei Nachkommastellen an.",
+          "answer_format": "Drei numerische Werte mit 2 Nachkommastellen.",
+          "calculation_needed": "Berechnung der drei Rückgabewerte basierend auf den Formeln und Eingabewerten."
+        },
+        {
+          "part_letter": "e",
+          "points": 8,
+          "description": "Analyse von Pseudocode.",
+          "code_provided": "Funktion bewertung_webseite(ladezeit, html_valid, mobile_freundlich, seo_optimierung):\n  Wenn ladezeit < 2:\n    Wenn html_valid:\n      Wenn mobile_freundlich:\n        Wenn seo_optimierung > 80:\n          ergebnis = \"Hervorragend\"\n        Sonst, wenn seo_optimierung > 50:\n          ergebnis = \"Gut, SEO könnte besser sein\"\n        Sonst:\n          ergebnis = \"Schwaches SEO\"\n      Sonst:\n        Wenn seo_optimierung > 80:\n          ergebnis = \"Nicht mobilfreundlich, aber SEO gut\"\n        Sonst:\n          ergebnis = \"SEO und Mobilfreundlichkeit könnten besser sein\"\n    Sonst:\n      Wenn mobile_freundlich:\n        ergebnis = \"HTML nicht valide, aber mobilfreundlich\"\n      Sonst:\n        ergebnis = \"HTML nicht valide und nicht mobilfreundlich\"\n  Sonst:\n    Wenn html_valid:\n      Wenn mobile_freundlich:\n        ergebnis = \"Langsam, aber valide und mobilfreundlich\"\n      Sonst:\n        ergebnis = \"Langsam und nicht mobilfreundlich\"\n    Sonst:\n      ergebnis = \"Langsam und HTML nicht valide\"\n  Rückgabe ergebnis",
+          "question": "Geben Sie die Rückgabe der Funktion bei den folgenden Aufrufen an:\n1. bewertung_webseite(1.5, Wahr, Wahr, 80)\n2. bewertung_webseite(3.0, Wahr, Falsch, 45)",
+          "answer_format": "1. ergebnis = ?\n2. ergebnis = ?",
+          "logic_needed": "Ablaufverfolgung des Pseudocodes mit den gegebenen Werten."
+        }
+      ]
+    },
+    {
+      "task_number": 4,
+      "total_points": 25,
+      "title": "Einsatz von KI vorbereiten",
+      "subtasks": [
+        {
+          "part_letter": "a",
+          "points": 6,
+          "description": "Sinnvoller KI-Einsatz im Kanzlei-Workflow.",
+          "scenario_context": "Ablauf bei Mandantenanfrage: 1. Erfassen/Aktualisieren Mandantendaten, 2. Grobe Erfassung Rechtsfall (Anwaltsgehilfe), 3. Terminvereinbarung Erstgespräch, 4. Kurze Vorabrecherche (Anwalt), 5. Erstberatung (Anwalt). KI-Beschreibung: „Open-ended tasks are completed without human assistance. The system learns independently from its experiences and thus improves its performance.“",
+          "question": "Wählen Sie drei Stellen des Ablaufs und beschreiben Sie jeweils, wie KI sinnvoll zum Einsatz kommen kann. Hinweis: Auch bei Ablaufschritt 1 ist ein weiteres Beispiel möglich!",
+          "answer_format": "Beschreibung von 3 KI-Einsatzmöglichkeiten in den Workflow-Schritten, Bezug zur KI-Beschreibung herstellen."
+        },
+        {
+          "part_letter": "b",
+          "points": 2,
+          "description": "Vorteil von KI für skeptische Mitarbeiter.",
+          "question": "Einige Mitarbeiter stehen dem Einsatz von KI skeptisch gegenüber. Erläutern Sie einen möglichen Vorteil für die Mitarbeiter.",
+          "answer_format": "Erläuterung eines Vorteils für Mitarbeiter."
+        },
+        {
+          "part_letter": "c",
+          "points": 4,
+          "description": "Kostenberechnung für KI-Chatbot.",
+          "scenario_context": "Angebot KI-Chatbot: 100 EUR/User/Monat. Jährliche Pflichtschulung: 1.800 EUR (3 Stunden). Kanzlei hat 3 Anwälte. Stundensatz Anwalt: 200 EUR.",
+          "question": "Errechnen Sie die jährlichen Kosten des Chatbot-Anbieters für die drei Anwälte. Berücksichtigen Sie neben den Kosten auch den entgangenen Umsatz durch die Pflichtschulung.",
+          "answer_format": "Rechenweg und Gesamtkosten in EUR.",
+          "calculation_needed": "(Lizenzkosten) + (Schulungskosten) + (Entgangener Umsatz) = (100 * 3 * 12) + 1800 + (3 * 3 * 200)"
+        },
+        {
+          "part_letter": "d",
+          "points": 4,
+          "description": "Vor- und Nachteile eines kostenlosen KI-Rechtsauskunft-Chatbots.",
+          "scenario_context": "KI-Chatbot auf Homepage gibt kostenlos Rechtsauskunft und versucht Mandanten zu gewinnen.",
+          "question": "Beschreiben Sie einen Vorteil und einen Nachteil dieses Chatbots für die Kanzlei.",
+          "answer_format": "1 Vorteil, 1 Nachteil"
+        },
+        {
+          "part_letter": "e",
+          "description": "Sichere Verbindung zu einem Cloud-Server.",
+          "scenario_context": "KI-Anwendung läuft auf Cloud-Server. Serverdaten: DX43 vCPU, RAM 16 GB, IPv4: 32.42.230.33, NVMe SSD 160 GB.",
+          "image_references": ["Verbindungsdialog (SSH/Serial/Telnet)", "Porttabelle"],
+          "sub_parts": [
+            {
+              "sub_part_letter": "ea",
+              "points": 3,
+              "question": "Geben Sie mithilfe der Porttabelle die notwendigen Einstellungen im Formular an, um mit dem Server eine gesicherte Verbindung aufzubauen. Gehen Sie davon aus, dass alle Dienste auf dem Standardport laufen.",
+              "answer_format": "Ausfüllen des Formulars (Host Name/IP, Port, Connection Type).",
+              "logic_needed": "IP-Adresse eintragen, SSH auswählen, Standard-SSH-Port (22) aus Tabelle finden und eintragen."
+            },
+            {
+              "sub_part_letter": "eb",
+              "points": 2,
+              "question": "Begründen Sie, warum Sie sich nicht für die übrigen angebotenen Verbindungstypen (Serial, Telnet) entschieden haben.",
+              "answer_format": "Begründung gegen Serial und Telnet (Sicherheit, Anwendungsfall)."
+            }
+          ]
+        },
+        {
+          "part_letter": "f",
+          "description": "Datenredundanz.",
+          "scenario_context": "Übernahme eines Mandantenstamms mit Redundanzen.",
+          "sub_parts": [
+            {
+              "sub_part_letter": "fa",
+              "points": 2,
+              "question": "Erklären Sie den Begriff Redundanzen.",
+              "answer_format": "Erklärung des Begriffs."
+            },
+            {
+              "sub_part_letter": "fb",
+              "points": 2,
+              "question": "Beschreiben Sie ein Problem, welches durch Redundanzen entstehen kann.",
+              "answer_format": "Beschreibung eines Problems (z.B. Inkonsistenz, Speicherplatz)."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "final_self_assessment": {
+    "question": "Wie beurteilen Sie nach der Bearbeitung der Aufgaben die zur Verfügung stehende Prüfungszeit?",
+    "options": [
+      "Sie hätte kürzer sein können.",
+      "Sie war angemessen.",
+      "Sie hätte länger sein müssen."
+    ],
+    "is_graded": false
+  }
+}
