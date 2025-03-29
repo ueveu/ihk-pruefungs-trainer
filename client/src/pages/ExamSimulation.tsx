@@ -4,7 +4,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { Question } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
-import { Clock, CheckCircle2, XCircle, ArrowRight, RotateCw, HelpCircle, Info } from 'lucide-react';
+import { Clock, CheckCircle2, XCircle, ArrowRight, RotateCw, HelpCircle, Info, BrainCircuit } from 'lucide-react';
+import QuestionHelpSidebar from '@/components/quiz/QuestionHelpSidebar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -37,9 +38,14 @@ const ExamSimulation: React.FC = () => {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const category = params?.category ? decodeURIComponent(params.category) : '';
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   const [examState, setExamState] = useState<ExamState>({
     currentQuestionIndex: 0,
@@ -284,12 +290,30 @@ const ExamSimulation: React.FC = () => {
     return (
       <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
         {/* Frage und Antwortbereich */}
-        <div className="md:col-span-3">
+        <div className="md:col-span-3 relative">
+          {currentQuestion && (
+            <QuestionHelpSidebar 
+              question={currentQuestion} 
+              isOpen={isSidebarOpen}
+              onToggle={toggleSidebar}
+            />
+          )}
           <Card className="mb-6">
             <CardHeader>
               <div className="flex justify-between items-center">
                 <CardTitle>Frage {examState.currentQuestionIndex + 1} von {questions.length}</CardTitle>
                 <div className="flex items-center gap-2">
+                  <button 
+                    onClick={toggleSidebar}
+                    className={`text-sm flex items-center gap-1 px-3 py-1 rounded-full transition-colors mr-4 ${
+                      isSidebarOpen 
+                        ? 'bg-primary/20 text-primary' 
+                        : 'bg-neutral-100 text-neutral-600 hover:bg-primary/10 hover:text-primary'
+                    }`}
+                  >
+                    <BrainCircuit className="h-3.5 w-3.5" />
+                    Hilfe
+                  </button>
                   <Clock className="h-5 w-5 text-primary" />
                   <span className={`font-mono text-lg ${examState.remainingTime < 300 ? 'text-red-500 font-bold' : ''}`}>
                     {formatTime(examState.remainingTime)}

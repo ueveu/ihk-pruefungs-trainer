@@ -341,6 +341,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+  
+  // AI Question Hint API
+  app.post("/api/ai/question-hint", async (req, res) => {
+    try {
+      const hintSchema = z.object({
+        prompt: z.string(),
+        questionId: z.number().optional()
+      });
+      
+      const { prompt, questionId } = hintSchema.parse(req.body);
+      
+      // Initialisiere die Gemini API mit dem API-Schlüssel aus der Umgebungsvariablen
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey) {
+        return res.status(500).json({ 
+          message: "Gemini API key not configured",
+          error: "API key is missing"
+        });
+      }
+      
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      
+      // KI-Anfrage senden
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      
+      // Antwort formatieren
+      let hint = response.text().trim();
+      
+      res.json({
+        hint,
+        questionId
+      });
+      
+    } catch (error) {
+      console.error("Error generating question hint:", error);
+      res.status(500).json({ 
+        message: "Failed to generate question hint", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
 
   return httpServer;
 }

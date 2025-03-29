@@ -3,6 +3,8 @@ import { Question } from '@/lib/types';
 import Confetti from '@/components/common/Confetti';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import QuestionHelpSidebar from './QuestionHelpSidebar';
+import { BrainCircuit } from 'lucide-react';
 
 interface QuestionCardProps {
   question: Question;
@@ -24,6 +26,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [answered, setAnswered] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -67,14 +70,36 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
     onAnswered(isCorrect);
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
-    <div className="card bg-white rounded-xl shadow-md p-6 mb-6 animate-slide-in">
+    <div className="card bg-white rounded-xl shadow-md p-6 mb-6 animate-slide-in relative">
       {showConfetti && <Confetti />}
+      <QuestionHelpSidebar 
+        question={question} 
+        isOpen={isSidebarOpen}
+        onToggle={toggleSidebar}
+      />
       
       <div className="mb-4">
-        <span className="inline-block bg-primary/10 text-primary text-sm font-medium px-3 py-1 rounded-full mb-2">
-          {question.category}
-        </span>
+        <div className="flex justify-between items-start mb-2">
+          <span className="inline-block bg-primary/10 text-primary text-sm font-medium px-3 py-1 rounded-full">
+            {question.category}
+          </span>
+          <button 
+            onClick={toggleSidebar}
+            className={`text-sm flex items-center gap-1 px-3 py-1 rounded-full transition-colors ${
+              isSidebarOpen 
+                ? 'bg-primary/20 text-primary' 
+                : 'bg-neutral-100 text-neutral-600 hover:bg-primary/10 hover:text-primary'
+            }`}
+          >
+            <BrainCircuit className="h-3.5 w-3.5" />
+            Hilfe
+          </button>
+        </div>
         <h3 className="text-lg font-semibold text-neutral-900">{question.questionText}</h3>
       </div>
       
