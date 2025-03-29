@@ -13,10 +13,11 @@ import Achievements from "@/pages/Achievements";
 import Settings from "@/pages/Settings";
 import ExamSimulation from "@/pages/ExamSimulation";
 import AIChat from "@/pages/AIChat";
+import StudyCompanion from "@/pages/StudyCompanion";
 import QuickTip from "@/components/common/QuickTip";
 import { useState } from "react";
 
-type ActiveTab = "home" | "quiz" | "flashcards" | "stats" | "achievements" | "settings" | "ai-chat";
+type ActiveTab = "home" | "quiz" | "flashcards" | "stats" | "achievements" | "settings" | "ai-chat" | "study-companion";
 
 function Router() {
   const [activeTab, setActiveTab] = useState<ActiveTab>("home");
@@ -51,6 +52,9 @@ function Router() {
           </Route>
           <Route path="/ai-chat">
             <AIChat />
+          </Route>
+          <Route path="/study-companion">
+            <StudyCompanion />
           </Route>
           <Route component={NotFound} />
         </Switch>

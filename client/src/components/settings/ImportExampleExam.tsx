@@ -3,7 +3,8 @@ import { FileText, Download } from 'lucide-react';
 import { Question } from '@/lib/types';
 import { loadIHKExamFromURL } from '@/lib/ihk-exam-importer';
 import { useToast } from '@/hooks/use-toast';
-import examJsonPath from '@assets/ap1_frühjahr_2025.json?url';
+// Path to the example exam JSON file in attached assets
+const examJsonPath = '/attached_assets/ap1_frühjahr_2025.json';
 
 interface ImportExampleExamProps {
   onImport: (questions: Question[]) => void;

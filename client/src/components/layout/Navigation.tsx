@@ -1,16 +1,16 @@
 import React from 'react';
 import { useLocation, Link } from 'wouter';
-import { Home as HomeIcon, BookOpen, Layers, BarChart3, Award, Settings as SettingsIcon, BrainCircuit } from 'lucide-react';
+import { Home as HomeIcon, BookOpen, Layers, BarChart3, Award, Settings as SettingsIcon, BrainCircuit, Sparkles } from 'lucide-react';
 
 interface NavigationProps {
-  activeTab: 'home' | 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings' | 'ai-chat';
-  onTabChange: (tab: 'home' | 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings' | 'ai-chat') => void;
+  activeTab: 'home' | 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings' | 'ai-chat' | 'study-companion';
+  onTabChange: (tab: 'home' | 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings' | 'ai-chat' | 'study-companion') => void;
 }
 
 const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
   const [location, setLocation] = useLocation();
 
-  const handleTabClick = (tab: 'home' | 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings' | 'ai-chat', path: string) => {
+  const handleTabClick = (tab: 'home' | 'quiz' | 'flashcards' | 'stats' | 'achievements' | 'settings' | 'ai-chat' | 'study-companion', path: string) => {
     onTabChange(tab);
     setLocation(path);
   };
@@ -89,6 +89,18 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
           >
             <BrainCircuit className="h-5 w-5 mr-2" />
             KI-Chat
+          </button>
+          
+          <button 
+            onClick={() => handleTabClick('study-companion', '/study-companion')}
+            className={`flex items-center px-4 py-4 border-b-2 font-medium whitespace-nowrap transition-colors ${
+              activeTab === 'study-companion' 
+                ? 'border-primary text-primary' 
+                : 'border-transparent text-neutral-600 hover:text-neutral-900'
+            }`}
+          >
+            <Sparkles className="h-5 w-5 mr-2" />
+            Lernbegleiter
           </button>
           
           <button 

@@ -152,7 +152,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
       
       // Prompt für die KI erstellen
       const prompt = `
@@ -246,7 +246,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
       
       // Prompt für die KI erstellen
       const prompt = `
@@ -271,6 +271,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error generating AI chat response:", error);
       res.status(500).json({ 
         message: "Failed to generate AI response", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+  
+  // AI Study Tip API
+  app.post("/api/ai/study-tip", async (req, res) => {
+    try {
+      const studyTipSchema = z.object({
+        prompt: z.string()
+      });
+      
+      const { prompt } = studyTipSchema.parse(req.body);
+      
+      // Initialisiere die Gemini API mit dem API-Schlüssel aus der Umgebungsvariablen
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey) {
+        return res.status(500).json({ 
+          message: "Gemini API key not configured",
+          error: "API key is missing"
+        });
+      }
+      
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      
+      // KI-Anfrage senden
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      
+      // Entferne überflüssige Anführungszeichen oder Formatierungen
+      let tip = response.text().trim();
+      
+      // Entferne eventuelle Markdown-Formatierungen
+      tip = tip.replace(/^["']|["']$/g, '');
+      
+      res.json({
+        tip
+      });
+      
+    } catch (error) {
+      console.error("Error generating AI study tip:", error);
+      res.status(500).json({ 
+        message: "Failed to generate study tip", 
         error: error instanceof Error ? error.message : "Unknown error" 
       });
     }
