@@ -1,0 +1,35 @@
+
+DOMException {}
+
+at t.value (https://47a88ca8-3cbf-4bb0-a994-9c9f421c44fe-00-bd3q2eo33bvq.spock.replit.dev:3000/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://47a88ca8-3cbf-4bb0-a994-9c9f421c44fe-00-bd3q2eo33bvq.spock.replit.dev:3000/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://47a88ca8-3cbf-4bb0-a994-9c9f421c44fe-00-bd3q2eo33bvq.spock.replit.dev:3000/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://47a88ca8-3cbf-4bb0-a994-9c9f421c44fe-00-bd3q2eo33bvq.spock.replit.dev:3000/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+Stats is not defined
+Stats is not defined
+at App (https://47a88ca8-3cbf-4bb0-a994-9c9f421c44fe-00-bd3q2eo33bvq.spock.replit.dev:3000/src/App.tsx?v=0EBK_rs_ohHRbuZ8QbWiH:75:171)
+at renderWithHooks (https://47a88ca8-3cbf-4bb0-a994-9c9f421c44fe-00-bd3q2eo33bvq.spock.replit.dev:3000/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-WERSD76P.js?v=54519573:11548:26)
+at mountIndeterminateComponent (https://47a88ca8-3cbf-4bb0-a994-9c9f421c44fe-00-bd3q2eo33bvq.spock.replit.dev:3000/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-WERSD76P.js?v=54519573:14926:21)
+at beginWork (https://47a88ca8-3cbf-4bb0-a994-9c9f421c44fe-00-bd3q2eo33bvq.spock.replit.dev:3000/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-WERSD76P.js?v=54519573:15914:22)
+at HTMLUnknownElement.callCallback2 (https://47a88ca8-3cbf-4bb0-a994-9c9f421c44fe-00-bd3q2eo33bvq.spock.replit.dev:3000/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-WERSD76P.js?v=54519573:3674:22)
+at Object.invokeGuardedCallbackDev (https://47a88ca8-3cbf-4bb0-a994-9c9f421c44fe-00-bd3q2eo33bvq.spock.replit.dev:3000/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-WERSD76P.js?v=54519573:3699:24)
+at invokeGuardedCallback (https://47a88ca8-3cbf-4bb0-a994-9c9f421c44fe-00-bd3q2eo33bvq.spock.replit.dev:3000/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-WERSD76P.js?v=54519573:3733:39)
+at beginWork$1 (https://47a88ca8-3cbf-4bb0-a994-9c9f421c44fe-00-bd3q2eo33bvq.spock.replit.dev:3000/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-WERSD76P.js?v=54519573:19765:15)
+at performUnitOfWork (https://47a88ca8-3cbf-4bb0-a994-9c9f421c44fe-00-bd3q2eo33bvq.spock.replit.dev:3000/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-WERSD76P.js?v=54519573:19198:20)
+at workLoopSync (https://47a88ca8-3cbf-4bb0-a994-9c9f421c44fe-00-bd3q2eo33bvq.spock.replit.dev:3000/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-WERSD76P.js?v=54519573:19137:13)
+The above error occurred in the <App> component:
+
+    at App (https://47a88ca8-3cbf-4bb0-a994-9c9f421c44fe-00-bd3q2eo33bvq.spock.replit.dev:3000/src/App.tsx?v=0EBK_rs_ohHRbuZ8QbWiH:75:171)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+at App (https://47a88ca8-3cbf-4bb0-a994-9c9f421c44fe-00-bd3q2eo33bvq.spock.replit.dev:3000/src/App.tsx?v=0EBK_rs_ohHRbuZ8QbWiH:75:171)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+at t.value (https://47a88ca8-3cbf-4bb0-a994-9c9f421c44fe-00-bd3q2eo33bvq.spock.replit.dev:3000/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://47a88ca8-3cbf-4bb0-a994-9c9f421c44fe-00-bd3q2eo33bvq.spock.replit.dev:3000/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://47a88ca8-3cbf-4bb0-a994-9c9f421c44fe-00-bd3q2eo33bvq.spock.replit.dev:3000/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://47a88ca8-3cbf-4bb0-a994-9c9f421c44fe-00-bd3q2eo33bvq.spock.replit.dev:3000/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+Stats is not defined
