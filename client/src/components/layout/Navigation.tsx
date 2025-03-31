@@ -132,6 +132,6 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
       </div>
     </div>
   );
-}
+};
 
 export default Navigation;

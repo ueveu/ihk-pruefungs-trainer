@@ -1,4 +1,3 @@
-
 import { Question, IHKExam, IHKImportedQuestion } from '@/lib/types';
 
 interface IHKSubPart {
@@ -114,24 +113,25 @@ export function convertIHKExamToQuestions(examJson: string): IHKImportedQuestion
   return questions;
 }
 
-export async function loadIHKExamFromFile(file: File): Promise<IHKImportedQuestion[]> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const questions = convertIHKExamToQuestions(e.target?.result as string);
-        resolve(questions);
-      } catch (error) {
-        reject(error);
-      }
-    };
-    reader.onerror = () => reject(new Error('Failed to read file'));
-    reader.readAsText(file);
-  });
-}
+export const loadIHKExamFromFile = async (file: File) => {
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
+    return convertIHKExamToQuestions(JSON.stringify(data)); //Process with existing function
+  } catch (error) {
+    console.error('Error loading IHK exam from file:', error);
+    throw error;
+  }
+};
 
-export async function loadIHKExamFromURL(url: string): Promise<IHKImportedQuestion[]> {
-  const response = await fetch(url);
-  const examJson = await response.text();
-  return convertIHKExamToQuestions(examJson);
-}
+export const loadIHKExamFromURL = async (url: string) => {
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return convertIHKExamToQuestions(JSON.stringify(data)); //Process with existing function
+
+  } catch (error) {
+    console.error('Error loading IHK exam from URL:', error);
+    throw error;
+  }
+};
