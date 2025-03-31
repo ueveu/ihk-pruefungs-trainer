@@ -603,13 +603,7 @@ export async function registerRoutes(app: express.Express) {
     });
   });
 
-  const port = 5000;
-  app.listen({
-    port,
-    host: "0.0.0.0", // Allow external access
-    reusePort: true,
-  }, () => {
-    console.log(`serving on port ${port}`);
+  return server; on port ${port}`);
   });
 
   return app;
