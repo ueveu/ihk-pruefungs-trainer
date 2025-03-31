@@ -19,18 +19,41 @@ export function convertIHKExamToQuestions(examData: IHKExam): Question[] {
     task.subtasks.forEach(subtask => {
       // Wenn die Teilaufgabe selbst eine Frage hat
       if (subtask.question && subtask.points) {
-        const options = generateOptions(subtask.answer_format);
+        const options = generateOptionsFromFormat(subtask.answer_format);
         
         questions.push({
           id: questionId++,
           category: taskCategory,
-          questionText: `${subtask.description}${subtask.scenario_context ? ` - ${subtask.scenario_context}` : ''}\n\n${subtask.question || ''}`,
+          questionText: `${subtask.description}${subtask.scenario_context ? `\n\nKontext: ${subtask.scenario_context}` : ''}\n\nFrage: ${subtask.question}`,
           options: options,
-          correctAnswer: 0, // Die erste Option ist korrekt
-          explanation: subtask.calculation_needed || "Siehe IHK-Lösung für detaillierte Erklärung.",
-          difficulty: calculateDifficulty(subtask.points || 0),
-          originalTask: {
-            taskNumber: task.task_number,
+          correctAnswer: 0,
+          explanation: subtask.calculation_needed || subtask.explanation || "Siehe IHK-Lösung für detaillierte Erklärung.",
+          difficulty: calculateDifficulty(subtask.points),
+          points: subtask.points
+        });
+      }
+      
+      // Handle sub_parts if they exist
+      if (subtask.sub_parts) {
+        subtask.sub_parts.forEach(subPart => {
+          if (subPart.question && subPart.points) {
+            const options = generateOptionsFromFormat(subPart.answer_format);
+            
+            questions.push({
+              id: questionId++,
+              category: taskCategory,
+              questionText: `${subtask.description} - ${subPart.question}${subPart.scenario_context ? `\n\nKontext: ${subPart.scenario_context}` : ''}`,
+              options: options,
+              correctAnswer: 0,
+              explanation: subPart.calculation_needed || subPart.explanation || "Siehe IHK-Lösung für detaillierte Erklärung.",
+              difficulty: calculateDifficulty(subPart.points),
+              points: subPart.points
+            });
+          }
+        });
+      }
+    });
+  });number,
             taskTitle: task.title,
             subtaskLetter: subtask.part_letter,
             points: subtask.points || 0
@@ -142,4 +165,35 @@ export function loadIHKExamFromFile(file: File): Promise<Question[]> {
     
     reader.readAsText(file);
   });
+}
+function calculateDifficulty(points: number): number {
+  if (points <= 2) return 1;
+  if (points <= 4) return 2;
+  return 3;
+}
+
+function generateOptionsFromFormat(format: string): { text: string }[] {
+  if (format.includes("Ja/Nein")) {
+    return [
+      { text: "Ja" },
+      { text: "Nein" }
+    ];
+  }
+  
+  if (format.includes("Liste")) {
+    return [
+      { text: "Option 1" },
+      { text: "Option 2" },
+      { text: "Option 3" },
+      { text: "Option 4" }
+    ];
+  }
+  
+  // Default format for numerical or text answers
+  return [
+    { text: "Antwortmöglichkeit 1" },
+    { text: "Antwortmöglichkeit 2" },
+    { text: "Antwortmöglichkeit 3" },
+    { text: "Antwortmöglichkeit 4" }
+  ];
 }
