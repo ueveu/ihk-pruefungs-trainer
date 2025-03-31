@@ -102,6 +102,15 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
     </nav>
   );
 
+  const SheetTitle = ({ children }: { children: React.ReactNode }) => (
+    <h2 className="text-lg font-medium mb-2">{children}</h2>
+  );
+
+  const SheetDescription = ({ children }: { children: React.ReactNode }) => (
+    <p className="text-sm text-muted-foreground mb-4">{children}</p>
+  );
+
+
   return (
     <div className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
@@ -114,7 +123,9 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-[80%] max-w-sm">
+          <SheetContent side="left" aria-label="Navigation Menu" className="w-[80%] max-w-sm">
+            <SheetTitle>Navigation</SheetTitle>
+            <SheetDescription>Navigate through different sections of the app</SheetDescription>
             <NavItems />
           </SheetContent>
         </Sheet>
