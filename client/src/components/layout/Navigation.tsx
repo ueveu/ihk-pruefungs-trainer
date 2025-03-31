@@ -1,4 +1,3 @@
-
 import * as React from "react"
 import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -9,13 +8,14 @@ import {
 } from "@/components/ui/sheet"
 import { useLocation } from "wouter"
 import { Home, BookOpen, Layers, BarChart3, Award, Settings, BrainCircuit, Sparkles, ClipboardCheck } from "lucide-react"
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 interface NavigationProps {
   activeTab: 'home' | 'quiz' | 'flashcards' | 'exam' | 'stats' | 'achievements' | 'settings' | 'ai-chat' | 'study-companion';
   onTabChange: (tab: 'home' | 'quiz' | 'flashcards' | 'exam' | 'stats' | 'achievements' | 'settings' | 'ai-chat' | 'study-companion') => void;
 }
 
-export default function Navigation({ activeTab, onTabChange }: NavigationProps) {
+const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
   const [location, setLocation] = useLocation();
   const [open, setOpen] = React.useState(false);
 
@@ -122,3 +122,5 @@ export default function Navigation({ activeTab, onTabChange }: NavigationProps) 
     </div>
   );
 }
+
+export default Navigation;

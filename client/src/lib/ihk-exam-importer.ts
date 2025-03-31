@@ -53,10 +53,7 @@ export function convertIHKExamToQuestions(examData: IHKExam): Question[] {
         });
       }
     });
-  });number,
-            taskTitle: task.title,
-            subtaskLetter: subtask.part_letter,
-            points: subtask.points || 0
+  });
           }
         } as IHKImportedQuestion);
       }
