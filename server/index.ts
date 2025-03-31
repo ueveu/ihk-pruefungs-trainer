@@ -74,17 +74,6 @@ app.use((req, res, next) => {
         });
       });
     });
-      const server = net.createServer();
-      server.on('error', () => {
-        resolve(findFreePort(startPort + 1));
-      });
-      
-      server.listen(startPort, '127.0.0.1', () => {
-        server.close(() => {
-          resolve(startPort);
-        });
-      });
-    });
   };
 
   const port = await findFreePort(5000);
