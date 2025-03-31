@@ -1,9 +1,14 @@
+
 import * as React from "react"
 import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { cn } from "@/lib/utils"
-import { useIsMobile } from "@/hooks/use-mobile"
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { useLocation } from "wouter"
+import { Home, BookOpen, Layers, BarChart3, Award, Settings, BrainCircuit, Sparkles, ClipboardCheck } from "lucide-react"
 
 interface NavigationProps {
   activeTab: 'home' | 'quiz' | 'flashcards' | 'exam' | 'stats' | 'achievements' | 'settings' | 'ai-chat' | 'study-companion';
@@ -11,76 +16,91 @@ interface NavigationProps {
 }
 
 export default function Navigation({ activeTab, onTabChange }: NavigationProps) {
-  const isMobile = useIsMobile()
-  const [isOpen, setIsOpen] = React.useState(false)
+  const [location, setLocation] = useLocation();
+  const [open, setOpen] = React.useState(false);
+
+  const handleTabClick = (tab: NavigationProps['activeTab'], path: string) => {
+    onTabChange(tab);
+    setLocation(path);
+    setOpen(false);
+  };
 
   const NavItems = () => (
     <nav className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
       <Button
         variant={activeTab === 'home' ? 'default' : 'ghost'}
         className="justify-start md:justify-center"
-        onClick={() => onTabChange('home')}
+        onClick={() => handleTabClick('home', '/')}
       >
+        <Home className="h-5 w-5 mr-2" />
         Home
       </Button>
       <Button
         variant={activeTab === 'quiz' ? 'default' : 'ghost'}
         className="justify-start md:justify-center"
-        onClick={() => onTabChange('quiz')}
+        onClick={() => handleTabClick('quiz', '/quiz')}
       >
+        <BookOpen className="h-5 w-5 mr-2" />
         Quiz
       </Button>
       <Button
         variant={activeTab === 'flashcards' ? 'default' : 'ghost'}
         className="justify-start md:justify-center"
-        onClick={() => onTabChange('flashcards')}
+        onClick={() => handleTabClick('flashcards', '/flashcards')}
       >
+        <Layers className="h-5 w-5 mr-2" />
         Karteikarten
       </Button>
       <Button
         variant={activeTab === 'exam' ? 'default' : 'ghost'}
         className="justify-start md:justify-center"
-        onClick={() => onTabChange('exam')}
+        onClick={() => handleTabClick('exam', '/exam-simulation')}
       >
+        <ClipboardCheck className="h-5 w-5 mr-2" />
         Prüfung
       </Button>
       <Button
         variant={activeTab === 'stats' ? 'default' : 'ghost'}
         className="justify-start md:justify-center"
-        onClick={() => onTabChange('stats')}
+        onClick={() => handleTabClick('stats', '/stats')}
       >
+        <BarChart3 className="h-5 w-5 mr-2" />
         Statistik
       </Button>
       <Button
         variant={activeTab === 'achievements' ? 'default' : 'ghost'}
         className="justify-start md:justify-center"
-        onClick={() => onTabChange('achievements')}
+        onClick={() => handleTabClick('achievements', '/achievements')}
       >
+        <Award className="h-5 w-5 mr-2" />
         Erfolge
       </Button>
       <Button
         variant={activeTab === 'ai-chat' ? 'default' : 'ghost'}
         className="justify-start md:justify-center"
-        onClick={() => onTabChange('ai-chat')}
+        onClick={() => handleTabClick('ai-chat', '/ai-chat')}
       >
+        <BrainCircuit className="h-5 w-5 mr-2" />
         KI-Chat
       </Button>
       <Button
         variant={activeTab === 'study-companion' ? 'default' : 'ghost'}
         className="justify-start md:justify-center"
-        onClick={() => onTabChange('study-companion')}
+        onClick={() => handleTabClick('study-companion', '/study-companion')}
       >
+        <Sparkles className="h-5 w-5 mr-2" />
         Lernbegleiter
       </Button>
       <Button
         variant={activeTab === 'settings' ? 'default' : 'ghost'}
         className="justify-start md:justify-center"
-        onClick={() => onTabChange('settings')}
+        onClick={() => handleTabClick('settings', '/settings')}
       >
+        <Settings className="h-5 w-5 mr-2" />
         Einstellungen
       </Button>
     </nav>
-  )
+  );
 
   return (
     <div className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -88,7 +108,7 @@ export default function Navigation({ activeTab, onTabChange }: NavigationProps) 
         <div className="mr-4 hidden md:flex">
           <NavItems />
         </div>
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild className="md:hidden">
             <Button variant="ghost" size="icon">
               <Menu className="h-5 w-5" />
@@ -100,5 +120,5 @@ export default function Navigation({ activeTab, onTabChange }: NavigationProps) 
         </Sheet>
       </div>
     </div>
-  )
+  );
 }
