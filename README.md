@@ -1,24 +1,27 @@
+
 # IHK Prüfungs-Trainer
 
-Ein interaktives Lern-App für die Vorbereitung auf die IHK-Prüfung für Fachinformatiker Anwendungsentwicklung.
+Eine interaktive Lernanwendung zur Vorbereitung auf die IHK-Prüfung für Fachinformatiker Anwendungsentwicklung.
 
 ## Features
 
-- **Quiz-Modus**: Multiple-Choice-Fragen zur Selbstüberprüfung
-- **Karteikarten-Modus**: Spaced-Repetition-Lernen mit Karteikarten
-- **Statistik**: Umfassende Analyse deines Lernfortschritts
-- **Erfolge**: Gamification-Elemente zur Motivation
+- **Quiz-System**: Multiple-Choice und offene Fragen mit KI-gestützter Bewertung
+- **Karteikarten**: Spaced-Repetition-Lernsystem
+- **Fortschrittsverfolgung**: Detaillierte Statistiken und Lernanalysen
+- **KI-Integration**: Intelligente Lernhilfen und Feedback
+- **Level-System**: Gamifiziertes Lernen mit Erfolgen
 
-## Technologien
+## Technologie-Stack
 
 - Frontend: React, TypeScript, TailwindCSS, ShadcnUI
 - Backend: Express.js, TypeScript
-- Datenbank: In-Memory-Speicher (erweiterbar für persistente Speicherung)
+- KI: Google Gemini API
+- Datenbank: In-Memory (erweiterbar)
 
-## Quickstart
+## Installation & Start
 
 ```bash
-# Abhängigkeiten installieren
+# Installation der Abhängigkeiten
 npm install
 
 # Entwicklungsserver starten
@@ -27,18 +30,21 @@ npm run dev
 
 ## Projektstruktur
 
-- `/client` - Frontend-Code
-  - `/src/components` - React-Komponenten
-  - `/src/pages` - Hauptseiten der Anwendung
-  - `/src/lib` - Utilities und gemeinsam genutzte Funktionen
-- `/server` - Backend-Code
-  - `routes.ts` - API-Endpunkte
-  - `storage.ts` - Datenspeicherung
-- `/shared` - Von Client und Server gemeinsam genutzte Typen und Schemas
+```
+├── client/          # Frontend-Code
+├── server/          # Backend-API
+├── shared/          # Gemeinsame Typen/Schemas
+└── attached_assets/ # Prüfungsbeispiele
+```
 
-## Roadmap
+## Nächste Entwicklungsschritte
 
-- Zeitliche Herausforderungen
-- Detaillierte Analysen
-- Spaced-Repetition-Algorithmus optimieren
-- Community-Features
+1. Persistente Datenspeicherung implementieren
+2. Benutzerauthentifizierung hinzufügen
+3. Prüfungssimulator erweitern
+4. Mobile Optimierung verbessern
+5. Offline-Modus entwickeln
+
+## Lizenz
+
+MIT
