@@ -1,21 +1,15 @@
-import type { Express } from "express";
-import { createServer, type Server } from "http";
-import * as fs from "fs";
-import * as path from "path";
-import { storage } from "./storage";
-import { 
-  insertUserSchema, 
-  insertQuestionSchema, 
-  insertUserProgressSchema,
-  insertQuizLevelSchema,
-  insertUserLevelProgressSchema
-} from "@shared/schema";
-import { z } from "zod";
+import express from 'express';
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { storage } from './storage';
+import { insertUserLevelProgressSchema } from '../shared/schema';
 
-export async function registerRoutes(app: Express): Promise<Server> {
-  const httpServer = createServer(app);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+export async function registerRoutes(app: express.Express) {
   // Get all questions
   app.get("/api/questions", async (req, res) => {
     try {
@@ -127,7 +121,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Überprüfen auf mögliche Duplikate basierend auf Fragetext
       const uniqueQuestions = questions.filter(newQuestion => {
         // Überprüfe, ob eine Frage mit identischem Text bereits existiert
-        return !existingQuestions.some(existingQuestion => 
+        return !existingQuestions.some(existingQuestion =>
           existingQuestion.questionText === newQuestion.questionText
         );
       });
@@ -152,9 +146,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("Error importing batch questions:", error);
-      res.status(400).json({ 
-        message: "Failed to import questions", 
-        error: error instanceof Error ? error.message : "Unknown error" 
+      res.status(400).json({
+        message: "Failed to import questions",
+        error: error instanceof Error ? error.message : "Unknown error"
       });
     }
   });
@@ -175,7 +169,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Initialisiere die Gemini API mit dem API-Schlüssel aus der Umgebungsvariablen
       const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) {
-        return res.status(500).json({ 
+        return res.status(500).json({
           message: "Gemini API key not configured",
           error: "API key is missing"
         });
@@ -250,9 +244,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("Error generating AI feedback:", error);
-      res.status(500).json({ 
-        message: "Failed to generate AI feedback", 
-        error: error instanceof Error ? error.message : "Unknown error" 
+      res.status(500).json({
+        message: "Failed to generate AI feedback",
+        error: error instanceof Error ? error.message : "Unknown error"
       });
     }
   });
@@ -269,7 +263,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Initialisiere die Gemini API mit dem API-Schlüssel aus der Umgebungsvariablen
       const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) {
-        return res.status(500).json({ 
+        return res.status(500).json({
           message: "Gemini API key not configured",
           error: "API key is missing"
         });
@@ -299,9 +293,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("Error generating AI chat response:", error);
-      res.status(500).json({ 
-        message: "Failed to generate AI response", 
-        error: error instanceof Error ? error.message : "Unknown error" 
+      res.status(500).json({
+        message: "Failed to generate AI response",
+        error: error instanceof Error ? error.message : "Unknown error"
       });
     }
   });
@@ -318,7 +312,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Initialisiere die Gemini API mit dem API-Schlüssel aus der Umgebungsvariablen
       const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) {
-        return res.status(500).json({ 
+        return res.status(500).json({
           message: "Gemini API key not configured",
           error: "API key is missing"
         });
@@ -343,9 +337,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     } catch (error) {
       console.error("Error generating AI study tip:", error);
-      res.status(500).json({ 
-        message: "Failed to generate study tip", 
-        error: error instanceof Error ? error.message : "Unknown error" 
+      res.status(500).json({
+        message: "Failed to generate study tip",
+        error: error instanceof Error ? error.message : "Unknown error"
       });
     }
   });
@@ -363,7 +357,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Initialisiere die Gemini API mit dem API-Schlüssel aus der Umgebungsvariablen
       const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) {
-        return res.status(500).json({ 
+        return res.status(500).json({
           message: "Gemini API key not configured",
           error: "API key is missing"
         });
@@ -386,9 +380,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     } catch (error) {
       console.error("Error generating question hint:", error);
-      res.status(500).json({ 
-        message: "Failed to generate question hint", 
-        error: error instanceof Error ? error.message : "Unknown error" 
+      res.status(500).json({
+        message: "Failed to generate question hint",
+        error: error instanceof Error ? error.message : "Unknown error"
       });
     }
   });
@@ -529,21 +523,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/example-exam", async (req, res) => {
     try {
       const filePath = path.join(process.cwd(), "attached_assets", "ap1_frühjahr_2025.json");
-
-      if (!fs.existsSync(filePath)) {
-        return res.status(404).json({ message: "Beispielprüfung nicht gefunden" });
-      }
-
-      const fileContent = fs.readFileSync(filePath, 'utf8');
+      const fileContent = await fs.readFile(filePath, 'utf8');
       const examData = JSON.parse(fileContent);
 
-      res.json({ examData });
+      // Add timer and progress tracking
+      const enrichedExamData = {
+        ...examData,
+        timeLimit: 180, // 3 hours in minutes
+        startTime: new Date().toISOString(),
+        sections: examData.sections.map((section: any) => ({
+          ...section,
+          progress: 0,
+          timeSpent: 0
+        }))
+      };
+
+      res.json({ examData: enrichedExamData });
     } catch (error) {
       console.error("Error loading example exam:", error);
-      res.status(500).json({ 
-        message: "Failed to load example exam", 
-        error: error instanceof Error ? error.message : "Unknown error" 
+      res.status(500).json({
+        message: "Failed to load example exam",
+        error: error instanceof Error ? error.message : "Unknown error"
       });
+    }
+  });
+
+  // Update exam progress
+  app.post("/api/exam-progress/:examId", async (req, res) => {
+    try {
+      const { examId } = req.params;
+      const { sectionId, progress, timeSpent } = req.body;
+
+      // Store progress in DB
+      const updatedProgress = await storage.updateExamProgress(examId, sectionId, progress, timeSpent);
+
+      // Use Gemini to provide personalized feedback
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey) {
+        throw new Error("GEMINI_API_KEY not found");
+      }
+
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+
+      const prompt = `
+        Based on the exam progress:
+        - Section: ${sectionId}
+        - Progress: ${progress}%
+        - Time spent: ${timeSpent} minutes
+
+        Provide brief, focused feedback on:
+        1. Time management
+        2. Areas needing attention
+        3. Specific topic recommendations
+
+        Format as JSON with keys: timeAdvice, weakAreas, recommendations
+      `;
+
+      const result = await model.generateContent(prompt);
+      const feedback = JSON.parse(result.response.text());
+
+      res.json({
+        progress: updatedProgress,
+        feedback
+      });
+    } catch (error) {
+      console.error("Error updating exam progress:", error);
+      res.status(500).json({ message: "Failed to update exam progress" });
     }
   });
 
@@ -557,7 +603,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   const port = 5000;
-  httpServer.listen({
+  app.listen({
     port,
     host: "0.0.0.0", // Allow external access
     reusePort: true,
@@ -565,5 +611,5 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.log(`serving on port ${port}`);
   });
 
-  return httpServer;
+  return app;
 }

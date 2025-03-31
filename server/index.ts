@@ -60,9 +60,20 @@ app.use((req, res, next) => {
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const findFreePort = async (startPort: number): Promise<number> => {
-    const net = require('net');
+    const { createServer } = await import('net');
     
     return new Promise((resolve) => {
+      const server = createServer();
+      server.on('error', () => {
+        resolve(findFreePort(startPort + 1));
+      });
+      
+      server.listen(startPort, '0.0.0.0', () => {
+        server.close(() => {
+          resolve(startPort);
+        });
+      });
+    });
       const server = net.createServer();
       server.on('error', () => {
         resolve(findFreePort(startPort + 1));
