@@ -94,6 +94,13 @@ app.use((req, res, next) => {
     }
   };
 
-  const port = await tryPort(5000);
-  log(`serving on port ${port}`);
+  try {
+    const port = await tryPort(5000);
+    log(`serving on port ${port}`);
+  } catch (err) {
+    // If port 5000 is in use, find the next available port up to 5010
+    const freePort = await findFreePort(5001);
+    const port = await tryPort(freePort);
+    log(`Port 5000 was in use. Now serving on port ${port}`);
+  }
 })();
