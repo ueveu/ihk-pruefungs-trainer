@@ -7,7 +7,6 @@ import { Navigation } from './components/layout/Navigation';
 // Import pages
 import Home from './pages/Home';
 import Quiz from './pages/QuizMode';
-import Stats from './pages/Stats';
 import Settings from './pages/Settings';
 import Flashcards from './pages/Flashcards';
 import QuizResults from './pages/QuizResults';
