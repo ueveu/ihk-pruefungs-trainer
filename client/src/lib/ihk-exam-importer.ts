@@ -1,5 +1,4 @@
-
-import { Question } from '@/types/questions';
+import { Question, IHKExam, IHKImportedQuestion } from '@/lib/types';
 
 interface IHKSubPart {
   question: string;
@@ -56,7 +55,7 @@ function generateOptionsFromFormat(format: string): { text: string }[] {
       { text: "Nein" }
     ];
   }
-  
+
   if (format.includes("Liste")) {
     return [
       { text: "Option 1" },
@@ -65,8 +64,7 @@ function generateOptionsFromFormat(format: string): { text: string }[] {
       { text: "Option 4" }
     ];
   }
-  
-  // Default format for numerical or text answers
+
   return [
     { text: "Antwortmöglichkeit 1" },
     { text: "Antwortmöglichkeit 2" },
@@ -78,55 +76,44 @@ function generateOptionsFromFormat(format: string): { text: string }[] {
 export function convertIHKExamToQuestions(examJson: string): IHKImportedQuestion[] {
   const exam: IHKExam = JSON.parse(examJson);
   const questions: IHKImportedQuestion[] = [];
-  let questionId = 1;
 
   exam.tasks.forEach(task => {
-    const taskCategory = task.category || 'Allgemein';
-
     task.subtasks.forEach(subtask => {
-      if (subtask.question && subtask.points) {
-        const options = generateOptionsFromFormat(subtask.answer_format || '');
-        
+      if (subtask.question) {
         questions.push({
-          id: questionId++,
-          category: taskCategory,
-          questionText: `${subtask.description}${subtask.scenario_context ? `\n\nKontext: ${subtask.scenario_context}` : ''}\n\nFrage: ${subtask.question}`,
-          options: options,
+          id: 0, // Will be set by the database
+          category: task.category || 'Allgemein',
+          questionText: subtask.question,
+          options: generateOptionsFromFormat(subtask.answer_format || ''),
           correctAnswer: 0,
-          explanation: subtask.calculation_needed || subtask.explanation || "Siehe IHK-Lösung für detaillierte Erklärung.",
-          difficulty: calculateDifficulty(subtask.points),
-          points: subtask.points,
+          explanation: subtask.explanation,
+          difficulty: calculateDifficulty(subtask.points || 0),
           originalTask: {
             taskNumber: task.task_number,
             taskTitle: task.title,
             subtaskLetter: subtask.part_letter,
-            points: subtask.points
+            points: subtask.points || 0
           }
-        });
+        } as IHKImportedQuestion);
       }
-      
+
       if (subtask.sub_parts) {
         subtask.sub_parts.forEach(subPart => {
-          if (subPart.question && subPart.points) {
-            const options = generateOptionsFromFormat(subPart.answer_format);
-            
-            questions.push({
-              id: questionId++,
-              category: taskCategory,
-              questionText: `${subtask.description} - ${subPart.question}${subPart.scenario_context ? `\n\nKontext: ${subPart.scenario_context}` : ''}`,
-              options: options,
-              correctAnswer: 0,
-              explanation: subPart.calculation_needed || subPart.explanation || "Siehe IHK-Lösung für detaillierte Erklärung.",
-              difficulty: calculateDifficulty(subPart.points),
-              points: subPart.points,
-              originalTask: {
-                taskNumber: task.task_number,
-                taskTitle: task.title,
-                subtaskLetter: subtask.part_letter,
-                points: subPart.points
-              }
-            });
-          }
+          questions.push({
+            id: 0,
+            category: task.category || 'Allgemein',
+            questionText: subPart.question,
+            options: generateOptionsFromFormat(subPart.answer_format),
+            correctAnswer: 0,
+            explanation: subPart.calculation_needed,
+            difficulty: calculateDifficulty(subPart.points),
+            originalTask: {
+              taskNumber: task.task_number,
+              taskTitle: task.title,
+              subtaskLetter: subtask.part_letter,
+              points: subPart.points
+            }
+          } as IHKImportedQuestion);
         });
       }
     });
@@ -135,10 +122,10 @@ export function convertIHKExamToQuestions(examJson: string): IHKImportedQuestion
   return questions;
 }
 
-export function importExamFile(file: File): Promise<IHKImportedQuestion[]> {
+export async function loadIHKExamFromFile(file: File): Promise<IHKImportedQuestion[]> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    
+
     reader.onload = (e) => {
       try {
         const questions = convertIHKExamToQuestions(e.target?.result as string);
@@ -147,11 +134,11 @@ export function importExamFile(file: File): Promise<IHKImportedQuestion[]> {
         reject(error);
       }
     };
-    
+
     reader.onerror = () => {
       reject(new Error('Failed to read file'));
     };
-    
+
     reader.readAsText(file);
   });
 }
