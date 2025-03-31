@@ -32,11 +32,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const question = await storage.getQuestionById(id);
-      
+
       if (!question) {
         return res.status(404).json({ message: "Question not found" });
       }
-      
+
       res.json(question);
     } catch (error) {
       console.error(`Error fetching question ${req.params.id}:`, error);
@@ -85,11 +85,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = parseInt(req.params.userId);
       const stats = await storage.getUserStats(userId);
-      
+
       if (!stats) {
         return res.status(404).json({ message: "User stats not found" });
       }
-      
+
       res.json(stats);
     } catch (error) {
       console.error(`Error fetching stats for user ${req.params.userId}:`, error);
@@ -102,7 +102,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = parseInt(req.params.userId);
       const updates = req.body;
-      
+
       const stats = await storage.updateUserStats(userId, updates);
       res.json(stats);
     } catch (error) {
@@ -118,12 +118,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const batchSchema = z.object({
         questions: z.array(insertQuestionSchema)
       });
-      
+
       const { questions } = batchSchema.parse(req.body);
-      
+
       // Existierende Fragen abrufen, um Duplikate zu vermeiden
       const existingQuestions = await storage.getQuestions();
-      
+
       // Überprüfen auf mögliche Duplikate basierend auf Fragetext
       const uniqueQuestions = questions.filter(newQuestion => {
         // Überprüfe, ob eine Frage mit identischem Text bereits existiert
@@ -131,7 +131,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           existingQuestion.questionText === newQuestion.questionText
         );
       });
-      
+
       // Keine neuen Fragen gefunden
       if (uniqueQuestions.length === 0) {
         return res.status(200).json({
@@ -140,10 +140,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           skipped: questions.length
         });
       }
-      
+
       // Nur eindeutige Fragen in einem Batch speichern
       const createdQuestions = await storage.createQuestions(uniqueQuestions);
-      
+
       res.status(201).json({
         message: `Successfully imported ${createdQuestions.length} questions`,
         imported: createdQuestions.length,
@@ -169,9 +169,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         difficulty: z.number(),
         maxPoints: z.number()
       });
-      
+
       const request = feedbackSchema.parse(req.body);
-      
+
       // Initialisiere die Gemini API mit dem API-Schlüssel aus der Umgebungsvariablen
       const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) {
@@ -180,59 +180,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
           error: "API key is missing"
         });
       }
-      
+
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-      
+
       // Prompt für die KI erstellen
       const prompt = `
       Du bist ein IHK-Prüfer für Fachinformatiker. Bitte bewerte die Antwort eines Prüflings auf eine Prüfungsfrage.
-      
+
       Prüfungsfrage: ${request.questionText}
-      
+
       Richtige Antwort gemäß Lösungsschlüssel: ${request.correctAnswer}
-      
+
       Antwort des Prüflings: ${request.userAnswer}
-      
+
       Schwierigkeitsgrad der Frage: ${request.difficulty}/3
       Maximale Punktzahl: ${request.maxPoints}
-      
+
       Bitte bewerte die Antwort nach den folgenden Kriterien:
       1. Inhaltliche Richtigkeit
       2. Vollständigkeit
       3. Fachliche Präzision
-      
+
       Gib deine Bewertung im folgenden Format zurück:
       - Punktzahl: X / ${request.maxPoints}
       - Feedback: Dein detailliertes Feedback zur Antwort
       - Korrekt: Ja/Nein (Ist die Antwort insgesamt richtig oder falsch?)
-      
+
       Halte das Feedback konstruktiv und gib spezifische Hinweise, wie die Antwort verbessert werden könnte.
       Beziehe dich auf konkrete fachliche Aspekte der Antwort.
       `;
-      
+
       // KI-Anfrage senden
       const result = await model.generateContent(prompt);
       const response = result.response;
       const text = response.text();
-      
+
       // Antwort parsen
       let score = 0;
       let isCorrect = false;
       let feedback = "Keine Bewertung verfügbar.";
-      
+
       // Punktzahl extrahieren
       const scoreMatch = text.match(/Punktzahl:?\s*(\d+)\s*\/\s*\d+/i);
       if (scoreMatch && scoreMatch[1]) {
         score = parseInt(scoreMatch[1], 10);
       }
-      
+
       // Richtigkeit extrahieren
       const correctMatch = text.match(/Korrekt:?\s*(Ja|Nein)/i);
       if (correctMatch && correctMatch[1]) {
         isCorrect = correctMatch[1].toLowerCase() === 'ja';
       }
-      
+
       // Feedback extrahieren
       const feedbackMatch = text.match(/Feedback:?([\s\S]*?)(?=\n- Korrekt:|$)/i);
       if (feedbackMatch && feedbackMatch[1]) {
@@ -241,7 +241,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Fallback: Gesamten Text als Feedback verwenden, wenn das Format nicht erkannt wurde
         feedback = text;
       }
-      
+
       res.json({
         feedback,
         isCorrect,
@@ -263,9 +263,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const chatSchema = z.object({
         message: z.string()
       });
-      
+
       const { message } = chatSchema.parse(req.body);
-      
+
       // Initialisiere die Gemini API mit dem API-Schlüssel aus der Umgebungsvariablen
       const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) {
@@ -274,26 +274,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
           error: "API key is missing"
         });
       }
-      
+
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-      
+
       // Prompt für die KI erstellen
       const prompt = `
       Du bist ein Assistent für IHK-Prüfungen im Bereich Fachinformatiker für Anwendungsentwicklung.
       Der Nutzer bereitet sich auf diese Prüfung vor und hat folgende Frage: 
-      
+
       ${message}
-      
+
       Gib eine klare, hilfreiche und fachlich korrekte Antwort. Verwende Beispiele wo möglich und stelle sicher, 
       dass deine Erklärungen dem Niveau der IHK-Prüfung entsprechen. Beziehe dich auf relevante Konzepte
       der Anwendungsentwicklung, Programmierung, Datenbanken oder IT-Systeme, je nachdem, was für die Frage relevant ist.
       `;
-      
+
       // KI-Anfrage senden
       const result = await model.generateContent(prompt);
       const response = result.response;
-      
+
       res.json({
         response: response.text()
       });
@@ -305,16 +305,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
-  
+
   // AI Study Tip API
   app.post("/api/ai/study-tip", async (req, res) => {
     try {
       const studyTipSchema = z.object({
         prompt: z.string()
       });
-      
+
       const { prompt } = studyTipSchema.parse(req.body);
-      
+
       // Initialisiere die Gemini API mit dem API-Schlüssel aus der Umgebungsvariablen
       const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) {
@@ -323,24 +323,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
           error: "API key is missing"
         });
       }
-      
+
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-      
+
       // KI-Anfrage senden
       const result = await model.generateContent(prompt);
       const response = result.response;
-      
+
       // Entferne überflüssige Anführungszeichen oder Formatierungen
       let tip = response.text().trim();
-      
+
       // Entferne eventuelle Markdown-Formatierungen
       tip = tip.replace(/^["']|["']$/g, '');
-      
+
       res.json({
         tip
       });
-      
+
     } catch (error) {
       console.error("Error generating AI study tip:", error);
       res.status(500).json({ 
@@ -349,7 +349,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
-  
+
   // AI Question Hint API
   app.post("/api/ai/question-hint", async (req, res) => {
     try {
@@ -357,9 +357,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         prompt: z.string(),
         questionId: z.number().optional()
       });
-      
+
       const { prompt, questionId } = hintSchema.parse(req.body);
-      
+
       // Initialisiere die Gemini API mit dem API-Schlüssel aus der Umgebungsvariablen
       const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) {
@@ -368,22 +368,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
           error: "API key is missing"
         });
       }
-      
+
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-      
+
       // KI-Anfrage senden
       const result = await model.generateContent(prompt);
       const response = result.response;
-      
+
       // Antwort formatieren
       let hint = response.text().trim();
-      
+
       res.json({
         hint,
         questionId
       });
-      
+
     } catch (error) {
       console.error("Error generating question hint:", error);
       res.status(500).json({ 
@@ -392,9 +392,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
-  
+
   // Level-System Routen
-  
+
   // Get all levels
   app.get("/api/levels", async (req, res) => {
     try {
@@ -405,37 +405,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch levels" });
     }
   });
-  
+
   // Get level by ID
   app.get("/api/levels/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const level = await storage.getLevelById(id);
-      
+
       if (!level) {
         return res.status(404).json({ message: "Level not found" });
       }
-      
+
       res.json(level);
     } catch (error) {
       console.error(`Error fetching level ${req.params.id}:`, error);
       res.status(500).json({ message: "Failed to fetch level" });
     }
   });
-  
+
   // Create a new level (für Admin-Funktionalität)
   app.post("/api/levels", async (req, res) => {
     try {
       const levelData = insertQuizLevelSchema.parse(req.body);
       const level = await storage.createLevel(levelData);
-      
+
       res.status(201).json(level);
     } catch (error) {
       console.error("Error creating level:", error);
       res.status(400).json({ message: "Invalid level data" });
     }
   });
-  
+
   // Get questions by difficulty
   app.get("/api/questions/difficulty/:difficulty", async (req, res) => {
     try {
@@ -447,17 +447,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch questions" });
     }
   });
-  
+
   // Get questions by difficulty range
   app.get("/api/questions/difficulty-range/:minDifficulty/:maxDifficulty", async (req, res) => {
     try {
       const minDifficulty = parseInt(req.params.minDifficulty);
       const maxDifficulty = parseInt(req.params.maxDifficulty);
-      
+
       if (isNaN(minDifficulty) || isNaN(maxDifficulty) || minDifficulty > maxDifficulty) {
         return res.status(400).json({ message: "Invalid difficulty range" });
       }
-      
+
       const questions = await storage.getQuestionsByDifficultyRange(minDifficulty, maxDifficulty);
       res.json(questions);
     } catch (error) {
@@ -465,7 +465,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch questions" });
     }
   });
-  
+
   // Get user's progress for all levels
   app.get("/api/level-progress/:userId", async (req, res) => {
     try {
@@ -477,33 +477,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch level progress" });
     }
   });
-  
+
   // Get user's progress for a specific level
   app.get("/api/level-progress/:userId/:levelId", async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);
       const levelId = parseInt(req.params.levelId);
-      
+
       const progress = await storage.getUserLevelProgressByLevelId(userId, levelId);
-      
+
       if (!progress) {
         return res.status(404).json({ message: "Level progress not found" });
       }
-      
+
       res.json(progress);
     } catch (error) {
       console.error(`Error fetching level progress for user ${req.params.userId} and level ${req.params.levelId}:`, error);
       res.status(500).json({ message: "Failed to fetch level progress" });
     }
   });
-  
+
   // Update user's level progress
   app.patch("/api/level-progress/:userId/:levelId", async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);
       const levelId = parseInt(req.params.levelId);
       const updates = req.body;
-      
+
       const progress = await storage.updateUserLevelProgress(userId, levelId, updates);
       res.json(progress);
     } catch (error) {
@@ -511,13 +511,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to update level progress" });
     }
   });
-  
+
   // Create new user level progress
   app.post("/api/level-progress", async (req, res) => {
     try {
       const progressData = insertUserLevelProgressSchema.parse(req.body);
       const progress = await storage.createUserLevelProgress(progressData);
-      
+
       res.status(201).json(progress);
     } catch (error) {
       console.error("Error creating level progress:", error);
@@ -529,14 +529,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/example-exam", async (req, res) => {
     try {
       const filePath = path.join(process.cwd(), "attached_assets", "ap1_frühjahr_2025.json");
-      
+
       if (!fs.existsSync(filePath)) {
         return res.status(404).json({ message: "Beispielprüfung nicht gefunden" });
       }
-      
+
       const fileContent = fs.readFileSync(filePath, 'utf8');
       const examData = JSON.parse(fileContent);
-      
+
       res.json({ examData });
     } catch (error) {
       console.error("Error loading example exam:", error);
@@ -546,6 +546,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
-  
+
+  // Global error handling middleware
+  app.use((err: any, req: any, res: any, next: any) => {
+    console.error(err.stack);
+    res.status(500).json({
+      error: true,
+      message: process.env.NODE_ENV === 'production' ? 'Internal Server Error' : err.message
+    });
+  });
+
+  const port = 5000;
+  httpServer.listen({
+    port,
+    host: "0.0.0.0", // Allow external access
+    reusePort: true,
+  }, () => {
+    console.log(`serving on port ${port}`);
+  });
+
   return httpServer;
 }

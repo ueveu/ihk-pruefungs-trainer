@@ -174,10 +174,13 @@ export class MemStorage implements IStorage {
   }
   
   // User Progress methods
+  private async findUserStat(userId: number): Promise<UserStats | undefined> {
+    return Array.from(this.userStats.values()).find(stats => stats.userId === userId);
+  }
+
   async getUserProgress(userId: number): Promise<UserProgress[]> {
-    return Array.from(this.userProgress.values()).filter(
-      (progress) => progress.userId === userId
-    );
+    return Array.from(this.userProgress.values())
+      .filter(progress => progress.userId === userId);
   }
   
   async recordUserProgress(insertProgress: InsertUserProgress): Promise<UserProgress> {
@@ -186,9 +189,7 @@ export class MemStorage implements IStorage {
     this.userProgress.set(id, progress);
     
     // Update user stats
-    const userStat = Array.from(this.userStats.values()).find(
-      (stats) => stats.userId === insertProgress.userId
-    );
+    const userStat = await this.findUserStat(insertProgress.userId);
     
     if (userStat) {
       userStat.totalQuestions++;
