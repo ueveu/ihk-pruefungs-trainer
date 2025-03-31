@@ -1,3 +1,4 @@
+
 import { Question, IHKExam, IHKImportedQuestion } from '@/lib/types';
 
 interface IHKSubPart {
@@ -33,18 +34,9 @@ interface IHKExam {
   tasks: IHKTask[];
 }
 
-interface IHKImportedQuestion extends Question {
-  originalTask: {
-    taskNumber: number;
-    taskTitle: string;
-    subtaskLetter: string;
-    points: number;
-  };
-}
-
 function calculateDifficulty(points: number): number {
-  if (points <= 2) return 1;
-  if (points <= 4) return 2;
+  if (points <= 5) return 1;
+  if (points <= 10) return 2;
   return 3;
 }
 
@@ -81,7 +73,7 @@ export function convertIHKExamToQuestions(examJson: string): IHKImportedQuestion
     task.subtasks.forEach(subtask => {
       if (subtask.question) {
         questions.push({
-          id: 0, // Will be set by the database
+          id: 0,
           category: task.category || 'Allgemein',
           questionText: subtask.question,
           options: generateOptionsFromFormat(subtask.answer_format || ''),
@@ -125,7 +117,6 @@ export function convertIHKExamToQuestions(examJson: string): IHKImportedQuestion
 export async function loadIHKExamFromFile(file: File): Promise<IHKImportedQuestion[]> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-
     reader.onload = (e) => {
       try {
         const questions = convertIHKExamToQuestions(e.target?.result as string);
@@ -134,11 +125,13 @@ export async function loadIHKExamFromFile(file: File): Promise<IHKImportedQuesti
         reject(error);
       }
     };
-
-    reader.onerror = () => {
-      reject(new Error('Failed to read file'));
-    };
-
+    reader.onerror = () => reject(new Error('Failed to read file'));
     reader.readAsText(file);
   });
+}
+
+export async function loadIHKExamFromURL(url: string): Promise<IHKImportedQuestion[]> {
+  const response = await fetch(url);
+  const examJson = await response.text();
+  return convertIHKExamToQuestions(examJson);
 }
