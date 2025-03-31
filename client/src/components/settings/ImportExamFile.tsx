@@ -3,6 +3,8 @@ import { Upload, FileText, Check } from 'lucide-react';
 import { Question } from '@/lib/types';
 import { loadIHKExamFromFile } from '@/lib/ihk-exam-importer';
 import { useToast } from '@/hooks/use-toast';
+import { useLocation } from 'wouter';
+import { Button } from '@/components/ui/button';
 
 interface ImportResponse {
   imported?: number;
@@ -15,95 +17,62 @@ interface ImportExamFileProps {
 }
 
 const ImportExamFile: React.FC<ImportExamFileProps> = ({ onImport }) => {
-  const [isImporting, setIsImporting] = useState(false);
-  const [fileName, setFileName] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const [, setLocation] = useLocation();
   const { toast } = useToast();
-  
+  const [importing, setImporting] = useState(false);
+  const [imported, setImported] = useState(false);
+
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-    
-    setFileName(file.name);
-    setIsImporting(true);
-    setSuccess(false);
-    
+
+    setImporting(true);
     try {
       const questions = await loadIHKExamFromFile(file);
-      
-      if (questions.length > 0) {
-        // Diese Funktion gibt ein Promise zurück, das zum Erfassen des Ergebnisses await benötigt
-        const result = await onImport(questions);
-        
-        // Überprüfen, ob neue Fragen importiert wurden (aus der server-seitigen Antwort)
-        if (result && result.imported && result.imported > 0) {
-          setSuccess(true);
-          toast({
-            title: "Import erfolgreich",
-            description: `${result.imported} Fragen wurden erfolgreich importiert. ${result.skipped || 0} bereits vorhandene Fragen wurden übersprungen.`,
-            variant: "success",
-          });
-        } else if (result.skipped && result.skipped > 0) {
-          toast({
-            title: "Keine neuen Fragen",
-            description: `Alle ${result.skipped} Fragen wurden bereits importiert.`,
-            variant: "default",
-          });
-        }
-      } else {
-        toast({
-          title: "Import fehlgeschlagen",
-          description: "Es konnten keine Fragen aus der Datei extrahiert werden.",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.error("Fehler beim Importieren:", error);
+      const response = await onImport(questions);
+
+      setImported(true);
       toast({
-        title: "Import fehlgeschlagen",
-        description: "Die Datei konnte nicht verarbeitet werden. Bitte überprüfe das Format.",
+        title: "Erfolg!",
+        description: response.message || `${response.imported} Fragen importiert`,
+      });
+
+      // Redirect to exam simulation
+      setLocation('/prüfung');
+    } catch (error) {
+      toast({
+        title: "Fehler",
+        description: "Fehler beim Importieren der Prüfung",
         variant: "destructive",
       });
     } finally {
-      setIsImporting(false);
+      setImporting(false);
     }
   };
-  
+
   return (
-    <div className="card bg-white rounded-xl shadow-md p-6">
-      <h3 className="text-lg font-semibold text-neutral-900 mb-2">IHK-Prüfungsdatei importieren</h3>
-      <p className="text-neutral-600 mb-4">
-        Lade eine IHK-Prüfungsdatei im JSON-Format hoch, um sie als Lernmaterial zu verwenden.
-      </p>
-      
-      <div className="flex flex-col items-center text-center p-6 border-2 border-dashed border-neutral-300 rounded-lg bg-neutral-50">
-        <FileText className="h-12 w-12 text-neutral-400 mb-2" />
-        
-        {fileName && (
-          <div className="mb-3 flex items-center gap-2">
-            <span className="text-sm font-medium">{fileName}</span>
-            {success && <Check className="h-4 w-4 text-success" />}
-          </div>
-        )}
-        
-        <label className="cursor-pointer">
-          <div className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2">
-            <Upload className="h-5 w-5" />
-            {isImporting ? "Wird importiert..." : "Datei auswählen"}
-          </div>
-          <input 
-            type="file" 
-            accept=".json" 
-            onChange={handleFileChange} 
-            className="hidden" 
-            disabled={isImporting}
-          />
-        </label>
-        
-        <p className="mt-2 text-sm text-neutral-500">
-          Unterstützt nur JSON-Dateien im IHK-Prüfungsformat
-        </p>
-      </div>
+    <div className="flex flex-col items-center gap-4 p-4 border rounded-lg">
+      <label className="cursor-pointer flex flex-col items-center gap-2">
+        <input
+          type="file"
+          accept=".json"
+          onChange={handleFileChange}
+          className="hidden"
+          disabled={importing}
+        />
+        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+          {imported ? <Check className="w-6 h-6 text-primary" /> : <Upload className="w-6 h-6 text-primary" />}
+        </div>
+        <span className="text-sm font-medium">
+          {importing ? "Importiere..." : "JSON-Datei hochladen"}
+        </span>
+      </label>
+
+      {imported && (
+        <Button onClick={() => setLocation('/prüfung')} variant="default">
+          Zur Prüfungssimulation
+        </Button>
+      )}
     </div>
   );
 };

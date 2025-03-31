@@ -28,6 +28,7 @@ interface ExamState {
   isEvaluating: boolean;
   totalScore: number;
   maxPossibleScore: number;
+  questions: Question[]; // Added questions to ExamState
 }
 
 // Standardzeit für IHK-Prüfungen (AP1), kann später aus den Metadaten gelesen werden
@@ -42,7 +43,7 @@ const ExamSimulation: React.FC = () => {
 
   const category = params?.category ? decodeURIComponent(params.category) : '';
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -56,29 +57,57 @@ const ExamSimulation: React.FC = () => {
     isEvaluating: false,
     totalScore: 0,
     maxPossibleScore: 0,
+    questions: [] //Initialized as an empty array
   });
 
-  // Lade Fragen für die ausgewählte Kategorie
-  const { data: questions = [], isLoading } = useQuery<Question[]>({
-    queryKey: ['/api/questions', category],
-    queryFn: async () => {
-      if (!category) return [];
-      const data = await apiRequest('GET', `/api/questions/category/${category}`);
-      if (data && Array.isArray(data)) {
-        return data as Question[];
+  useEffect(() => {
+    // Load exam data when component mounts
+    const loadExamData = async () => {
+      try {
+        const response = await fetch('/api/example-exam');
+        const data = await response.json();
+        if (data.examData) {
+          setExamState(prev => ({
+            ...prev,
+            questions: data.examData.sections.flatMap((section: any) => section.questions)
+          }));
+        }
+      } catch (error) {
+        console.error('Error loading exam data:', error);
       }
-      return [];
-    },
-    enabled: !!category,
-  });
+    };
+
+    loadExamData();
+  }, []);
+
+
+  // Lade Fragen für die ausgewählte Kategorie
+  //const { data: questions = [], isLoading } = useQuery<Question[]>({  //Commented out because we now load questions from /api/example-exam
+  //  queryKey: ['/api/questions', category],
+  //  queryFn: async () => {
+  //    if (!category) return [];
+  //    const data = await apiRequest('GET', `/api/questions/category/${category}`);
+  //    if (data && Array.isArray(data)) {
+  //      return data as Question[];
+  //    }
+  //    return [];
+  //  },
+  //  enabled: !!category,
+  //});
+
+  const {isLoading} = useQuery({ //isLoading remains, but data is fetched elsewhere
+    queryKey: ['exam-data'],
+    queryFn: () => Promise.resolve(true), //Dummy query to retain isLoading functionality
+    enabled: false //Disabled to prevent this query from triggering
+  })
 
   // Timer starten
   useEffect(() => {
-    if (questions.length > 0 && !examState.isSubmitted) {
+    if (examState.questions.length > 0 && !examState.isSubmitted) {
       timerRef.current = setInterval(() => {
         setExamState(prev => {
           const newRemainingTime = prev.remainingTime - 1;
-          
+
           // Timer abgelaufen, automatisch einreichen
           if (newRemainingTime <= 0) {
             clearInterval(timerRef.current!);
@@ -89,7 +118,7 @@ const ExamSimulation: React.FC = () => {
               isSubmitted: true
             };
           }
-          
+
           return {
             ...prev,
             remainingTime: newRemainingTime
@@ -103,7 +132,7 @@ const ExamSimulation: React.FC = () => {
         }
       };
     }
-  }, [questions.length, examState.isSubmitted]);
+  }, [examState.questions.length, examState.isSubmitted]);
 
   // Timer formatieren
   const formatTime = (totalSeconds: number) => {
@@ -113,12 +142,12 @@ const ExamSimulation: React.FC = () => {
   };
 
   // Berechne Fortschritt
-  const progressPercentage = questions.length > 0 
-    ? (Object.keys(examState.answers).length / questions.length) * 100 
+  const progressPercentage = examState.questions.length > 0 
+    ? (Object.keys(examState.answers).length / examState.questions.length) * 100 
     : 0;
 
   // Text für aktuelle Frage
-  const currentQuestion = questions[examState.currentQuestionIndex];
+  const currentQuestion = examState.questions[examState.currentQuestionIndex];
 
   const handleAnswerChange = (answerText: string) => {
     setExamState(prev => ({
@@ -131,7 +160,7 @@ const ExamSimulation: React.FC = () => {
   };
 
   const moveToNextQuestion = () => {
-    if (examState.currentQuestionIndex < questions.length - 1) {
+    if (examState.currentQuestionIndex < examState.questions.length - 1) {
       setExamState(prev => ({
         ...prev,
         currentQuestionIndex: prev.currentQuestionIndex + 1
@@ -149,7 +178,7 @@ const ExamSimulation: React.FC = () => {
   };
 
   const goToQuestion = (index: number) => {
-    if (index >= 0 && index < questions.length) {
+    if (index >= 0 && index < examState.questions.length) {
       setExamState(prev => ({
         ...prev,
         currentQuestionIndex: index
@@ -186,7 +215,7 @@ const ExamSimulation: React.FC = () => {
     // Parallele Auswertung aller Antworten
     const evaluationPromises = Object.entries(examState.answers).map(async ([indexStr, answer]) => {
       const index = parseInt(indexStr, 10);
-      const question = questions[index];
+      const question = examState.questions[index];
 
       if (!question) return;
 
@@ -219,7 +248,7 @@ const ExamSimulation: React.FC = () => {
 
     try {
       await Promise.all(evaluationPromises);
-      
+
       setExamState(prev => ({
         ...prev,
         aiResults: evaluationResults,
@@ -230,16 +259,16 @@ const ExamSimulation: React.FC = () => {
 
       const percentage = Math.round((totalScore / maxPossibleScore) * 100);
       let note = "";
-      
+
       if (percentage >= 92) note = "Sehr gut (1)";
       else if (percentage >= 81) note = "Gut (2)";
       else if (percentage >= 67) note = "Befriedigend (3)";
       else if (percentage >= 50) note = "Ausreichend (4)";
       else if (percentage >= 30) note = "Mangelhaft (5)";
       else note = "Ungenügend (6)";
-      
+
       const bestanden = percentage >= 50;
-      
+
       toast({
         title: bestanden ? "IHK-Prüfung bestanden!" : "IHK-Prüfung nicht bestanden",
         description: `Du hast ${totalScore} von ${maxPossibleScore} Punkten erreicht (${percentage}%). Note: ${note}`,
@@ -247,7 +276,7 @@ const ExamSimulation: React.FC = () => {
       });
     } catch (error) {
       console.error("Fehler bei der Gesamtauswertung:", error);
-      
+
       setExamState(prev => ({
         ...prev,
         isEvaluating: false
@@ -271,7 +300,7 @@ const ExamSimulation: React.FC = () => {
       );
     }
 
-    if (questions.length === 0) {
+    if (examState.questions.length === 0) {
       return (
         <div className="text-center p-10 mb-8 bg-white rounded-xl shadow-md">
           <h2 className="text-xl font-semibold text-neutral-800 mb-2">
@@ -301,7 +330,7 @@ const ExamSimulation: React.FC = () => {
           <Card className="mb-6">
             <CardHeader>
               <div className="flex justify-between items-center">
-                <CardTitle>Frage {examState.currentQuestionIndex + 1} von {questions.length}</CardTitle>
+                <CardTitle>Frage {examState.currentQuestionIndex + 1} von {examState.questions.length}</CardTitle>
                 <div className="flex items-center gap-2">
                   <button 
                     onClick={toggleSidebar}
@@ -372,8 +401,8 @@ const ExamSimulation: React.FC = () => {
               >
                 Vorherige Frage
               </Button>
-              
-              {examState.currentQuestionIndex < questions.length - 1 ? (
+
+              {examState.currentQuestionIndex < examState.questions.length - 1 ? (
                 <Button 
                   onClick={moveToNextQuestion}
                   className="flex items-center gap-1"
@@ -403,16 +432,16 @@ const ExamSimulation: React.FC = () => {
                     : (() => {
                         const percentage = Math.round((examState.totalScore / examState.maxPossibleScore) * 100);
                         let note = "";
-                        
+
                         if (percentage >= 92) note = "Sehr gut (1)";
                         else if (percentage >= 81) note = "Gut (2)";
                         else if (percentage >= 67) note = "Befriedigend (3)";
                         else if (percentage >= 50) note = "Ausreichend (4)";
                         else if (percentage >= 30) note = "Mangelhaft (5)";
                         else note = "Ungenügend (6)";
-                        
+
                         const bestanden = percentage >= 50;
-                        
+
                         return `${bestanden ? "✅ Bestanden" : "❌ Nicht bestanden"} - Note: ${note} - ${examState.totalScore} von ${examState.maxPossibleScore} Punkten (${percentage}%)`;
                       })()
                   }
@@ -454,7 +483,7 @@ const ExamSimulation: React.FC = () => {
                         <span>Bestehensgrenze: 50%</span>
                       </div>
                     </div>
-                    
+
                     <div className="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
                       <div className="flex items-center gap-2 mb-2">
                         <Info className="h-5 w-5 text-blue-600" />
@@ -467,7 +496,7 @@ const ExamSimulation: React.FC = () => {
                         Die Bewertungskriterien und Bestehensgrenze (50%) entsprechen den aktuellen IHK-Vorgaben für Fachinformatiker Anwendungsentwicklung.
                       </p>
                     </div>
-                    
+
                     <div className="bg-neutral-50 p-4 rounded-lg border">
                       <h4 className="font-medium mb-2">IHK-Bewertungsschlüssel:</h4>
                       <ul className="text-sm space-y-1">
@@ -504,13 +533,13 @@ const ExamSimulation: React.FC = () => {
             <CardHeader>
               <CardTitle>Fragenübersicht</CardTitle>
               <CardDescription>
-                {Object.keys(examState.answers).length} von {questions.length} beantwortet
+                {Object.keys(examState.answers).length} von {examState.questions.length} beantwortet
               </CardDescription>
               <Progress value={progressPercentage} className="mt-2" />
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-5 gap-2">
-                {questions.map((_, index) => (
+                {examState.questions.map((_, index) => (
                   <button
                     key={index}
                     onClick={() => goToQuestion(index)}
