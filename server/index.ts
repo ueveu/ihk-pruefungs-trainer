@@ -76,12 +76,24 @@ app.use((req, res, next) => {
     });
   };
 
-  const port = 5000;
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
-  });
+  const tryPort = async (port: number): Promise<number> => {
+    try {
+      await new Promise((resolve, reject) => {
+        server.listen({
+          port,
+          host: "0.0.0.0",
+          reusePort: true,
+        }, () => resolve(null)).on('error', reject);
+      });
+      return port;
+    } catch (err) {
+      if (port < 5010) {
+        return tryPort(port + 1);
+      }
+      throw err;
+    }
+  };
+
+  const port = await tryPort(5000);
+  log(`serving on port ${port}`);
 })();
