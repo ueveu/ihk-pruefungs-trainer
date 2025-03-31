@@ -1,0 +1,59 @@
+Konzept: Entwicklung einer interaktiven, gamifizierten Webanwendung zur zielgerichteten Vorbereitung auf die IHK-Abschlussprüfung Teil 1 für Fachinformatiker:innen Anwendungsentwicklung (FIAE AP1).
+
+Zielgruppe: Auszubildende und Umschüler:innen im Bereich Fachinformatik Anwendungsentwicklung (FIAE), die sich auf die AP1 vorbereiten.
+
+Hauptziele: Steigerung der Lernmotivation durch spielerische Elemente, effektive Wissensvermittlung anhand authentischer Prüfungsinhalte der letzten Jahre, Bereitstellung von sofortigem, detailliertem Feedback und transparenter Fortschrittsüberwachung zur Identifikation von Wissenslücken.
+
+Kern-Features:
+
+1.  **Vielfältige Quizmodi:**
+    *   **Multiple-Choice:** Fragen im Single-Choice und Multiple-Choice Format, analog zur IHK-Prüfung.
+    *   **Code-Vervollständigung:** Interaktive Editoren (mit Syntax-Highlighting für relevante Sprachen wie Java, SQL, Pseudocode) zur Ergänzung fehlender Code-Segmente oder zur Korrektur fehlerhaften Codes.
+    *   **Zuordnungsaufgaben:** Drag-and-Drop-Interaktionen zur Zuordnung von Begriffen zu Definitionen, Codeschnipseln zu Funktionen/Ausgaben, UML-Diagrammelementen zu Beschreibungen oder Netzwerkkomponenten zu ihren Zwecken.
+    *   **Code-Analyse:** Aufgaben zur Identifikation von Fehlern, zur Vorhersage der Ausgabe von Codefragmenten oder zur Bewertung von Codequalität/Effizienz.
+
+2.  **Realitätsnahe Prüfungssimulationen:**
+    *   **Dynamische Simulation:** Erstellung von Prüfungen basierend auf der Struktur und Themengewichtung der offiziellen AP1, unter Zeitdruck und mit automatischer Auswertung.
+    *   **1:1 Originalprüfungssimulation:** Exakte digitale Reproduktion originaler IHK-Prüfungen vergangener Jahre (unter Berücksichtigung von Urheberrechten) inklusive Zeitlimit, Punkteschlüssel und detaillierter Auswertung nach IHK-Vorgaben.
+
+3.  **Motivierende Gamification-Elemente:**
+    *   **Detailliertes Punktesystem:** Punktevergabe basierend auf Schwierigkeit und Fragetyp, Zeitboni für schnelle korrekte Antworten, Multiplikatoren für fehlerfreie Antwortserien (Streaks).
+    *   **Badges & Achievements:** Freischaltbare, gestaffelte (Bronze, Silber, Gold) virtuelle Auszeichnungen für erreichte Meilensteine (z.B. "Datenbank-Guru", "OOP-Experte", "Fehlerloser Läufer", "Simulations-Champion"), abgeschlossene Themengebiete und konsistente Lernaktivität (z.B. tägliche/wöchentliche Lernziele).
+    *   **Ranglisten:** Optionale, anonymisierbare wöchentliche, monatliche und Gesamt-Leaderboards (global und optional für Lerngruppen/Freunde) zur Förderung des freundschaftlichen Wettbewerbs.
+
+4.  **Umfassendes Feedback und Lernanalyse:**
+    *   **Sofortiges Feedback:** Direkte Anzeige von richtiger/falscher Antwort mit detaillierten Erklärungen zur korrekten Lösung, inklusive Verweisen auf relevante IHK-Lernziele oder externe Ressourcen.
+    *   **Themenbasierte Fortschrittsverfolgung:** Visuelle Darstellung des Lernfortschritts pro Themengebiet (z.B. Algorithmen, Datenbanken, OOP, Netzwerke, Geschäftsprozesse) mittels Fortschrittsbalken, Radar- oder Balkendiagrammen. Detaillierte Analyse zur Identifikation individueller Stärken und Schwächen basierend auf Fehlerhäufigkeit und Antwortzeiten pro Thema/Fragetyp.
+
+5.  **Intelligente Personalisierung:**
+    *   **Adaptives Lernsystem:** Automatische Vorschläge für spezifische Quizmodi, Fragen oder Themengebiete basierend auf der Analyse von Fehlerquellen, Lerngeschwindigkeit und optional selbst eingeschätzter Sicherheit.
+    *   **Individuelle Lernpläne:** Möglichkeit für Nutzer:innen, eigene Lernpläne zu erstellen durch Auswahl von Themen, Festlegung von Zielen (z.B. Anzahl Fragen pro Tag/Woche) und Setzen von Deadlines.
+
+Benutzeroberfläche (UI/UX-Design):
+
+*   **Modern & Intuitiv:** Klar strukturiertes, aufgeräumtes Design mit Fokus auf einfacher Navigation und Benutzerfreundlichkeit. Reduzierte Komplexität.
+*   **Responsives Design:** Optimierte Darstellung und Funktionalität auf Desktops, Tablets und Smartphones (Mobile-First-Ansatz).
+*   **Barrierefreiheit:** Berücksichtigung der WCAG 2.1 AA-Richtlinien für Zugänglichkeit.
+*   **Personalisiertes Dashboard:** Zentrale Anlaufstelle mit Übersicht über aktuellen Lernfortschritt (visuell), nächste freischaltbare Badges, empfohlene nächste Lerneinheit, Schnellzugriff auf favorisierte Modi und anstehende Lernplan-Ziele.
+*   **Interaktive & Ansprechende Elemente:** Einsatz von dezenten Animationen, klaren visuellen Hinweisen (z.B. bei Drag-and-Drop), ansprechend gestalteten Buttons und Fortschrittsanzeigen zur Förderung der Interaktion und Motivation.
+*   **Optionaler Dark Mode:** Zusätzliches dunkles Farbschema zur Auswahl.
+
+Technische Umsetzung (Vorschlag):
+
+*   **Backend:** RESTful API, z.B. mit Node.js (Express) oder Python (Django/Flask). Datenbank: PostgreSQL (für relationale Daten und komplexe Abfragen) oder MongoDB (für flexible Datenstrukturen). Authentifizierung mittels JWT. Serverseitige Validierung der Gamification-Logik.
+*   **Frontend:** Modernes JavaScript-Framework wie React.js oder Vue.js für eine dynamische, interaktive Benutzeroberfläche. State Management: Redux Toolkit, Zustand oder Pinia. Testing: Unit-Tests (Jest/Vitest), E2E-Tests (Cypress/Playwright).
+*   **Datenmanagement:** Strukturierte Speicherung der Prüfungsinhalte (Fragen, Antworten, Erklärungen, Themen-Tags, Schwierigkeitsgrad) in JSON-Format oder Datenbank, inklusive Versionierung. Definition eines klaren JSON-Schemas.
+*   **Gamification Engine:** Implementierung der Logik serverseitig zur Sicherstellung der Integrität von Punkten und Achievements.
+*   **Deployment:** Cloud-basierte Hosting-Plattform (z.B. AWS, Azure, Google Cloud, Heroku) mit CI/CD-Pipeline für automatisierte Tests und Bereitstellung.
+
+Besonderheiten & Herausforderungen:
+
+*   **Authentische Inhalte:** Entwicklung eines robusten Prozesses (ggf. OCR und manuelle Nachbearbeitung/Validierung) zur Extraktion und Digitalisierung von Prüfungsfragen aus verfügbaren (rechtlich unbedenklichen) Quellen (z.B. alten IHK-Prüfungen als PDF), um eine hohe Realitätsnähe zu gewährleisten. Sicherstellung der Qualität und Korrektheit der extrahierten Daten. Klärung von Urheberrechtsfragen.
+*   **Datenschutz:** Strikte Einhaltung der DSGVO, insbesondere bei der Speicherung von Nutzerdaten und Lernfortschritten. Anonymisierungsoptionen für Ranglisten.
+
+Non-Functional Requirements:
+
+*   **Performance:** Schnelle Ladezeiten (< 3 Sekunden), flüssige UI-Interaktionen auch bei komplexen Aufgaben (z.B. Code-Editoren).
+*   **Skalierbarkeit:** Fähigkeit, eine steigende Anzahl von Benutzer:innen und Daten zu bewältigen, insbesondere zu Spitzenzeiten vor Prüfungsterminen.
+*   **Sicherheit:** Sichere Benutzerauthentifizierung, Schutz vor unbefugtem Zugriff und Manipulation von Daten (z.B. Punkte, Fortschritt), Absicherung der API.
+*   **Wartbarkeit:** Modularer, gut dokumentierter Code, hohe Testabdeckung zur einfachen Weiterentwicklung und Fehlerbehebung.
