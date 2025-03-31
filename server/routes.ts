@@ -603,8 +603,5 @@ export async function registerRoutes(app: express.Express) {
     });
   });
 
-  return server; on port ${port}`);
-  });
-
   return app;
 }
