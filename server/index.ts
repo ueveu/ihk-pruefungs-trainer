@@ -76,7 +76,7 @@ app.use((req, res, next) => {
     });
   };
 
-  const port = await findFreePort(5000);
+  const port = 5000;
   server.listen({
     port,
     host: "0.0.0.0",
