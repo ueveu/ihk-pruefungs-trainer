@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -10,7 +9,7 @@ export default function Stats() {
           <CardTitle>Statistics</CardTitle>
         </CardHeader>
         <CardContent>
-          <p>Statistics will be displayed here...</p>
+          <p>Your learning statistics will appear here...</p>
         </CardContent>
       </Card>
     </div>
