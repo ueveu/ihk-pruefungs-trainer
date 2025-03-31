@@ -1,81 +1,43 @@
-import { Switch, Route } from "wouter";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "./lib/queryClient";
-import { Toaster } from "@/components/ui/toaster";
-import NotFound from "@/pages/not-found";
-import Header from "@/components/layout/Header";
-import Navigation from "@/components/layout/Navigation";
-import Home from "@/pages/Home";
-import QuizMode from "@/pages/QuizMode";
-import FlashcardMode from "@/pages/FlashcardMode";
-import StatsView from "@/pages/StatsView";
-import Achievements from "@/pages/Achievements";
-import Settings from "@/pages/Settings";
-import ExamSimulation from "@/pages/ExamSimulation";
-import ExamSimulationHome from "@/pages/ExamSimulationHome";
-import AIChat from "@/pages/AIChat";
-import StudyCompanion from "@/pages/StudyCompanion";
-import QuickTip from "@/components/common/QuickTip";
-import { useState } from "react";
+import { Route, Router } from '@tanstack/react-router';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ThemeProvider } from './components/theme/theme-provider';
+import { Toaster } from './components/ui/toaster';
+import { Navigation } from './components/layout/Navigation';
 
-type ActiveTab = "home" | "quiz" | "flashcards" | "exam" | "stats" | "achievements" | "settings" | "ai-chat" | "study-companion";
+// Import pages
+import Home from './pages/Home';
+import Quiz from './pages/Quiz';
+import Stats from './pages/Stats';
+import Settings from './pages/Settings';
+import Flashcards from './pages/Flashcards';
+import QuizResults from './pages/QuizResults';
+import ExamSimulation from './pages/ExamSimulation';
+import ExamSimulationHome from './pages/ExamSimulationHome';
+import NotFound from "@/pages/not-found"; // Added from original
 
-function Router() {
-  const [activeTab, setActiveTab] = useState<ActiveTab>("home");
 
-  return (
-    <div className="min-h-screen flex flex-col bg-background font-sans text-foreground">
-      <Header />
-      <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
-      
-      <main className="flex-grow container mx-auto px-4 py-6">
-        <Switch>
-          <Route path="/">
-            <Home />
-          </Route>
-          <Route path="/quiz">
-            <QuizMode />
-          </Route>
-          <Route path="/flashcards">
-            <FlashcardMode />
-          </Route>
-          <Route path="/stats">
-            <StatsView />
-          </Route>
-          <Route path="/achievements">
-            <Achievements />
-          </Route>
-          <Route path="/settings">
-            <Settings />
-          </Route>
-          <Route path="/exam-simulation">
-            <ExamSimulationHome />
-          </Route>
-          <Route path="/exam-simulation/:category">
-            <ExamSimulation />
-          </Route>
-          <Route path="/ai-chat">
-            <AIChat />
-          </Route>
-          <Route path="/study-companion">
-            <StudyCompanion />
-          </Route>
-          <Route component={NotFound} />
-        </Switch>
-      </main>
-      
-      <QuickTip />
-    </div>
-  );
-}
+const queryClient = new QueryClient();
 
-function App() {
+export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router />
-      <Toaster />
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <div className="min-h-screen bg-background">
+          <Router>
+            <Navigation />
+            <Route path="/" element={<Home />} />
+            <Route path="/quiz" element={<Quiz />} />
+            <Route path="/quiz/results" element={<QuizResults />} />
+            <Route path="/flashcards" element={<Flashcards />} />
+            <Route path="/stats" element={<Stats />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/exam-simulation" element={<ExamSimulationHome />} />
+            <Route path="/exam-simulation/:category" element={<ExamSimulation />} />
+            <Route path="*" element={<NotFound />} /> {/* Added NotFound route */}
+          </Router>
+          <Toaster />
+        </div>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
-
-export default App;
