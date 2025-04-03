@@ -45,3 +45,8 @@ dist-ssr
 
 # Generated files
 .drizzle
+
+.cursorrules
+cursor/rules.*
+
+attached_assets/*

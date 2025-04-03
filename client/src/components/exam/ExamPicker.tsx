@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLocation } from 'wouter';
+import { useNavigate } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { Question } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, BookOpen, ClipboardCheck } from 'lucide-react';
 
 const ExamPicker: React.FC = () => {
-  const [, setLocation] = useLocation();
+  const navigate = useNavigate();
   
   // Lade alle verfügbaren Fragen
   const { data: questions = [], isLoading } = useQuery<Question[]>({
@@ -28,11 +28,11 @@ const ExamPicker: React.FC = () => {
   }, {});
   
   const handleStartExam = (category: string) => {
-    setLocation(`/exam-simulation/${encodeURIComponent(category)}`);
+    navigate({ to: '/exam-simulation/$category', params: { category } });
   };
   
   const handlePracticeQuestions = (category: string) => {
-    setLocation(`/quiz?category=${encodeURIComponent(category)}`);
+    navigate({ to: '/quiz', search: { category } });
   };
   
   if (isLoading) {
@@ -61,7 +61,7 @@ const ExamPicker: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <CardFooter>
-          <Button onClick={() => setLocation('/settings')}>
+          <Button onClick={() => navigate({ to: '/settings' })}>
             Zu den Einstellungen
           </Button>
         </CardFooter>

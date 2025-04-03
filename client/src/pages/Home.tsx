@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLocation } from 'wouter';
+import { useNavigate } from '@tanstack/react-router';
 import { Question } from '@/lib/types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
@@ -10,7 +10,7 @@ import examJsonPath from '@assets/ap1_frühjahr_2025.json?url';
 import { loadIHKExamFromURL } from '@/lib/ihk-exam-importer';
 
 const Home: React.FC = () => {
-  const [, setLocation] = useLocation();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isImporting, setIsImporting] = useState(false);
@@ -33,7 +33,7 @@ const Home: React.FC = () => {
   }, {});
 
   const handleStartLearning = (category: string) => {
-    setLocation(`/quiz?category=${encodeURIComponent(category)}`);
+    navigate({ to: '/quiz', search: { category } });
   };
 
   const handleImportQuestions = async (questions: Question[]) => {
@@ -184,21 +184,21 @@ const Home: React.FC = () => {
                       <div className="mt-4 grid grid-cols-3 gap-2">
                         <div 
                           className="border border-border rounded p-3 cursor-pointer hover:bg-primary/5 transition-colors"
-                          onClick={() => setLocation(`/quiz?category=${encodeURIComponent(category)}`)}
+                          onClick={() => navigate({ to: '/quiz', search: { category } })}
                         >
                           <div className="text-xs text-muted-foreground mb-1">01</div>
                           <div className="text-sm font-medium text-foreground">Quiz-Modus</div>
                         </div>
                         <div 
                           className="border border-border rounded p-3 cursor-pointer hover:bg-primary/5 transition-colors"
-                          onClick={() => setLocation(`/flashcards?category=${encodeURIComponent(category)}`)}
+                          onClick={() => navigate({ to: '/flashcards', search: { category } })}
                         >
                           <div className="text-xs text-muted-foreground mb-1">02</div>
                           <div className="text-sm font-medium text-foreground">Karteikarten</div>
                         </div>
                         <div 
                           className="border border-border rounded p-3 cursor-pointer hover:bg-primary/5 transition-colors"
-                          onClick={() => setLocation(`/exam-simulation/${encodeURIComponent(category)}`)}
+                          onClick={() => navigate({ to: '/exam-simulation', search: { category } })}
                         >
                           <div className="text-xs text-muted-foreground mb-1">03</div>
                           <div className="text-sm font-medium text-foreground">Prüfungssimulation</div>

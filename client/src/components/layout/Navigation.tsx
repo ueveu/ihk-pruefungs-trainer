@@ -6,95 +6,92 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { useLocation } from "wouter"
+import { useNavigate, useMatchRoute } from "@tanstack/react-router"
 import { Home, BookOpen, Layers, BarChart3, Award, Settings, BrainCircuit, Sparkles, ClipboardCheck } from "lucide-react"
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
-interface NavigationProps {
-  activeTab: 'home' | 'quiz' | 'flashcards' | 'exam' | 'stats' | 'achievements' | 'settings' | 'ai-chat' | 'study-companion';
-  onTabChange: (tab: 'home' | 'quiz' | 'flashcards' | 'exam' | 'stats' | 'achievements' | 'settings' | 'ai-chat' | 'study-companion') => void;
-}
-
-const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
-  const [location, setLocation] = useLocation();
+export const Navigation: React.FC = () => {
+  const navigate = useNavigate();
+  const matchRoute = useMatchRoute();
   const [open, setOpen] = React.useState(false);
 
-  const handleTabClick = (tab: NavigationProps['activeTab'], path: string) => {
-    onTabChange(tab);
-    setLocation(path);
+  const isActive = (path: string) => matchRoute({ to: path });
+
+  const handleNavigation = (path: string) => {
+    navigate({ to: path });
     setOpen(false);
   };
 
   const NavItems = () => (
     <nav className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
       <Button
-        variant={activeTab === 'home' ? 'default' : 'ghost'}
+        variant={isActive('/') ? 'default' : 'ghost'}
         className="justify-start md:justify-center"
-        onClick={() => handleTabClick('home', '/')}
+        onClick={() => handleNavigation('/')}
       >
         <Home className="h-5 w-5 mr-2" />
         Home
       </Button>
       <Button
-        variant={activeTab === 'quiz' ? 'default' : 'ghost'}
+        variant={isActive('/quiz') ? 'default' : 'ghost'}
         className="justify-start md:justify-center"
-        onClick={() => handleTabClick('quiz', '/quiz')}
+        onClick={() => handleNavigation('/quiz')}
       >
         <BookOpen className="h-5 w-5 mr-2" />
         Quiz
       </Button>
       <Button
-        variant={activeTab === 'flashcards' ? 'default' : 'ghost'}
+        variant={isActive('/flashcards') ? 'default' : 'ghost'}
         className="justify-start md:justify-center"
-        onClick={() => handleTabClick('flashcards', '/flashcards')}
+        onClick={() => handleNavigation('/flashcards')}
       >
         <Layers className="h-5 w-5 mr-2" />
         Karteikarten
       </Button>
       <Button
-        variant={activeTab === 'exam' ? 'default' : 'ghost'}
+        variant={isActive('/exam-simulation') ? 'default' : 'ghost'}
         className="justify-start md:justify-center"
-        onClick={() => handleTabClick('exam', '/exam-simulation')}
+        onClick={() => handleNavigation('/exam-simulation')}
       >
         <ClipboardCheck className="h-5 w-5 mr-2" />
         Prüfung
       </Button>
       <Button
-        variant={activeTab === 'stats' ? 'default' : 'ghost'}
+        variant={isActive('/stats') ? 'default' : 'ghost'}
         className="justify-start md:justify-center"
-        onClick={() => handleTabClick('stats', '/stats')}
+        onClick={() => handleNavigation('/stats')}
       >
         <BarChart3 className="h-5 w-5 mr-2" />
         Statistik
       </Button>
       <Button
-        variant={activeTab === 'achievements' ? 'default' : 'ghost'}
+        variant={isActive('/achievements') ? 'default' : 'ghost'}
         className="justify-start md:justify-center"
-        onClick={() => handleTabClick('achievements', '/achievements')}
+        onClick={() => handleNavigation('/achievements')}
       >
         <Award className="h-5 w-5 mr-2" />
         Erfolge
       </Button>
       <Button
-        variant={activeTab === 'ai-chat' ? 'default' : 'ghost'}
+        variant={isActive('/ai-chat') ? 'default' : 'ghost'}
         className="justify-start md:justify-center"
-        onClick={() => handleTabClick('ai-chat', '/ai-chat')}
+        onClick={() => handleNavigation('/ai-chat')}
       >
         <BrainCircuit className="h-5 w-5 mr-2" />
         KI-Chat
       </Button>
       <Button
-        variant={activeTab === 'study-companion' ? 'default' : 'ghost'}
+        variant={isActive('/study-companion') ? 'default' : 'ghost'}
         className="justify-start md:justify-center"
-        onClick={() => handleTabClick('study-companion', '/study-companion')}
+        onClick={() => handleNavigation('/study-companion')}
       >
         <Sparkles className="h-5 w-5 mr-2" />
         Lernbegleiter
       </Button>
       <Button
-        variant={activeTab === 'settings' ? 'default' : 'ghost'}
+        variant={isActive('/settings') ? 'default' : 'ghost'}
         className="justify-start md:justify-center"
-        onClick={() => handleTabClick('settings', '/settings')}
+        onClick={() => handleNavigation('/settings')}
       >
         <Settings className="h-5 w-5 mr-2" />
         Einstellungen
@@ -133,5 +130,3 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
     </div>
   );
 };
-
-export { Navigation };

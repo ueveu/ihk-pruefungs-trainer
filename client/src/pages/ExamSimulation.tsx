@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useLocation, useRoute } from 'wouter';
+import { useParams, useNavigate } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { Question } from '@/lib/types';
@@ -35,13 +35,13 @@ interface ExamState {
 const EXAM_TIME_MINUTES = 90;
 
 const ExamSimulation: React.FC = () => {
-  const [, params] = useRoute<{ category: string }>('/exam-simulation/:category');
-  const [, setLocation] = useLocation();
+  const params = useParams({ from: '/exam-simulation/$category' });
+  const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const category = params?.category ? decodeURIComponent(params.category) : '';
+  const category = params.category;
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const toggleSidebar = () => {
@@ -309,7 +309,7 @@ const ExamSimulation: React.FC = () => {
           <p className="text-neutral-600 mb-4">
             Für diese Kategorie sind keine Prüfungsfragen verfügbar.
           </p>
-          <Button onClick={() => setLocation('/')}>
+          <Button onClick={() => navigate({ to: '/' })}>
             Zurück zur Startseite
           </Button>
         </div>
@@ -517,7 +517,7 @@ const ExamSimulation: React.FC = () => {
               <CardFooter>
                 <Button 
                   variant="outline" 
-                  onClick={() => setLocation(`/`)}
+                  onClick={() => navigate({ to: '/' })}
                   className="w-full"
                 >
                   Zurück zur Übersicht

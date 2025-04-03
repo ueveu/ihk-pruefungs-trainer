@@ -1,10 +1,10 @@
 import React from 'react';
-import { useLocation } from 'wouter';
+import { useNavigate } from '@tanstack/react-router';
 import ExamPicker from '@/components/exam/ExamPicker';
 import { ClipboardCheck, Clock, BrainCircuit } from 'lucide-react';
 
 const ExamSimulationHome: React.FC = () => {
-  const [, setLocation] = useLocation();
+  const navigate = useNavigate();
   
   return (
     <div className="container mx-auto px-4 py-8">
