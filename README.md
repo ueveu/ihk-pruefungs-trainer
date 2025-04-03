@@ -5,17 +5,20 @@ Eine interaktive Lernanwendung zur Vorbereitung auf die IHK-Prüfung für Fachin
 ## Features
 
 - **Quiz-System**: Multiple-Choice und offene Fragen mit KI-gestützter Bewertung
-- **Karteikarten**: Spaced-Repetition-Lernsystem
-- **Fortschrittsverfolgung**: Detaillierte Statistiken und Lernanalysen
-- **KI-Integration**: Intelligente Lernhilfen und Feedback
-- **Level-System**: Gamifiziertes Lernen mit Erfolgen
+- **Level-System**: Gamifiziertes Lernen mit verschiedenen Schwierigkeitsstufen
+- **Fortschrittsverfolgung**: Detaillierte Statistiken zu deinem Lernfortschritt
+- **KI-Integration**: Intelligente Lernhilfen und Feedback durch Google Gemini API
+- **Benutzerverwaltung**: Persönliche Profile mit Fortschrittsspeicherung
 
 ## Technologie-Stack
 
-- Frontend: React, TypeScript, TailwindCSS, ShadcnUI
-- Backend: Express.js, TypeScript
-- KI: Google Gemini API
-- Datenbank: In-Memory (erweiterbar)
+- **Frontend**: React 18, TypeScript, TailwindCSS, ShadcnUI
+- **Backend**: Express.js, TypeScript
+- **Datenbank**: PostgreSQL mit Drizzle ORM
+- **KI**: Google Gemini API
+- **Router**: TanStack Router
+- **State Management**: React Query
+- **Styling**: Tailwind mit class-variance-authority
 
 ## Installation & Start
 
@@ -25,35 +28,60 @@ npm install
 
 # Entwicklungsserver starten
 npm run dev
+
+# Produktions-Build erstellen
+npm run build
+
+# Produktionsserver starten
+npm run start
 ```
 
-## API-Schlüssel einrichten
+## Umgebungsvariablen einrichten
 
-Diese Anwendung verwendet die Google Gemini API für KI-Funktionen. Führe folgende Schritte aus, um sie einzurichten:
+Kopiere die Datei `.env.example` zu `.env` im Hauptverzeichnis und trage die folgenden Werte ein:
+
+```
+GEMINI_API_KEY=dein_api_schlüssel_hier
+DATABASE_URL=deine_datenbank_url_hier
+```
+
+### API-Schlüssel für Google Gemini
 
 1. Besuche die [Google AI Studio](https://makersuite.google.com/app/apikey)
 2. Erstelle einen API-Schlüssel (du benötigst ein Google-Konto)
-3. Kopiere die Datei `.env.example` zu `.env` im Hauptverzeichnis
-4. Trage deinen API-Schlüssel ein: `GEMINI_API_KEY=dein_api_schlüssel_hier`
+3. Trage den API-Schlüssel in die `.env`-Datei ein
 
-Ohne einen gültigen API-Schlüssel werden die KI-Funktionen nicht verfügbar sein.
+### Datenbank einrichten
+
+Die Anwendung verwendet PostgreSQL als Datenbank. Nach dem Einrichten der Verbindung:
+
+```bash
+# Schema aktualisieren
+npm run db:push
+```
 
 ## Projektstruktur
 
 ```
 ├── client/          # Frontend-Code
-├── server/          # Backend-API
-├── shared/          # Gemeinsame Typen/Schemas
-└── attached_assets/ # Prüfungsbeispiele
+│   ├── src/         # React-Komponenten und -Hooks
+│   └── index.html   # HTML-Einstiegspunkt
+├── server/          # Backend-API und -Services
+│   ├── services/    # Geschäftslogik
+│   ├── index.ts     # Server-Einstiegspunkt
+│   └── routes.ts    # API-Routen
+├── shared/          # Gemeinsame Typen und Schemas
+│   └── schema.ts    # Datenbankschema mit Drizzle ORM
+└── attached_assets/ # Prüfungsbeispiele und Ressourcen
 ```
 
 ## Nächste Entwicklungsschritte
 
-1. Persistente Datenspeicherung implementieren
-2. Benutzerauthentifizierung hinzufügen
-3. Prüfungssimulator erweitern
-4. Mobile Optimierung verbessern
-5. Offline-Modus entwickeln
+1. Offlinefähigkeit mit IndexedDB
+2. Mobile App mit Capacitor
+3. Erweiterung der Fragetypen
+4. Prüfungssimulator mit Echtzeit-Bedingungen
+5. Community-Features und Fragen-Sharing
 
 ## Lizenz
 
