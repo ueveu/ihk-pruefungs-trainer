@@ -2,6 +2,10 @@
 
 Eine interaktive Lernanwendung zur Vorbereitung auf die IHK-Prüfung für Fachinformatiker Anwendungsentwicklung.
 
+## Preview
+
+![IHK Prüfungs-Trainer Preview](./preview.png)
+
 ## Features
 
 - **Quiz-System**: Multiple-Choice und offene Fragen mit KI-gestützter Bewertung
