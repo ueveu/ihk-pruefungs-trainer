@@ -6,6 +6,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { storage } from './storage';
 import { z } from 'zod';
 import { insertUserLevelProgressSchema, insertQuestionSchema } from '../shared/schema';
+import { getGeminiModel, generateGeminiContent } from './services/gemini';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -167,19 +168,7 @@ export async function registerRoutes(app: express.Express) {
 
       const request = feedbackSchema.parse(req.body);
 
-      // Initialisiere die Gemini API mit dem API-Schlüssel aus der Umgebungsvariablen
-      const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey) {
-        return res.status(500).json({
-          message: "Gemini API key not configured",
-          error: "API key is missing"
-        });
-      }
-
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-
-      // Prompt für die KI erstellen
+      // Create prompt for AI
       const prompt = `
       Du bist ein IHK-Prüfer für Fachinformatiker. Bitte bewerte die Antwort eines Prüflings auf eine Prüfungsfrage.
 
@@ -206,45 +195,47 @@ export async function registerRoutes(app: express.Express) {
       Beziehe dich auf konkrete fachliche Aspekte der Antwort.
       `;
 
-      // KI-Anfrage senden
-      const result = await model.generateContent(prompt);
-      const response = result.response;
-      const text = response.text();
+      try {
+        // Use the utility function to generate content
+        const text = await generateGeminiContent(prompt);
 
-      // Antwort parsen
-      let score = 0;
-      let isCorrect = false;
-      let feedback = "Keine Bewertung verfügbar.";
+        // Parse the response
+        let score = 0;
+        let isCorrect = false;
+        let feedback = "Keine Bewertung verfügbar.";
 
-      // Punktzahl extrahieren
-      const scoreMatch = text.match(/Punktzahl:?\s*(\d+)\s*\/\s*\d+/i);
-      if (scoreMatch && scoreMatch[1]) {
-        score = parseInt(scoreMatch[1], 10);
+        // Extract score
+        const scoreMatch = text.match(/Punktzahl:?\s*(\d+)\s*\/\s*\d+/i);
+        if (scoreMatch && scoreMatch[1]) {
+          score = parseInt(scoreMatch[1], 10);
+        }
+
+        // Extract correctness
+        const correctMatch = text.match(/Korrekt:?\s*(Ja|Nein)/i);
+        if (correctMatch && correctMatch[1]) {
+          isCorrect = correctMatch[1].toLowerCase() === 'ja';
+        }
+
+        // Extract feedback
+        const feedbackMatch = text.match(/Feedback:?([\s\S]*?)(?=\n- Korrekt:|$)/i);
+        if (feedbackMatch && feedbackMatch[1]) {
+          feedback = feedbackMatch[1].trim();
+        } else {
+          // Fallback: Use the entire text as feedback if format was not recognized
+          feedback = text;
+        }
+
+        res.json({
+          feedback,
+          isCorrect,
+          score,
+          maxScore: request.maxPoints
+        });
+      } catch (error) {
+        throw new Error(`Error generating AI feedback: ${error instanceof Error ? error.message : "Unknown error"}`);
       }
-
-      // Richtigkeit extrahieren
-      const correctMatch = text.match(/Korrekt:?\s*(Ja|Nein)/i);
-      if (correctMatch && correctMatch[1]) {
-        isCorrect = correctMatch[1].toLowerCase() === 'ja';
-      }
-
-      // Feedback extrahieren
-      const feedbackMatch = text.match(/Feedback:?([\s\S]*?)(?=\n- Korrekt:|$)/i);
-      if (feedbackMatch && feedbackMatch[1]) {
-        feedback = feedbackMatch[1].trim();
-      } else {
-        // Fallback: Gesamten Text als Feedback verwenden, wenn das Format nicht erkannt wurde
-        feedback = text;
-      }
-
-      res.json({
-        feedback,
-        isCorrect,
-        score,
-        maxScore: request.maxPoints
-      });
     } catch (error) {
-      console.error("Error generating AI feedback:", error);
+      console.error("Error in AI feedback endpoint:", error);
       res.status(500).json({
         message: "Failed to generate AI feedback",
         error: error instanceof Error ? error.message : "Unknown error"
@@ -261,19 +252,7 @@ export async function registerRoutes(app: express.Express) {
 
       const { message } = chatSchema.parse(req.body);
 
-      // Initialisiere die Gemini API mit dem API-Schlüssel aus der Umgebungsvariablen
-      const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey) {
-        return res.status(500).json({
-          message: "Gemini API key not configured",
-          error: "API key is missing"
-        });
-      }
-
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-
-      // Prompt für die KI erstellen
+      // Create prompt for AI
       const prompt = `
       Du bist ein Assistent für IHK-Prüfungen im Bereich Fachinformatiker für Anwendungsentwicklung.
       Der Nutzer bereitet sich auf diese Prüfung vor und hat folgende Frage: 
@@ -285,15 +264,18 @@ export async function registerRoutes(app: express.Express) {
       der Anwendungsentwicklung, Programmierung, Datenbanken oder IT-Systeme, je nachdem, was für die Frage relevant ist.
       `;
 
-      // KI-Anfrage senden
-      const result = await model.generateContent(prompt);
-      const response = result.response;
+      try {
+        // Use the utility function to generate content
+        const response = await generateGeminiContent(prompt);
 
-      res.json({
-        response: response.text()
-      });
+        res.json({
+          response
+        });
+      } catch (error) {
+        throw new Error(`Error generating AI chat response: ${error instanceof Error ? error.message : "Unknown error"}`);
+      }
     } catch (error) {
-      console.error("Error generating AI chat response:", error);
+      console.error("Error in AI chat endpoint:", error);
       res.status(500).json({
         message: "Failed to generate AI response",
         error: error instanceof Error ? error.message : "Unknown error"
@@ -310,34 +292,19 @@ export async function registerRoutes(app: express.Express) {
 
       const { prompt } = studyTipSchema.parse(req.body);
 
-      // Initialisiere die Gemini API mit dem API-Schlüssel aus der Umgebungsvariablen
-      const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey) {
-        return res.status(500).json({
-          message: "Gemini API key not configured",
-          error: "API key is missing"
-        });
+      try {
+        // Use the utility function to generate content
+        let tip = await generateGeminiContent(prompt);
+
+        // Remove unnecessary quotes or formatting
+        tip = tip.trim().replace(/^["']|["']$/g, '');
+
+        res.json({ tip });
+      } catch (error) {
+        throw new Error(`Error generating AI study tip: ${error instanceof Error ? error.message : "Unknown error"}`);
       }
-
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-
-      // KI-Anfrage senden
-      const result = await model.generateContent(prompt);
-      const response = result.response;
-
-      // Entferne überflüssige Anführungszeichen oder Formatierungen
-      let tip = response.text().trim();
-
-      // Entferne eventuelle Markdown-Formatierungen
-      tip = tip.replace(/^["']|["']$/g, '');
-
-      res.json({
-        tip
-      });
-
     } catch (error) {
-      console.error("Error generating AI study tip:", error);
+      console.error("Error in AI study tip endpoint:", error);
       res.status(500).json({
         message: "Failed to generate study tip",
         error: error instanceof Error ? error.message : "Unknown error"
@@ -355,32 +322,22 @@ export async function registerRoutes(app: express.Express) {
 
       const { prompt, questionId } = hintSchema.parse(req.body);
 
-      // Initialisiere die Gemini API mit dem API-Schlüssel aus der Umgebungsvariablen
-      const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey) {
-        return res.status(500).json({
-          message: "Gemini API key not configured",
-          error: "API key is missing"
+      try {
+        // Use the utility function to generate content
+        let hint = await generateGeminiContent(prompt);
+
+        // Format the response
+        hint = hint.trim();
+
+        res.json({
+          hint,
+          questionId
         });
+      } catch (error) {
+        throw new Error(`Error generating question hint: ${error instanceof Error ? error.message : "Unknown error"}`);
       }
-
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-
-      // KI-Anfrage senden
-      const result = await model.generateContent(prompt);
-      const response = result.response;
-
-      // Antwort formatieren
-      let hint = response.text().trim();
-
-      res.json({
-        hint,
-        questionId
-      });
-
     } catch (error) {
-      console.error("Error generating question hint:", error);
+      console.error("Error in AI question hint endpoint:", error);
       res.status(500).json({
         message: "Failed to generate question hint",
         error: error instanceof Error ? error.message : "Unknown error"
@@ -558,15 +515,7 @@ export async function registerRoutes(app: express.Express) {
       // Store progress in DB
       const updatedProgress = await storage.updateExamProgress(examId, sectionId, progress, timeSpent);
 
-      // Use Gemini to provide personalized feedback
-      const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey) {
-        throw new Error("GEMINI_API_KEY not found");
-      }
-
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-
+      // Create a prompt for personalized feedback
       const prompt = `
         Based on the exam progress:
         - Section: ${sectionId}
@@ -581,16 +530,60 @@ export async function registerRoutes(app: express.Express) {
         Format as JSON with keys: timeAdvice, weakAreas, recommendations
       `;
 
-      const result = await model.generateContent(prompt);
-      const feedback = JSON.parse(result.response.text());
+      try {
+        // Use the utility function to generate content
+        const feedbackText = await generateGeminiContent(prompt);
+        const feedback = JSON.parse(feedbackText);
 
-      res.json({
-        progress: updatedProgress,
-        feedback
-      });
+        res.json({
+          progress: updatedProgress,
+          feedback
+        });
+      } catch (error) {
+        // If AI feedback fails, still return progress but with generic feedback
+        console.error("Error generating AI feedback for exam progress:", error);
+        res.json({
+          progress: updatedProgress,
+          feedback: {
+            timeAdvice: "Keep tracking your time to improve efficiency.",
+            weakAreas: ["Consider reviewing this section again"],
+            recommendations: ["Practice similar questions for better understanding"]
+          }
+        });
+      }
     } catch (error) {
       console.error("Error updating exam progress:", error);
       res.status(500).json({ message: "Failed to update exam progress" });
+    }
+  });
+
+  // Add a health check endpoint for the Gemini API
+  app.get("/api/ai/health", async (req, res) => {
+    try {
+      // Try to get the Gemini model to verify configuration
+      const model = getGeminiModel();
+      
+      // Simple prompt to test the API
+      const result = await model.generateContent("Respond with 'OK' if you can read this message.");
+      const text = result.response.text();
+      
+      if (text.includes("OK")) {
+        res.json({ 
+          status: "healthy",
+          message: "Gemini API is properly configured and responding"
+        });
+      } else {
+        res.status(500).json({ 
+          status: "error", 
+          message: "Gemini API response validation failed" 
+        });
+      }
+    } catch (error) {
+      console.error("Gemini API health check failed:", error);
+      res.status(500).json({ 
+        status: "error", 
+        message: error instanceof Error ? error.message : "Unknown error with Gemini API" 
+      });
     }
   });
 

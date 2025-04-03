@@ -1,4 +1,3 @@
-
 # IHK Prüfungs-Trainer
 
 Eine interaktive Lernanwendung zur Vorbereitung auf die IHK-Prüfung für Fachinformatiker Anwendungsentwicklung.
@@ -27,6 +26,17 @@ npm install
 # Entwicklungsserver starten
 npm run dev
 ```
+
+## API-Schlüssel einrichten
+
+Diese Anwendung verwendet die Google Gemini API für KI-Funktionen. Führe folgende Schritte aus, um sie einzurichten:
+
+1. Besuche die [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Erstelle einen API-Schlüssel (du benötigst ein Google-Konto)
+3. Kopiere die Datei `.env.example` zu `.env` im Hauptverzeichnis
+4. Trage deinen API-Schlüssel ein: `GEMINI_API_KEY=dein_api_schlüssel_hier`
+
+Ohne einen gültigen API-Schlüssel werden die KI-Funktionen nicht verfügbar sein.
 
 ## Projektstruktur
 

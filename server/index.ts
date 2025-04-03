@@ -1,3 +1,4 @@
+import 'dotenv/config'; // Load environment variables from .env file
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
@@ -97,10 +98,30 @@ app.use((req, res, next) => {
   try {
     const port = await tryPort(5000);
     log(`serving on port ${port}`);
+    
+    // Check if Gemini API key is configured
+    if (!process.env.GEMINI_API_KEY) {
+      console.warn("\x1b[33m%s\x1b[0m", "WARNING: Gemini API key is not configured!");
+      console.warn("\x1b[33m%s\x1b[0m", "AI features will not work properly.");
+      console.warn("\x1b[33m%s\x1b[0m", "Please set the GEMINI_API_KEY in .env file.");
+      console.warn("\x1b[33m%s\x1b[0m", "Visit: https://makersuite.google.com/app/apikey to get your API key.");
+    } else {
+      console.log("\x1b[32m%s\x1b[0m", "Gemini API key is configured. AI features should work properly.");
+    }
   } catch (err) {
     // If port 5000 is in use, find the next available port up to 5010
     const freePort = await findFreePort(5001);
     const port = await tryPort(freePort);
     log(`Port 5000 was in use. Now serving on port ${port}`);
+    
+    // Check if Gemini API key is configured
+    if (!process.env.GEMINI_API_KEY) {
+      console.warn("\x1b[33m%s\x1b[0m", "WARNING: Gemini API key is not configured!");
+      console.warn("\x1b[33m%s\x1b[0m", "AI features will not work properly.");
+      console.warn("\x1b[33m%s\x1b[0m", "Please set the GEMINI_API_KEY in .env file.");
+      console.warn("\x1b[33m%s\x1b[0m", "Visit: https://makersuite.google.com/app/apikey to get your API key.");
+    } else {
+      console.log("\x1b[32m%s\x1b[0m", "Gemini API key is configured. AI features should work properly.");
+    }
   }
 })();

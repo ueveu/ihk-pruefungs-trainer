@@ -101,14 +101,24 @@ const AIChat: React.FC = () => {
       });
       
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json();
+        const errorMessage = errorData.error || `HTTP error! status: ${response.status}`;
+        
+        // Check for Gemini API related errors
+        if (errorMessage.includes('API key') || errorMessage.includes('GEMINI_API_KEY')) {
+          throw new Error('Der Google Gemini API-Schlüssel wurde nicht konfiguriert. Bitte wende dich an den Administrator.');
+        } else if (errorMessage.includes('rate limit') || errorMessage.includes('quota')) {
+          throw new Error('Das API-Limit wurde erreicht. Bitte versuche es später noch einmal.');
+        } else {
+          throw new Error(`Fehler: ${errorMessage}`);
+        }
       }
       
       const data = await response.json();
       return data.response;
     } catch (error) {
       console.error('Fehler bei der KI-Generierung:', error);
-      throw new Error('Fehler bei der KI-Generierung');
+      throw error;
     }
   };
   
